@@ -1,4 +1,1078 @@
-"use strict";(()=>{var ee=async a=>await(await fetch("http://127.0.0.1:8787/todos",{headers:{Authorization:`Bearer ${a}`}})).json(),te=a=>{let e=document.querySelector("form");e&&e.addEventListener("submit",async t=>{t.preventDefault(),t.stopPropagation();let o=new FormData(e),i=o.get("title"),n=o.get("completed")==="on";try{let u=await(await fetch("http://127.0.0.1:8787/todos",{method:"POST",headers:{"Content-Type":"application/json",Authorization:`Bearer ${a}`},body:JSON.stringify({title:i,completed:n})})).json();console.log(u)}catch(c){console.log(c)}})};function S(a,e){var t={};for(var o in a)Object.prototype.hasOwnProperty.call(a,o)&&e.indexOf(o)<0&&(t[o]=a[o]);if(a!=null&&typeof Object.getOwnPropertySymbols=="function"){var i=0;for(o=Object.getOwnPropertySymbols(a);i<o.length;i++)e.indexOf(o[i])<0&&Object.prototype.propertyIsEnumerable.call(a,o[i])&&(t[o[i]]=a[o[i]])}return t}var C=typeof globalThis!="undefined"?globalThis:typeof window!="undefined"?window:typeof global!="undefined"?global:typeof self!="undefined"?self:{};function q(a){return a&&a.__esModule&&Object.prototype.hasOwnProperty.call(a,"default")?a.default:a}function Q(a,e){return a(e={exports:{}},e.exports),e.exports}var j=Q(function(a,e){Object.defineProperty(e,"__esModule",{value:!0});var t=function(){function o(){var i=this;this.locked=new Map,this.addToLocked=function(n,c){var u=i.locked.get(n);u===void 0?c===void 0?i.locked.set(n,[]):i.locked.set(n,[c]):c!==void 0&&(u.unshift(c),i.locked.set(n,u))},this.isLocked=function(n){return i.locked.has(n)},this.lock=function(n){return new Promise(function(c,u){i.isLocked(n)?i.addToLocked(n,c):(i.addToLocked(n),c())})},this.unlock=function(n){var c=i.locked.get(n);if(c!==void 0&&c.length!==0){var u=c.pop();i.locked.set(n,c),u!==void 0&&setTimeout(u,0)}else i.locked.delete(n)}}return o.getInstance=function(){return o.instance===void 0&&(o.instance=new o),o.instance},o}();e.default=function(){return t.getInstance()}});q(j);var we=q(Q(function(a,e){var t=C&&C.__awaiter||function(r,s,d,l){return new(d||(d=Promise))(function(h,w){function f(y){try{b(l.next(y))}catch(m){w(m)}}function k(y){try{b(l.throw(y))}catch(m){w(m)}}function b(y){y.done?h(y.value):new d(function(m){m(y.value)}).then(f,k)}b((l=l.apply(r,s||[])).next())})},o=C&&C.__generator||function(r,s){var d,l,h,w,f={label:0,sent:function(){if(1&h[0])throw h[1];return h[1]},trys:[],ops:[]};return w={next:k(0),throw:k(1),return:k(2)},typeof Symbol=="function"&&(w[Symbol.iterator]=function(){return this}),w;function k(b){return function(y){return function(m){if(d)throw new TypeError("Generator is already executing.");for(;f;)try{if(d=1,l&&(h=2&m[0]?l.return:m[0]?l.throw||((h=l.return)&&h.call(l),0):l.next)&&!(h=h.call(l,m[1])).done)return h;switch(l=0,h&&(m=[2&m[0],h.value]),m[0]){case 0:case 1:h=m;break;case 4:return f.label++,{value:m[1],done:!1};case 5:f.label++,l=m[1],m=[0];continue;case 7:m=f.ops.pop(),f.trys.pop();continue;default:if(h=f.trys,!((h=h.length>0&&h[h.length-1])||m[0]!==6&&m[0]!==2)){f=0;continue}if(m[0]===3&&(!h||m[1]>h[0]&&m[1]<h[3])){f.label=m[1];break}if(m[0]===6&&f.label<h[1]){f.label=h[1],h=m;break}if(h&&f.label<h[2]){f.label=h[2],f.ops.push(m);break}h[2]&&f.ops.pop(),f.trys.pop();continue}m=s.call(r,f)}catch(_){m=[6,_],l=0}finally{d=h=0}if(5&m[0])throw m[1];return{value:m[0]?m[1]:void 0,done:!0}}([b,y])}}},i=C;Object.defineProperty(e,"__esModule",{value:!0});var n="browser-tabs-lock-key",c={key:function(r){return t(i,void 0,void 0,function(){return o(this,function(s){throw new Error("Unsupported")})})},getItem:function(r){return t(i,void 0,void 0,function(){return o(this,function(s){throw new Error("Unsupported")})})},clear:function(){return t(i,void 0,void 0,function(){return o(this,function(r){return[2,window.localStorage.clear()]})})},removeItem:function(r){return t(i,void 0,void 0,function(){return o(this,function(s){throw new Error("Unsupported")})})},setItem:function(r,s){return t(i,void 0,void 0,function(){return o(this,function(d){throw new Error("Unsupported")})})},keySync:function(r){return window.localStorage.key(r)},getItemSync:function(r){return window.localStorage.getItem(r)},clearSync:function(){return window.localStorage.clear()},removeItemSync:function(r){return window.localStorage.removeItem(r)},setItemSync:function(r,s){return window.localStorage.setItem(r,s)}};function u(r){return new Promise(function(s){return setTimeout(s,r)})}function p(r){for(var s="0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz",d="",l=0;l<r;l++)d+=s[Math.floor(Math.random()*s.length)];return d}var g=function(){function r(s){this.acquiredIatSet=new Set,this.storageHandler=void 0,this.id=Date.now().toString()+p(15),this.acquireLock=this.acquireLock.bind(this),this.releaseLock=this.releaseLock.bind(this),this.releaseLock__private__=this.releaseLock__private__.bind(this),this.waitForSomethingToChange=this.waitForSomethingToChange.bind(this),this.refreshLockWhileAcquired=this.refreshLockWhileAcquired.bind(this),this.storageHandler=s,r.waiters===void 0&&(r.waiters=[])}return r.prototype.acquireLock=function(s,d){return d===void 0&&(d=5e3),t(this,void 0,void 0,function(){var l,h,w,f,k,b,y;return o(this,function(m){switch(m.label){case 0:l=Date.now()+p(4),h=Date.now()+d,w=n+"-"+s,f=this.storageHandler===void 0?c:this.storageHandler,m.label=1;case 1:return Date.now()<h?[4,u(30)]:[3,8];case 2:return m.sent(),f.getItemSync(w)!==null?[3,5]:(k=this.id+"-"+s+"-"+l,[4,u(Math.floor(25*Math.random()))]);case 3:return m.sent(),f.setItemSync(w,JSON.stringify({id:this.id,iat:l,timeoutKey:k,timeAcquired:Date.now(),timeRefreshed:Date.now()})),[4,u(30)];case 4:return m.sent(),(b=f.getItemSync(w))!==null&&(y=JSON.parse(b)).id===this.id&&y.iat===l?(this.acquiredIatSet.add(l),this.refreshLockWhileAcquired(w,l),[2,!0]):[3,7];case 5:return r.lockCorrector(this.storageHandler===void 0?c:this.storageHandler),[4,this.waitForSomethingToChange(h)];case 6:m.sent(),m.label=7;case 7:return l=Date.now()+p(4),[3,1];case 8:return[2,!1]}})})},r.prototype.refreshLockWhileAcquired=function(s,d){return t(this,void 0,void 0,function(){var l=this;return o(this,function(h){return setTimeout(function(){return t(l,void 0,void 0,function(){var w,f,k;return o(this,function(b){switch(b.label){case 0:return[4,j.default().lock(d)];case 1:return b.sent(),this.acquiredIatSet.has(d)?(w=this.storageHandler===void 0?c:this.storageHandler,(f=w.getItemSync(s))===null?(j.default().unlock(d),[2]):((k=JSON.parse(f)).timeRefreshed=Date.now(),w.setItemSync(s,JSON.stringify(k)),j.default().unlock(d),this.refreshLockWhileAcquired(s,d),[2])):(j.default().unlock(d),[2])}})})},1e3),[2]})})},r.prototype.waitForSomethingToChange=function(s){return t(this,void 0,void 0,function(){return o(this,function(d){switch(d.label){case 0:return[4,new Promise(function(l){var h=!1,w=Date.now(),f=!1;function k(){if(f||(window.removeEventListener("storage",k),r.removeFromWaiting(k),clearTimeout(b),f=!0),!h){h=!0;var y=50-(Date.now()-w);y>0?setTimeout(l,y):l(null)}}window.addEventListener("storage",k),r.addToWaiting(k);var b=setTimeout(k,Math.max(0,s-Date.now()))})];case 1:return d.sent(),[2]}})})},r.addToWaiting=function(s){this.removeFromWaiting(s),r.waiters!==void 0&&r.waiters.push(s)},r.removeFromWaiting=function(s){r.waiters!==void 0&&(r.waiters=r.waiters.filter(function(d){return d!==s}))},r.notifyWaiters=function(){r.waiters!==void 0&&r.waiters.slice().forEach(function(s){return s()})},r.prototype.releaseLock=function(s){return t(this,void 0,void 0,function(){return o(this,function(d){switch(d.label){case 0:return[4,this.releaseLock__private__(s)];case 1:return[2,d.sent()]}})})},r.prototype.releaseLock__private__=function(s){return t(this,void 0,void 0,function(){var d,l,h,w;return o(this,function(f){switch(f.label){case 0:return d=this.storageHandler===void 0?c:this.storageHandler,l=n+"-"+s,(h=d.getItemSync(l))===null?[2]:(w=JSON.parse(h)).id!==this.id?[3,2]:[4,j.default().lock(w.iat)];case 1:f.sent(),this.acquiredIatSet.delete(w.iat),d.removeItemSync(l),j.default().unlock(w.iat),r.notifyWaiters(),f.label=2;case 2:return[2]}})})},r.lockCorrector=function(s){for(var d=Date.now()-5e3,l=s,h=[],w=0;;){var f=l.keySync(w);if(f===null)break;h.push(f),w++}for(var k=!1,b=0;b<h.length;b++){var y=h[b];if(y.includes(n)){var m=l.getItemSync(y);if(m!==null){var _=JSON.parse(m);(_.timeRefreshed===void 0&&_.timeAcquired<d||_.timeRefreshed!==void 0&&_.timeRefreshed<d)&&(l.removeItemSync(y),k=!0)}}}k&&r.notifyWaiters()},r.waiters=void 0,r}();e.default=g})),ye={timeoutInSeconds:60},ue={name:"auth0-spa-js",version:"2.2.0"},le=()=>Date.now(),v=class extends Error{constructor(e,t){super(t),this.error=e,this.error_description=t,Object.setPrototypeOf(this,v.prototype)}static fromPayload({error:e,error_description:t}){return new v(e,t)}},K=class extends v{constructor(e,t,o,i=null){super(e,t),this.state=o,this.appState=i,Object.setPrototypeOf(this,K.prototype)}},z=class extends v{constructor(){super("timeout","Timeout"),Object.setPrototypeOf(this,z.prototype)}},R=class extends z{constructor(e){super(),this.popup=e,Object.setPrototypeOf(this,R.prototype)}},D=class extends v{constructor(e){super("cancelled","Popup closed"),this.popup=e,Object.setPrototypeOf(this,D.prototype)}},L=class extends v{constructor(e,t,o){super(e,t),this.mfa_token=o,Object.setPrototypeOf(this,L.prototype)}},Z=class extends v{constructor(e,t){super("missing_refresh_token",`Missing Refresh Token (audience: '${oe(e,["default"])}', scope: '${oe(t)}')`),this.audience=e,this.scope=t,Object.setPrototypeOf(this,Z.prototype)}};function oe(a,e=[]){return a&&!e.includes(a)?a:""}var X=()=>window.crypto,J=()=>{let a="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_~.",e="";return Array.from(X().getRandomValues(new Uint8Array(43))).forEach(t=>e+=a[t%a.length]),e},ie=a=>btoa(a),Y=a=>{var{clientId:e}=a,t=S(a,["clientId"]);return new URLSearchParams((o=>Object.keys(o).filter(i=>o[i]!==void 0).reduce((i,n)=>Object.assign(Object.assign({},i),{[n]:o[n]}),{}))(Object.assign({client_id:e},t))).toString()},ne=a=>(e=>decodeURIComponent(atob(e).split("").map(t=>"%"+("00"+t.charCodeAt(0).toString(16)).slice(-2)).join("")))(a.replace(/_/g,"/").replace(/-/g,"+")),ke=async(a,e)=>{let t=await fetch(a,e);return{ok:t.ok,json:await t.json()}},be=async(a,e,t)=>{let o=new AbortController,i;return e.signal=o.signal,Promise.race([ke(a,e),new Promise((n,c)=>{i=setTimeout(()=>{o.abort(),c(new Error("Timeout when executing 'fetch'"))},t)})]).finally(()=>{clearTimeout(i)})},ve=async(a,e,t,o,i,n,c)=>{return u={auth:{audience:e,scope:t},timeout:i,fetchUrl:a,fetchOptions:o,useFormData:c},p=n,new Promise(function(g,r){let s=new MessageChannel;s.port1.onmessage=function(d){d.data.error?r(new Error(d.data.error)):g(d.data),s.port1.close()},p.postMessage(u,[s.port2])});var u,p},_e=async(a,e,t,o,i,n,c=1e4)=>i?ve(a,e,t,o,c,i,n):be(a,o,c);async function Ie(a,e){var{baseUrl:t,timeout:o,audience:i,scope:n,auth0Client:c,useFormData:u}=a,p=S(a,["baseUrl","timeout","audience","scope","auth0Client","useFormData"]);let g=u?Y(p):JSON.stringify(p);return await async function(r,s,d,l,h,w,f){let k,b=null;for(let O=0;O<3;O++)try{k=await _e(r,d,l,h,w,f,s),b=null;break}catch(fe){b=fe}if(b)throw b;let y=k.json,{error:m,error_description:_}=y,U=S(y,["error","error_description"]),{ok:T}=k;if(!T){let O=_||`HTTP error. Unable to fetch ${r}`;throw m==="mfa_required"?new L(m,O,U.mfa_token):m==="missing_refresh_token"?new Z(d,l):new v(m||"request_error",O)}return U}(`${t}/oauth/token`,o,i||"default",n,{method:"POST",body:g,headers:{"Content-Type":u?"application/x-www-form-urlencoded":"application/json","Auth0-Client":btoa(JSON.stringify(c||ue))}},e,u)}var E=(...a)=>{return(e=a.filter(Boolean).join(" ").trim().split(/\s+/),Array.from(new Set(e))).join(" ");var e},I=class{constructor(e,t="@@auth0spajs@@",o){this.prefix=t,this.suffix=o,this.clientId=e.clientId,this.scope=e.scope,this.audience=e.audience}toKey(){return[this.prefix,this.clientId,this.audience,this.scope,this.suffix].filter(Boolean).join("::")}static fromKey(e){let[t,o,i,n]=e.split("::");return new I({clientId:o,scope:n,audience:i},t)}static fromCacheEntry(e){let{scope:t,audience:o,client_id:i}=e;return new I({scope:t,audience:o,clientId:i})}},A=class{set(e,t){localStorage.setItem(e,JSON.stringify(t))}get(e){let t=window.localStorage.getItem(e);if(t)try{return JSON.parse(t)}catch{return}}remove(e){localStorage.removeItem(e)}allKeys(){return Object.keys(window.localStorage).filter(e=>e.startsWith("@@auth0spajs@@"))}},N=class{constructor(){this.enclosedCache=function(){let e={};return{set(t,o){e[t]=o},get(t){let o=e[t];if(o)return o},remove(t){delete e[t]},allKeys:()=>Object.keys(e)}}()}},M=class{constructor(e,t,o){this.cache=e,this.keyManifest=t,this.nowProvider=o||le}async setIdToken(e,t,o){var i;let n=this.getIdTokenCacheKey(e);await this.cache.set(n,{id_token:t,decodedToken:o}),await((i=this.keyManifest)===null||i===void 0?void 0:i.add(n))}async getIdToken(e){let t=await this.cache.get(this.getIdTokenCacheKey(e.clientId));if(!t&&e.scope&&e.audience){let o=await this.get(e);return!o||!o.id_token||!o.decodedToken?void 0:{id_token:o.id_token,decodedToken:o.decodedToken}}if(t)return{id_token:t.id_token,decodedToken:t.decodedToken}}async get(e,t=0){var o;let i=await this.cache.get(e.toKey());if(!i){let u=await this.getCacheKeys();if(!u)return;let p=this.matchExistingCacheKey(e,u);p&&(i=await this.cache.get(p))}if(!i)return;let n=await this.nowProvider(),c=Math.floor(n/1e3);return i.expiresAt-t<c?i.body.refresh_token?(i.body={refresh_token:i.body.refresh_token},await this.cache.set(e.toKey(),i),i.body):(await this.cache.remove(e.toKey()),void await((o=this.keyManifest)===null||o===void 0?void 0:o.remove(e.toKey()))):i.body}async set(e){var t;let o=new I({clientId:e.client_id,scope:e.scope,audience:e.audience}),i=await this.wrapCacheEntry(e);await this.cache.set(o.toKey(),i),await((t=this.keyManifest)===null||t===void 0?void 0:t.add(o.toKey()))}async clear(e){var t;let o=await this.getCacheKeys();o&&(await o.filter(i=>!e||i.includes(e)).reduce(async(i,n)=>{await i,await this.cache.remove(n)},Promise.resolve()),await((t=this.keyManifest)===null||t===void 0?void 0:t.clear()))}async wrapCacheEntry(e){let t=await this.nowProvider();return{body:e,expiresAt:Math.floor(t/1e3)+e.expires_in}}async getCacheKeys(){var e;return this.keyManifest?(e=await this.keyManifest.get())===null||e===void 0?void 0:e.keys:this.cache.allKeys?this.cache.allKeys():void 0}getIdTokenCacheKey(e){return new I({clientId:e},"@@auth0spajs@@","@@user@@").toKey()}matchExistingCacheKey(e,t){return t.filter(o=>{var i;let n=I.fromKey(o),c=new Set(n.scope&&n.scope.split(" ")),u=((i=e.scope)===null||i===void 0?void 0:i.split(" "))||[],p=n.scope&&u.reduce((g,r)=>g&&c.has(r),!0);return n.prefix==="@@auth0spajs@@"&&n.clientId===e.clientId&&n.audience===e.audience&&p})[0]}},V=class{constructor(e,t,o){this.storage=e,this.clientId=t,this.cookieDomain=o,this.storageKey=`a0.spajs.txs.${this.clientId}`}create(e){this.storage.save(this.storageKey,e,{daysUntilExpire:1,cookieDomain:this.cookieDomain})}get(){return this.storage.get(this.storageKey)}remove(){this.storage.remove(this.storageKey,{cookieDomain:this.cookieDomain})}},W=a=>typeof a=="number",Se=["iss","aud","exp","nbf","iat","jti","azp","nonce","auth_time","at_hash","c_hash","acr","amr","sub_jwk","cnf","sip_from_tag","sip_date","sip_callid","sip_cseq_num","sip_via_branch","orig","dest","mky","events","toe","txn","rph","sid","vot","vtm"],Te=a=>{if(!a.id_token)throw new Error("ID token is required but missing");let e=(n=>{let c=n.split("."),[u,p,g]=c;if(c.length!==3||!u||!p||!g)throw new Error("ID token could not be decoded");let r=JSON.parse(ne(p)),s={__raw:n},d={};return Object.keys(r).forEach(l=>{s[l]=r[l],Se.includes(l)||(d[l]=r[l])}),{encoded:{header:u,payload:p,signature:g},header:JSON.parse(ne(u)),claims:s,user:d}})(a.id_token);if(!e.claims.iss)throw new Error("Issuer (iss) claim must be a string present in the ID token");if(e.claims.iss!==a.iss)throw new Error(`Issuer (iss) claim mismatch in the ID token; expected "${a.iss}", found "${e.claims.iss}"`);if(!e.user.sub)throw new Error("Subject (sub) claim must be a string present in the ID token");if(e.header.alg!=="RS256")throw new Error(`Signature algorithm of "${e.header.alg}" is not supported. Expected the ID token to be signed with "RS256".`);if(!e.claims.aud||typeof e.claims.aud!="string"&&!Array.isArray(e.claims.aud))throw new Error("Audience (aud) claim must be a string or array of strings present in the ID token");if(Array.isArray(e.claims.aud)){if(!e.claims.aud.includes(a.aud))throw new Error(`Audience (aud) claim mismatch in the ID token; expected "${a.aud}" but was not one of "${e.claims.aud.join(", ")}"`);if(e.claims.aud.length>1){if(!e.claims.azp)throw new Error("Authorized Party (azp) claim must be a string present in the ID token when Audience (aud) claim has multiple values");if(e.claims.azp!==a.aud)throw new Error(`Authorized Party (azp) claim mismatch in the ID token; expected "${a.aud}", found "${e.claims.azp}"`)}}else if(e.claims.aud!==a.aud)throw new Error(`Audience (aud) claim mismatch in the ID token; expected "${a.aud}" but found "${e.claims.aud}"`);if(a.nonce){if(!e.claims.nonce)throw new Error("Nonce (nonce) claim must be a string present in the ID token");if(e.claims.nonce!==a.nonce)throw new Error(`Nonce (nonce) claim mismatch in the ID token; expected "${a.nonce}", found "${e.claims.nonce}"`)}if(a.max_age&&!W(e.claims.auth_time))throw new Error("Authentication Time (auth_time) claim must be a number present in the ID token when Max Age (max_age) is specified");if(e.claims.exp==null||!W(e.claims.exp))throw new Error("Expiration Time (exp) claim must be a number present in the ID token");if(!W(e.claims.iat))throw new Error("Issued At (iat) claim must be a number present in the ID token");let t=a.leeway||60,o=new Date(a.now||Date.now()),i=new Date(0);if(i.setUTCSeconds(e.claims.exp+t),o>i)throw new Error(`Expiration Time (exp) claim error in the ID token; current time (${o}) is after expiration time (${i})`);if(e.claims.nbf!=null&&W(e.claims.nbf)){let n=new Date(0);if(n.setUTCSeconds(e.claims.nbf-t),o<n)throw new Error(`Not Before time (nbf) claim in the ID token indicates that this token can't be used just yet. Current time (${o}) is before ${n}`)}if(e.claims.auth_time!=null&&W(e.claims.auth_time)){let n=new Date(0);if(n.setUTCSeconds(parseInt(e.claims.auth_time)+a.max_age+t),o>n)throw new Error(`Authentication Time (auth_time) claim in the ID token indicates that too much time has passed since the last end-user authentication. Current time (${o}) is after last auth at ${n}`)}if(a.organization){let n=a.organization.trim();if(n.startsWith("org_")){let c=n;if(!e.claims.org_id)throw new Error("Organization ID (org_id) claim must be a string present in the ID token");if(c!==e.claims.org_id)throw new Error(`Organization ID (org_id) claim mismatch in the ID token; expected "${c}", found "${e.claims.org_id}"`)}else{let c=n.toLowerCase();if(!e.claims.org_name)throw new Error("Organization Name (org_name) claim must be a string present in the ID token");if(c!==e.claims.org_name)throw new Error(`Organization Name (org_name) claim mismatch in the ID token; expected "${c}", found "${e.claims.org_name}"`)}}return e},P=Q(function(a,e){var t=C&&C.__assign||function(){return t=Object.assign||function(p){for(var g,r=1,s=arguments.length;r<s;r++)for(var d in g=arguments[r])Object.prototype.hasOwnProperty.call(g,d)&&(p[d]=g[d]);return p},t.apply(this,arguments)};function o(p,g){if(!g)return"";var r="; "+p;return g===!0?r:r+"="+g}function i(p,g,r){return encodeURIComponent(p).replace(/%(23|24|26|2B|5E|60|7C)/g,decodeURIComponent).replace(/\(/g,"%28").replace(/\)/g,"%29")+"="+encodeURIComponent(g).replace(/%(23|24|26|2B|3A|3C|3E|3D|2F|3F|40|5B|5D|5E|60|7B|7D|7C)/g,decodeURIComponent)+function(s){if(typeof s.expires=="number"){var d=new Date;d.setMilliseconds(d.getMilliseconds()+864e5*s.expires),s.expires=d}return o("Expires",s.expires?s.expires.toUTCString():"")+o("Domain",s.domain)+o("Path",s.path)+o("Secure",s.secure)+o("SameSite",s.sameSite)}(r)}function n(p){for(var g={},r=p?p.split("; "):[],s=/(%[\dA-F]{2})+/gi,d=0;d<r.length;d++){var l=r[d].split("="),h=l.slice(1).join("=");h.charAt(0)==='"'&&(h=h.slice(1,-1));try{g[l[0].replace(s,decodeURIComponent)]=h.replace(s,decodeURIComponent)}catch{}}return g}function c(){return n(document.cookie)}function u(p,g,r){document.cookie=i(p,g,t({path:"/"},r))}e.__esModule=!0,e.encode=i,e.parse=n,e.getAll=c,e.get=function(p){return c()[p]},e.set=u,e.remove=function(p,g){u(p,"",t(t({},g),{expires:-1}))}});q(P),P.encode,P.parse,P.getAll;var Oe=P.get,he=P.set,pe=P.remove,x={get(a){let e=Oe(a);if(e!==void 0)return JSON.parse(e)},save(a,e,t){let o={};window.location.protocol==="https:"&&(o={secure:!0,sameSite:"none"}),t!=null&&t.daysUntilExpire&&(o.expires=t.daysUntilExpire),t!=null&&t.cookieDomain&&(o.domain=t.cookieDomain),he(a,JSON.stringify(e),o)},remove(a,e){let t={};e!=null&&e.cookieDomain&&(t.domain=e.cookieDomain),pe(a,t)}},je={get(a){return x.get(a)||x.get(`_legacy_${a}`)},save(a,e,t){let o={};window.location.protocol==="https:"&&(o={secure:!0}),t!=null&&t.daysUntilExpire&&(o.expires=t.daysUntilExpire),t!=null&&t.cookieDomain&&(o.domain=t.cookieDomain),he(`_legacy_${a}`,JSON.stringify(e),o),x.save(a,e,t)},remove(a,e){let t={};e!=null&&e.cookieDomain&&(t.domain=e.cookieDomain),pe(a,t),x.remove(a,e),x.remove(`_legacy_${a}`,e)}},Ce={get(a){if(typeof sessionStorage=="undefined")return;let e=sessionStorage.getItem(a);return e!=null?JSON.parse(e):void 0},save(a,e){sessionStorage.setItem(a,JSON.stringify(e))},remove(a){sessionStorage.removeItem(a)}};function Pe(a,e,t){var o=e===void 0?null:e,i=function(p,g){var r=atob(p);if(g){for(var s=new Uint8Array(r.length),d=0,l=r.length;d<l;++d)s[d]=r.charCodeAt(d);return String.fromCharCode.apply(null,new Uint16Array(s.buffer))}return r}(a,t!==void 0&&t),n=i.indexOf(`
-`,10)+1,c=i.substring(n)+(o?"//# sourceMappingURL="+o:""),u=new Blob([c],{type:"application/javascript"});return URL.createObjectURL(u)}var ae,re,se,F,ze=(ae="Lyogcm9sbHVwLXBsdWdpbi13ZWItd29ya2VyLWxvYWRlciAqLwohZnVuY3Rpb24oKXsidXNlIHN0cmljdCI7Y2xhc3MgZSBleHRlbmRzIEVycm9ye2NvbnN0cnVjdG9yKHQscil7c3VwZXIociksdGhpcy5lcnJvcj10LHRoaXMuZXJyb3JfZGVzY3JpcHRpb249cixPYmplY3Quc2V0UHJvdG90eXBlT2YodGhpcyxlLnByb3RvdHlwZSl9c3RhdGljIGZyb21QYXlsb2FkKHtlcnJvcjp0LGVycm9yX2Rlc2NyaXB0aW9uOnJ9KXtyZXR1cm4gbmV3IGUodCxyKX19Y2xhc3MgdCBleHRlbmRzIGV7Y29uc3RydWN0b3IoZSxzKXtzdXBlcigibWlzc2luZ19yZWZyZXNoX3Rva2VuIixgTWlzc2luZyBSZWZyZXNoIFRva2VuIChhdWRpZW5jZTogJyR7cihlLFsiZGVmYXVsdCJdKX0nLCBzY29wZTogJyR7cihzKX0nKWApLHRoaXMuYXVkaWVuY2U9ZSx0aGlzLnNjb3BlPXMsT2JqZWN0LnNldFByb3RvdHlwZU9mKHRoaXMsdC5wcm90b3R5cGUpfX1mdW5jdGlvbiByKGUsdD1bXSl7cmV0dXJuIGUmJiF0LmluY2x1ZGVzKGUpP2U6IiJ9ImZ1bmN0aW9uIj09dHlwZW9mIFN1cHByZXNzZWRFcnJvciYmU3VwcHJlc3NlZEVycm9yO2NvbnN0IHM9ZT0+e3ZhcntjbGllbnRJZDp0fT1lLHI9ZnVuY3Rpb24oZSx0KXt2YXIgcj17fTtmb3IodmFyIHMgaW4gZSlPYmplY3QucHJvdG90eXBlLmhhc093blByb3BlcnR5LmNhbGwoZSxzKSYmdC5pbmRleE9mKHMpPDAmJihyW3NdPWVbc10pO2lmKG51bGwhPWUmJiJmdW5jdGlvbiI9PXR5cGVvZiBPYmplY3QuZ2V0T3duUHJvcGVydHlTeW1ib2xzKXt2YXIgbz0wO2ZvcihzPU9iamVjdC5nZXRPd25Qcm9wZXJ0eVN5bWJvbHMoZSk7bzxzLmxlbmd0aDtvKyspdC5pbmRleE9mKHNbb10pPDAmJk9iamVjdC5wcm90b3R5cGUucHJvcGVydHlJc0VudW1lcmFibGUuY2FsbChlLHNbb10pJiYocltzW29dXT1lW3Nbb11dKX1yZXR1cm4gcn0oZSxbImNsaWVudElkIl0pO3JldHVybiBuZXcgVVJMU2VhcmNoUGFyYW1zKChlPT5PYmplY3Qua2V5cyhlKS5maWx0ZXIoKHQ9PnZvaWQgMCE9PWVbdF0pKS5yZWR1Y2UoKCh0LHIpPT5PYmplY3QuYXNzaWduKE9iamVjdC5hc3NpZ24oe30sdCkse1tyXTplW3JdfSkpLHt9KSkoT2JqZWN0LmFzc2lnbih7Y2xpZW50X2lkOnR9LHIpKSkudG9TdHJpbmcoKX07bGV0IG89e307Y29uc3Qgbj0oZSx0KT0+YCR7ZX18JHt0fWA7YWRkRXZlbnRMaXN0ZW5lcigibWVzc2FnZSIsKGFzeW5jKHtkYXRhOnt0aW1lb3V0OmUsYXV0aDpyLGZldGNoVXJsOmksZmV0Y2hPcHRpb25zOmMsdXNlRm9ybURhdGE6YX0scG9ydHM6W3BdfSk9PntsZXQgZjtjb25zdHthdWRpZW5jZTp1LHNjb3BlOmx9PXJ8fHt9O3RyeXtjb25zdCByPWE/KGU9Pntjb25zdCB0PW5ldyBVUkxTZWFyY2hQYXJhbXMoZSkscj17fTtyZXR1cm4gdC5mb3JFYWNoKCgoZSx0KT0+e3JbdF09ZX0pKSxyfSkoYy5ib2R5KTpKU09OLnBhcnNlKGMuYm9keSk7aWYoIXIucmVmcmVzaF90b2tlbiYmInJlZnJlc2hfdG9rZW4iPT09ci5ncmFudF90eXBlKXtjb25zdCBlPSgoZSx0KT0+b1tuKGUsdCldKSh1LGwpO2lmKCFlKXRocm93IG5ldyB0KHUsbCk7Yy5ib2R5PWE/cyhPYmplY3QuYXNzaWduKE9iamVjdC5hc3NpZ24oe30scikse3JlZnJlc2hfdG9rZW46ZX0pKTpKU09OLnN0cmluZ2lmeShPYmplY3QuYXNzaWduKE9iamVjdC5hc3NpZ24oe30scikse3JlZnJlc2hfdG9rZW46ZX0pKX1sZXQgaCxnOyJmdW5jdGlvbiI9PXR5cGVvZiBBYm9ydENvbnRyb2xsZXImJihoPW5ldyBBYm9ydENvbnRyb2xsZXIsYy5zaWduYWw9aC5zaWduYWwpO3RyeXtnPWF3YWl0IFByb21pc2UucmFjZShbKGQ9ZSxuZXcgUHJvbWlzZSgoZT0+c2V0VGltZW91dChlLGQpKSkpLGZldGNoKGksT2JqZWN0LmFzc2lnbih7fSxjKSldKX1jYXRjaChlKXtyZXR1cm4gdm9pZCBwLnBvc3RNZXNzYWdlKHtlcnJvcjplLm1lc3NhZ2V9KX1pZighZylyZXR1cm4gaCYmaC5hYm9ydCgpLHZvaWQgcC5wb3N0TWVzc2FnZSh7ZXJyb3I6IlRpbWVvdXQgd2hlbiBleGVjdXRpbmcgJ2ZldGNoJyJ9KTtmPWF3YWl0IGcuanNvbigpLGYucmVmcmVzaF90b2tlbj8oKChlLHQscik9PntvW24odCxyKV09ZX0pKGYucmVmcmVzaF90b2tlbix1LGwpLGRlbGV0ZSBmLnJlZnJlc2hfdG9rZW4pOigoZSx0KT0+e2RlbGV0ZSBvW24oZSx0KV19KSh1LGwpLHAucG9zdE1lc3NhZ2Uoe29rOmcub2ssanNvbjpmfSl9Y2F0Y2goZSl7cC5wb3N0TWVzc2FnZSh7b2s6ITEsanNvbjp7ZXJyb3I6ZS5lcnJvcixlcnJvcl9kZXNjcmlwdGlvbjplLm1lc3NhZ2V9fSl9dmFyIGR9KSl9KCk7Cgo=",re=null,se=!1,function(a){return F=F||Pe(ae,re,se),new Worker(F,a)}),H={},$=class{constructor(e,t){this.cache=e,this.clientId=t,this.manifestKey=this.createManifestKeyFrom(this.clientId)}async add(e){var t;let o=new Set(((t=await this.cache.get(this.manifestKey))===null||t===void 0?void 0:t.keys)||[]);o.add(e),await this.cache.set(this.manifestKey,{keys:[...o]})}async remove(e){let t=await this.cache.get(this.manifestKey);if(t){let o=new Set(t.keys);return o.delete(e),o.size>0?await this.cache.set(this.manifestKey,{keys:[...o]}):await this.cache.remove(this.manifestKey)}}get(){return this.cache.get(this.manifestKey)}clear(){return this.cache.remove(this.manifestKey)}createManifestKeyFrom(e){return`@@auth0spajs@@::${e}`}},xe={memory:()=>new N().enclosedCache,localstorage:()=>new A},ce=a=>xe[a],de=a=>{let{openUrl:e,onRedirect:t}=a,o=S(a,["openUrl","onRedirect"]);return Object.assign(Object.assign({},o),{openUrl:e===!1||e?e:t})},G=new we,B=class{constructor(e){let t,o;if(this.userCache=new N().enclosedCache,this.defaultOptions={authorizationParams:{scope:"openid profile email"},useRefreshTokensFallback:!1,useFormData:!0},this._releaseLockOnPageHide=async()=>{await G.releaseLock("auth0.lock.getTokenSilently"),window.removeEventListener("pagehide",this._releaseLockOnPageHide)},this.options=Object.assign(Object.assign(Object.assign({},this.defaultOptions),e),{authorizationParams:Object.assign(Object.assign({},this.defaultOptions.authorizationParams),e.authorizationParams)}),typeof window!="undefined"&&(()=>{if(!X())throw new Error("For security reasons, `window.crypto` is required to run `auth0-spa-js`.");if(X().subtle===void 0)throw new Error(`
-      auth0-spa-js must run on a secure origin. See https://github.com/auth0/auth0-spa-js/blob/main/FAQ.md#why-do-i-get-auth0-spa-js-must-run-on-a-secure-origin for more information.
-    `)})(),e.cache&&e.cacheLocation&&console.warn("Both `cache` and `cacheLocation` options have been specified in the Auth0Client configuration; ignoring `cacheLocation` and using `cache`."),e.cache)o=e.cache;else{if(t=e.cacheLocation||"memory",!ce(t))throw new Error(`Invalid cache location "${t}"`);o=ce(t)()}this.httpTimeoutMs=e.httpTimeoutInSeconds?1e3*e.httpTimeoutInSeconds:1e4,this.cookieStorage=e.legacySameSiteCookie===!1?x:je,this.orgHintCookieName=`auth0.${this.options.clientId}.organization_hint`,this.isAuthenticatedCookieName=(c=>`auth0.${c}.is.authenticated`)(this.options.clientId),this.sessionCheckExpiryDays=e.sessionCheckExpiryDays||1;let i=e.useCookiesForTransactions?this.cookieStorage:Ce;var n;this.scope=E("openid",this.options.authorizationParams.scope,this.options.useRefreshTokens?"offline_access":""),this.transactionManager=new V(i,this.options.clientId,this.options.cookieDomain),this.nowProvider=this.options.nowProvider||le,this.cacheManager=new M(o,o.allKeys?void 0:new $(o,this.options.clientId),this.nowProvider),this.domainUrl=(n=this.options.domain,/^https?:\/\//.test(n)?n:`https://${n}`),this.tokenIssuer=((c,u)=>c?c.startsWith("https://")?c:`https://${c}/`:`${u}/`)(this.options.issuer,this.domainUrl),typeof window!="undefined"&&window.Worker&&this.options.useRefreshTokens&&t==="memory"&&(this.options.workerUrl?this.worker=new Worker(this.options.workerUrl):this.worker=new ze)}_url(e){let t=encodeURIComponent(btoa(JSON.stringify(this.options.auth0Client||ue)));return`${this.domainUrl}${e}&auth0Client=${t}`}_authorizeUrl(e){return this._url(`/authorize?${Y(e)}`)}async _verifyIdToken(e,t,o){let i=await this.nowProvider();return Te({iss:this.tokenIssuer,aud:this.options.clientId,id_token:e,nonce:t,organization:o,leeway:this.options.leeway,max_age:(n=this.options.authorizationParams.max_age,typeof n!="string"?n:parseInt(n,10)||void 0),now:i});var n}_processOrgHint(e){e?this.cookieStorage.save(this.orgHintCookieName,e,{daysUntilExpire:this.sessionCheckExpiryDays,cookieDomain:this.options.cookieDomain}):this.cookieStorage.remove(this.orgHintCookieName,{cookieDomain:this.options.cookieDomain})}async _prepareAuthorizeUrl(e,t,o){let i=ie(J()),n=ie(J()),c=J(),u=(r=>{let s=new Uint8Array(r);return(d=>{let l={"+":"-","/":"_","=":""};return d.replace(/[+/=]/g,h=>l[h])})(window.btoa(String.fromCharCode(...Array.from(s))))})(await(async r=>await X().subtle.digest({name:"SHA-256"},new TextEncoder().encode(r)))(c)),p=((r,s,d,l,h,w,f,k)=>Object.assign(Object.assign(Object.assign({client_id:r.clientId},r.authorizationParams),d),{scope:E(s,d.scope),response_type:"code",response_mode:k||"query",state:l,nonce:h,redirect_uri:f||r.authorizationParams.redirect_uri,code_challenge:w,code_challenge_method:"S256"}))(this.options,this.scope,e,i,n,u,e.redirect_uri||this.options.authorizationParams.redirect_uri||o,t==null?void 0:t.response_mode),g=this._authorizeUrl(p);return{nonce:n,code_verifier:c,scope:p.scope,audience:p.audience||"default",redirect_uri:p.redirect_uri,state:i,url:g}}async loginWithPopup(e,t){var o;if(e=e||{},!(t=t||{}).popup&&(t.popup=(u=>{let p=window.screenX+(window.innerWidth-400)/2,g=window.screenY+(window.innerHeight-600)/2;return window.open(u,"auth0:authorize:popup",`left=${p},top=${g},width=400,height=600,resizable,scrollbars=yes,status=1`)})(""),!t.popup))throw new Error("Unable to open a popup for loginWithPopup - window.open returned `null`");let i=await this._prepareAuthorizeUrl(e.authorizationParams||{},{response_mode:"web_message"},window.location.origin);t.popup.location.href=i.url;let n=await(u=>new Promise((p,g)=>{let r,s=setInterval(()=>{u.popup&&u.popup.closed&&(clearInterval(s),clearTimeout(d),window.removeEventListener("message",r,!1),g(new D(u.popup)))},1e3),d=setTimeout(()=>{clearInterval(s),g(new R(u.popup)),window.removeEventListener("message",r,!1)},1e3*(u.timeoutInSeconds||60));r=function(l){if(l.data&&l.data.type==="authorization_response"){if(clearTimeout(d),clearInterval(s),window.removeEventListener("message",r,!1),u.popup.close(),l.data.response.error)return g(v.fromPayload(l.data.response));p(l.data.response)}},window.addEventListener("message",r)}))(Object.assign(Object.assign({},t),{timeoutInSeconds:t.timeoutInSeconds||this.options.authorizeTimeoutInSeconds||60}));if(i.state!==n.state)throw new v("state_mismatch","Invalid state");let c=((o=e.authorizationParams)===null||o===void 0?void 0:o.organization)||this.options.authorizationParams.organization;await this._requestToken({audience:i.audience,scope:i.scope,code_verifier:i.code_verifier,grant_type:"authorization_code",code:n.code,redirect_uri:i.redirect_uri},{nonceIn:i.nonce,organization:c})}async getUser(){var e;let t=await this._getIdTokenFromCache();return(e=t==null?void 0:t.decodedToken)===null||e===void 0?void 0:e.user}async getIdTokenClaims(){var e;let t=await this._getIdTokenFromCache();return(e=t==null?void 0:t.decodedToken)===null||e===void 0?void 0:e.claims}async loginWithRedirect(e={}){var t;let o=de(e),{openUrl:i,fragment:n,appState:c}=o,u=S(o,["openUrl","fragment","appState"]),p=((t=u.authorizationParams)===null||t===void 0?void 0:t.organization)||this.options.authorizationParams.organization,g=await this._prepareAuthorizeUrl(u.authorizationParams||{}),{url:r}=g,s=S(g,["url"]);this.transactionManager.create(Object.assign(Object.assign(Object.assign({},s),{appState:c}),p&&{organization:p}));let d=n?`${r}#${n}`:r;i?await i(d):window.location.assign(d)}async handleRedirectCallback(e=window.location.href){let t=e.split("?").slice(1);if(t.length===0)throw new Error("There are no query params available for parsing.");let{state:o,code:i,error:n,error_description:c}=(s=>{s.indexOf("#")>-1&&(s=s.substring(0,s.indexOf("#")));let d=new URLSearchParams(s);return{state:d.get("state"),code:d.get("code")||void 0,error:d.get("error")||void 0,error_description:d.get("error_description")||void 0}})(t.join("")),u=this.transactionManager.get();if(!u)throw new v("missing_transaction","Invalid state");if(this.transactionManager.remove(),n)throw new K(n,c||n,o,u.appState);if(!u.code_verifier||u.state&&u.state!==o)throw new v("state_mismatch","Invalid state");let p=u.organization,g=u.nonce,r=u.redirect_uri;return await this._requestToken(Object.assign({audience:u.audience,scope:u.scope,code_verifier:u.code_verifier,grant_type:"authorization_code",code:i},r?{redirect_uri:r}:{}),{nonceIn:g,organization:p}),{appState:u.appState}}async checkSession(e){if(!this.cookieStorage.get(this.isAuthenticatedCookieName)){if(!this.cookieStorage.get("auth0.is.authenticated"))return;this.cookieStorage.save(this.isAuthenticatedCookieName,!0,{daysUntilExpire:this.sessionCheckExpiryDays,cookieDomain:this.options.cookieDomain}),this.cookieStorage.remove("auth0.is.authenticated")}try{await this.getTokenSilently(e)}catch{}}async getTokenSilently(e={}){var t;let o=Object.assign(Object.assign({cacheMode:"on"},e),{authorizationParams:Object.assign(Object.assign(Object.assign({},this.options.authorizationParams),e.authorizationParams),{scope:E(this.scope,(t=e.authorizationParams)===null||t===void 0?void 0:t.scope)})}),i=await((n,c)=>{let u=H[c];return u||(u=n().finally(()=>{delete H[c],u=null}),H[c]=u),u})(()=>this._getTokenSilently(o),`${this.options.clientId}::${o.authorizationParams.audience}::${o.authorizationParams.scope}`);return e.detailedResponse?i:i==null?void 0:i.access_token}async _getTokenSilently(e){let{cacheMode:t}=e,o=S(e,["cacheMode"]);if(t!=="off"){let i=await this._getEntryFromCache({scope:o.authorizationParams.scope,audience:o.authorizationParams.audience||"default",clientId:this.options.clientId});if(i)return i}if(t!=="cache-only"){if(!await(async(i,n=3)=>{for(let c=0;c<n;c++)if(await i())return!0;return!1})(()=>G.acquireLock("auth0.lock.getTokenSilently",5e3),10))throw new z;try{if(window.addEventListener("pagehide",this._releaseLockOnPageHide),t!=="off"){let g=await this._getEntryFromCache({scope:o.authorizationParams.scope,audience:o.authorizationParams.audience||"default",clientId:this.options.clientId});if(g)return g}let i=this.options.useRefreshTokens?await this._getTokenUsingRefreshToken(o):await this._getTokenFromIFrame(o),{id_token:n,access_token:c,oauthTokenScope:u,expires_in:p}=i;return Object.assign(Object.assign({id_token:n,access_token:c},u?{scope:u}:null),{expires_in:p})}finally{await G.releaseLock("auth0.lock.getTokenSilently"),window.removeEventListener("pagehide",this._releaseLockOnPageHide)}}}async getTokenWithPopup(e={},t={}){var o;let i=Object.assign(Object.assign({},e),{authorizationParams:Object.assign(Object.assign(Object.assign({},this.options.authorizationParams),e.authorizationParams),{scope:E(this.scope,(o=e.authorizationParams)===null||o===void 0?void 0:o.scope)})});return t=Object.assign(Object.assign({},ye),t),await this.loginWithPopup(i,t),(await this.cacheManager.get(new I({scope:i.authorizationParams.scope,audience:i.authorizationParams.audience||"default",clientId:this.options.clientId}))).access_token}async isAuthenticated(){return!!await this.getUser()}_buildLogoutUrl(e){e.clientId!==null?e.clientId=e.clientId||this.options.clientId:delete e.clientId;let t=e.logoutParams||{},{federated:o}=t,i=S(t,["federated"]),n=o?"&federated":"";return this._url(`/v2/logout?${Y(Object.assign({clientId:e.clientId},i))}`)+n}async logout(e={}){let t=de(e),{openUrl:o}=t,i=S(t,["openUrl"]);e.clientId===null?await this.cacheManager.clear():await this.cacheManager.clear(e.clientId||this.options.clientId),this.cookieStorage.remove(this.orgHintCookieName,{cookieDomain:this.options.cookieDomain}),this.cookieStorage.remove(this.isAuthenticatedCookieName,{cookieDomain:this.options.cookieDomain}),this.userCache.remove("@@user@@");let n=this._buildLogoutUrl(i);o?await o(n):o!==!1&&window.location.assign(n)}async _getTokenFromIFrame(e){let t=Object.assign(Object.assign({},e.authorizationParams),{prompt:"none"}),o=this.cookieStorage.get(this.orgHintCookieName);o&&!t.organization&&(t.organization=o);let{url:i,state:n,nonce:c,code_verifier:u,redirect_uri:p,scope:g,audience:r}=await this._prepareAuthorizeUrl(t,{response_mode:"web_message"},window.location.origin);try{if(window.crossOriginIsolated)throw new v("login_required","The application is running in a Cross-Origin Isolated context, silently retrieving a token without refresh token is not possible.");let s=e.timeoutInSeconds||this.options.authorizeTimeoutInSeconds,d=await((h,w,f=60)=>new Promise((k,b)=>{let y=window.document.createElement("iframe");y.setAttribute("width","0"),y.setAttribute("height","0"),y.style.display="none";let m=()=>{window.document.body.contains(y)&&(window.document.body.removeChild(y),window.removeEventListener("message",_,!1))},_,U=setTimeout(()=>{b(new z),m()},1e3*f);_=function(T){if(T.origin!=w||!T.data||T.data.type!=="authorization_response")return;let O=T.source;O&&O.close(),T.data.response.error?b(v.fromPayload(T.data.response)):k(T.data.response),clearTimeout(U),window.removeEventListener("message",_,!1),setTimeout(m,2e3)},window.addEventListener("message",_,!1),window.document.body.appendChild(y),y.setAttribute("src",h)}))(i,this.domainUrl,s);if(n!==d.state)throw new v("state_mismatch","Invalid state");let l=await this._requestToken(Object.assign(Object.assign({},e.authorizationParams),{code_verifier:u,code:d.code,grant_type:"authorization_code",redirect_uri:p,timeout:e.authorizationParams.timeout||this.httpTimeoutMs}),{nonceIn:c,organization:t.organization});return Object.assign(Object.assign({},l),{scope:g,oauthTokenScope:l.scope,audience:r})}catch(s){throw s.error==="login_required"&&this.logout({openUrl:!1}),s}}async _getTokenUsingRefreshToken(e){let t=await this.cacheManager.get(new I({scope:e.authorizationParams.scope,audience:e.authorizationParams.audience||"default",clientId:this.options.clientId}));if(!(t&&t.refresh_token||this.worker)){if(this.options.useRefreshTokensFallback)return await this._getTokenFromIFrame(e);throw new Z(e.authorizationParams.audience||"default",e.authorizationParams.scope)}let o=e.authorizationParams.redirect_uri||this.options.authorizationParams.redirect_uri||window.location.origin,i=typeof e.timeoutInSeconds=="number"?1e3*e.timeoutInSeconds:null;try{let n=await this._requestToken(Object.assign(Object.assign(Object.assign({},e.authorizationParams),{grant_type:"refresh_token",refresh_token:t&&t.refresh_token,redirect_uri:o}),i&&{timeout:i}));return Object.assign(Object.assign({},n),{scope:e.authorizationParams.scope,oauthTokenScope:n.scope,audience:e.authorizationParams.audience||"default"})}catch(n){if((n.message.indexOf("Missing Refresh Token")>-1||n.message&&n.message.indexOf("invalid refresh token")>-1)&&this.options.useRefreshTokensFallback)return await this._getTokenFromIFrame(e);throw n}}async _saveEntryInCache(e){let{id_token:t,decodedToken:o}=e,i=S(e,["id_token","decodedToken"]);this.userCache.set("@@user@@",{id_token:t,decodedToken:o}),await this.cacheManager.setIdToken(this.options.clientId,e.id_token,e.decodedToken),await this.cacheManager.set(i)}async _getIdTokenFromCache(){let e=this.options.authorizationParams.audience||"default",t=await this.cacheManager.getIdToken(new I({clientId:this.options.clientId,audience:e,scope:this.scope})),o=this.userCache.get("@@user@@");return t&&t.id_token===(o==null?void 0:o.id_token)?o:(this.userCache.set("@@user@@",t),t)}async _getEntryFromCache({scope:e,audience:t,clientId:o}){let i=await this.cacheManager.get(new I({scope:e,audience:t,clientId:o}),60);if(i&&i.access_token){let{access_token:n,oauthTokenScope:c,expires_in:u}=i,p=await this._getIdTokenFromCache();return p&&Object.assign(Object.assign({id_token:p.id_token,access_token:n},c?{scope:c}:null),{expires_in:u})}}async _requestToken(e,t){let{nonceIn:o,organization:i}=t||{},n=await Ie(Object.assign({baseUrl:this.domainUrl,client_id:this.options.clientId,auth0Client:this.options.auth0Client,useFormData:this.options.useFormData,timeout:this.httpTimeoutMs},e),this.worker),c=await this._verifyIdToken(n.id_token,o,i);return await this._saveEntryInCache(Object.assign(Object.assign(Object.assign(Object.assign({},n),{decodedToken:c,scope:e.scope,audience:e.audience||"default"}),n.scope?{oauthTokenScope:n.scope}:null),{client_id:this.options.clientId})),this.cookieStorage.save(this.isAuthenticatedCookieName,!0,{daysUntilExpire:this.sessionCheckExpiryDays,cookieDomain:this.options.cookieDomain}),this._processOrgHint(i||c.claims.org_id),Object.assign(Object.assign({},n),{decodedToken:c})}async exchangeToken(e){return this._requestToken({grant_type:"urn:ietf:params:oauth:grant-type:token-exchange",subject_token:e.subject_token,subject_token_type:e.subject_token_type,scope:E(e.scope,this.scope),audience:this.options.authorizationParams.audience})}};async function me(a){let e=new B(a);return await e.checkSession(),e}async function ge(a){let e=await me({clientId:"DJlKHrTvogfx7g6bhiPpskriHIgWzkjJ",domain:"cfw-stream.us.auth0.com",authorizationParams:{redirect_uri:"https://stream-cloudflare-workers.webflow.io/",audience:"https://stream.finsweet.com"}});new URLSearchParams(window.location.search).get("code")&&(await e.handleRedirectCallback(),history.replaceState({},document.title,window.location.origin+window.location.pathname));let i=await e.isAuthenticated();return!i&&a&&await e.loginWithRedirect(),window.Webflow||(window.Webflow=[]),window.Webflow.push(async()=>{let n=document.querySelector('[data-element="login"]'),c=document.querySelector('[data-element="logout"]');!n||!c||(n.addEventListener("click",async()=>{await e.loginWithRedirect()}),c.addEventListener("click",async()=>{await e.logout()}))}),{isLoggedIn:i,client:e}}var Ze=async()=>{let{isLoggedIn:a,client:e}=await ge();console.log({isLoggedIn:a}),window.Webflow||(window.Webflow=[]),window.Webflow.push(async()=>{let t=await e.getTokenSilently(),o=await e.getUser();console.log({user:o,access_token:t}),te(t);let i=await ee(t);console.log({todos:i})})};Ze();})();
+"use strict";
+(() => {
+  // bin/live-reload.js
+  new EventSource(`${"http://localhost:3000"}/esbuild`).addEventListener("change", () => location.reload());
+
+  // node_modules/@auth0/auth0-spa-js/dist/auth0-spa-js.production.esm.js
+  function e(e2, t2) {
+    var i2 = {};
+    for (var o2 in e2)
+      Object.prototype.hasOwnProperty.call(e2, o2) && t2.indexOf(o2) < 0 && (i2[o2] = e2[o2]);
+    if (null != e2 && "function" == typeof Object.getOwnPropertySymbols) {
+      var n2 = 0;
+      for (o2 = Object.getOwnPropertySymbols(e2); n2 < o2.length; n2++)
+        t2.indexOf(o2[n2]) < 0 && Object.prototype.propertyIsEnumerable.call(e2, o2[n2]) && (i2[o2[n2]] = e2[o2[n2]]);
+    }
+    return i2;
+  }
+  var t = "undefined" != typeof globalThis ? globalThis : "undefined" != typeof window ? window : "undefined" != typeof global ? global : "undefined" != typeof self ? self : {};
+  function i(e2) {
+    return e2 && e2.__esModule && Object.prototype.hasOwnProperty.call(e2, "default") ? e2.default : e2;
+  }
+  function o(e2, t2) {
+    return e2(t2 = { exports: {} }, t2.exports), t2.exports;
+  }
+  var n = o(function(e2, t2) {
+    Object.defineProperty(t2, "__esModule", { value: true });
+    var i2 = function() {
+      function e3() {
+        var e4 = this;
+        this.locked = /* @__PURE__ */ new Map(), this.addToLocked = function(t3, i3) {
+          var o2 = e4.locked.get(t3);
+          void 0 === o2 ? void 0 === i3 ? e4.locked.set(t3, []) : e4.locked.set(t3, [i3]) : void 0 !== i3 && (o2.unshift(i3), e4.locked.set(t3, o2));
+        }, this.isLocked = function(t3) {
+          return e4.locked.has(t3);
+        }, this.lock = function(t3) {
+          return new Promise(function(i3, o2) {
+            e4.isLocked(t3) ? e4.addToLocked(t3, i3) : (e4.addToLocked(t3), i3());
+          });
+        }, this.unlock = function(t3) {
+          var i3 = e4.locked.get(t3);
+          if (void 0 !== i3 && 0 !== i3.length) {
+            var o2 = i3.pop();
+            e4.locked.set(t3, i3), void 0 !== o2 && setTimeout(o2, 0);
+          } else
+            e4.locked.delete(t3);
+        };
+      }
+      return e3.getInstance = function() {
+        return void 0 === e3.instance && (e3.instance = new e3()), e3.instance;
+      }, e3;
+    }();
+    t2.default = function() {
+      return i2.getInstance();
+    };
+  });
+  i(n);
+  var a = i(o(function(e2, i2) {
+    var o2 = t && t.__awaiter || function(e3, t2, i3, o3) {
+      return new (i3 || (i3 = Promise))(function(n2, a3) {
+        function r3(e4) {
+          try {
+            c3(o3.next(e4));
+          } catch (e5) {
+            a3(e5);
+          }
+        }
+        function s3(e4) {
+          try {
+            c3(o3.throw(e4));
+          } catch (e5) {
+            a3(e5);
+          }
+        }
+        function c3(e4) {
+          e4.done ? n2(e4.value) : new i3(function(t3) {
+            t3(e4.value);
+          }).then(r3, s3);
+        }
+        c3((o3 = o3.apply(e3, t2 || [])).next());
+      });
+    }, a2 = t && t.__generator || function(e3, t2) {
+      var i3, o3, n2, a3, r3 = { label: 0, sent: function() {
+        if (1 & n2[0])
+          throw n2[1];
+        return n2[1];
+      }, trys: [], ops: [] };
+      return a3 = { next: s3(0), throw: s3(1), return: s3(2) }, "function" == typeof Symbol && (a3[Symbol.iterator] = function() {
+        return this;
+      }), a3;
+      function s3(a4) {
+        return function(s4) {
+          return function(a5) {
+            if (i3)
+              throw new TypeError("Generator is already executing.");
+            for (; r3; )
+              try {
+                if (i3 = 1, o3 && (n2 = 2 & a5[0] ? o3.return : a5[0] ? o3.throw || ((n2 = o3.return) && n2.call(o3), 0) : o3.next) && !(n2 = n2.call(o3, a5[1])).done)
+                  return n2;
+                switch (o3 = 0, n2 && (a5 = [2 & a5[0], n2.value]), a5[0]) {
+                  case 0:
+                  case 1:
+                    n2 = a5;
+                    break;
+                  case 4:
+                    return r3.label++, { value: a5[1], done: false };
+                  case 5:
+                    r3.label++, o3 = a5[1], a5 = [0];
+                    continue;
+                  case 7:
+                    a5 = r3.ops.pop(), r3.trys.pop();
+                    continue;
+                  default:
+                    if (!(n2 = r3.trys, (n2 = n2.length > 0 && n2[n2.length - 1]) || 6 !== a5[0] && 2 !== a5[0])) {
+                      r3 = 0;
+                      continue;
+                    }
+                    if (3 === a5[0] && (!n2 || a5[1] > n2[0] && a5[1] < n2[3])) {
+                      r3.label = a5[1];
+                      break;
+                    }
+                    if (6 === a5[0] && r3.label < n2[1]) {
+                      r3.label = n2[1], n2 = a5;
+                      break;
+                    }
+                    if (n2 && r3.label < n2[2]) {
+                      r3.label = n2[2], r3.ops.push(a5);
+                      break;
+                    }
+                    n2[2] && r3.ops.pop(), r3.trys.pop();
+                    continue;
+                }
+                a5 = t2.call(e3, r3);
+              } catch (e4) {
+                a5 = [6, e4], o3 = 0;
+              } finally {
+                i3 = n2 = 0;
+              }
+            if (5 & a5[0])
+              throw a5[1];
+            return { value: a5[0] ? a5[1] : void 0, done: true };
+          }([a4, s4]);
+        };
+      }
+    }, r2 = t;
+    Object.defineProperty(i2, "__esModule", { value: true });
+    var s2 = "browser-tabs-lock-key", c2 = { key: function(e3) {
+      return o2(r2, void 0, void 0, function() {
+        return a2(this, function(e4) {
+          throw new Error("Unsupported");
+        });
+      });
+    }, getItem: function(e3) {
+      return o2(r2, void 0, void 0, function() {
+        return a2(this, function(e4) {
+          throw new Error("Unsupported");
+        });
+      });
+    }, clear: function() {
+      return o2(r2, void 0, void 0, function() {
+        return a2(this, function(e3) {
+          return [2, window.localStorage.clear()];
+        });
+      });
+    }, removeItem: function(e3) {
+      return o2(r2, void 0, void 0, function() {
+        return a2(this, function(e4) {
+          throw new Error("Unsupported");
+        });
+      });
+    }, setItem: function(e3, t2) {
+      return o2(r2, void 0, void 0, function() {
+        return a2(this, function(e4) {
+          throw new Error("Unsupported");
+        });
+      });
+    }, keySync: function(e3) {
+      return window.localStorage.key(e3);
+    }, getItemSync: function(e3) {
+      return window.localStorage.getItem(e3);
+    }, clearSync: function() {
+      return window.localStorage.clear();
+    }, removeItemSync: function(e3) {
+      return window.localStorage.removeItem(e3);
+    }, setItemSync: function(e3, t2) {
+      return window.localStorage.setItem(e3, t2);
+    } };
+    function u2(e3) {
+      return new Promise(function(t2) {
+        return setTimeout(t2, e3);
+      });
+    }
+    function d2(e3) {
+      for (var t2 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz", i3 = "", o3 = 0; o3 < e3; o3++) {
+        i3 += t2[Math.floor(Math.random() * t2.length)];
+      }
+      return i3;
+    }
+    var l2 = function() {
+      function e3(t2) {
+        this.acquiredIatSet = /* @__PURE__ */ new Set(), this.storageHandler = void 0, this.id = Date.now().toString() + d2(15), this.acquireLock = this.acquireLock.bind(this), this.releaseLock = this.releaseLock.bind(this), this.releaseLock__private__ = this.releaseLock__private__.bind(this), this.waitForSomethingToChange = this.waitForSomethingToChange.bind(this), this.refreshLockWhileAcquired = this.refreshLockWhileAcquired.bind(this), this.storageHandler = t2, void 0 === e3.waiters && (e3.waiters = []);
+      }
+      return e3.prototype.acquireLock = function(t2, i3) {
+        return void 0 === i3 && (i3 = 5e3), o2(this, void 0, void 0, function() {
+          var o3, n2, r3, l3, h2, p2, m2;
+          return a2(this, function(a3) {
+            switch (a3.label) {
+              case 0:
+                o3 = Date.now() + d2(4), n2 = Date.now() + i3, r3 = s2 + "-" + t2, l3 = void 0 === this.storageHandler ? c2 : this.storageHandler, a3.label = 1;
+              case 1:
+                return Date.now() < n2 ? [4, u2(30)] : [3, 8];
+              case 2:
+                return a3.sent(), null !== l3.getItemSync(r3) ? [3, 5] : (h2 = this.id + "-" + t2 + "-" + o3, [4, u2(Math.floor(25 * Math.random()))]);
+              case 3:
+                return a3.sent(), l3.setItemSync(r3, JSON.stringify({ id: this.id, iat: o3, timeoutKey: h2, timeAcquired: Date.now(), timeRefreshed: Date.now() })), [4, u2(30)];
+              case 4:
+                return a3.sent(), null !== (p2 = l3.getItemSync(r3)) && (m2 = JSON.parse(p2)).id === this.id && m2.iat === o3 ? (this.acquiredIatSet.add(o3), this.refreshLockWhileAcquired(r3, o3), [2, true]) : [3, 7];
+              case 5:
+                return e3.lockCorrector(void 0 === this.storageHandler ? c2 : this.storageHandler), [4, this.waitForSomethingToChange(n2)];
+              case 6:
+                a3.sent(), a3.label = 7;
+              case 7:
+                return o3 = Date.now() + d2(4), [3, 1];
+              case 8:
+                return [2, false];
+            }
+          });
+        });
+      }, e3.prototype.refreshLockWhileAcquired = function(e4, t2) {
+        return o2(this, void 0, void 0, function() {
+          var i3 = this;
+          return a2(this, function(r3) {
+            return setTimeout(function() {
+              return o2(i3, void 0, void 0, function() {
+                var i4, o3, r4;
+                return a2(this, function(a3) {
+                  switch (a3.label) {
+                    case 0:
+                      return [4, n.default().lock(t2)];
+                    case 1:
+                      return a3.sent(), this.acquiredIatSet.has(t2) ? (i4 = void 0 === this.storageHandler ? c2 : this.storageHandler, null === (o3 = i4.getItemSync(e4)) ? (n.default().unlock(t2), [2]) : ((r4 = JSON.parse(o3)).timeRefreshed = Date.now(), i4.setItemSync(e4, JSON.stringify(r4)), n.default().unlock(t2), this.refreshLockWhileAcquired(e4, t2), [2])) : (n.default().unlock(t2), [2]);
+                  }
+                });
+              });
+            }, 1e3), [2];
+          });
+        });
+      }, e3.prototype.waitForSomethingToChange = function(t2) {
+        return o2(this, void 0, void 0, function() {
+          return a2(this, function(i3) {
+            switch (i3.label) {
+              case 0:
+                return [4, new Promise(function(i4) {
+                  var o3 = false, n2 = Date.now(), a3 = false;
+                  function r3() {
+                    if (a3 || (window.removeEventListener("storage", r3), e3.removeFromWaiting(r3), clearTimeout(s3), a3 = true), !o3) {
+                      o3 = true;
+                      var t3 = 50 - (Date.now() - n2);
+                      t3 > 0 ? setTimeout(i4, t3) : i4(null);
+                    }
+                  }
+                  window.addEventListener("storage", r3), e3.addToWaiting(r3);
+                  var s3 = setTimeout(r3, Math.max(0, t2 - Date.now()));
+                })];
+              case 1:
+                return i3.sent(), [2];
+            }
+          });
+        });
+      }, e3.addToWaiting = function(t2) {
+        this.removeFromWaiting(t2), void 0 !== e3.waiters && e3.waiters.push(t2);
+      }, e3.removeFromWaiting = function(t2) {
+        void 0 !== e3.waiters && (e3.waiters = e3.waiters.filter(function(e4) {
+          return e4 !== t2;
+        }));
+      }, e3.notifyWaiters = function() {
+        void 0 !== e3.waiters && e3.waiters.slice().forEach(function(e4) {
+          return e4();
+        });
+      }, e3.prototype.releaseLock = function(e4) {
+        return o2(this, void 0, void 0, function() {
+          return a2(this, function(t2) {
+            switch (t2.label) {
+              case 0:
+                return [4, this.releaseLock__private__(e4)];
+              case 1:
+                return [2, t2.sent()];
+            }
+          });
+        });
+      }, e3.prototype.releaseLock__private__ = function(t2) {
+        return o2(this, void 0, void 0, function() {
+          var i3, o3, r3, u3;
+          return a2(this, function(a3) {
+            switch (a3.label) {
+              case 0:
+                return i3 = void 0 === this.storageHandler ? c2 : this.storageHandler, o3 = s2 + "-" + t2, null === (r3 = i3.getItemSync(o3)) ? [2] : (u3 = JSON.parse(r3)).id !== this.id ? [3, 2] : [4, n.default().lock(u3.iat)];
+              case 1:
+                a3.sent(), this.acquiredIatSet.delete(u3.iat), i3.removeItemSync(o3), n.default().unlock(u3.iat), e3.notifyWaiters(), a3.label = 2;
+              case 2:
+                return [2];
+            }
+          });
+        });
+      }, e3.lockCorrector = function(t2) {
+        for (var i3 = Date.now() - 5e3, o3 = t2, n2 = [], a3 = 0; ; ) {
+          var r3 = o3.keySync(a3);
+          if (null === r3)
+            break;
+          n2.push(r3), a3++;
+        }
+        for (var c3 = false, u3 = 0; u3 < n2.length; u3++) {
+          var d3 = n2[u3];
+          if (d3.includes(s2)) {
+            var l3 = o3.getItemSync(d3);
+            if (null !== l3) {
+              var h2 = JSON.parse(l3);
+              (void 0 === h2.timeRefreshed && h2.timeAcquired < i3 || void 0 !== h2.timeRefreshed && h2.timeRefreshed < i3) && (o3.removeItemSync(d3), c3 = true);
+            }
+          }
+        }
+        c3 && e3.notifyWaiters();
+      }, e3.waiters = void 0, e3;
+    }();
+    i2.default = l2;
+  }));
+  var r = { timeoutInSeconds: 60 };
+  var s = { name: "auth0-spa-js", version: "2.2.0" };
+  var c = () => Date.now();
+  var u = class extends Error {
+    constructor(e2, t2) {
+      super(t2), this.error = e2, this.error_description = t2, Object.setPrototypeOf(this, u.prototype);
+    }
+    static fromPayload({ error: e2, error_description: t2 }) {
+      return new u(e2, t2);
+    }
+  };
+  var d = class extends u {
+    constructor(e2, t2, i2, o2 = null) {
+      super(e2, t2), this.state = i2, this.appState = o2, Object.setPrototypeOf(this, d.prototype);
+    }
+  };
+  var l = class extends u {
+    constructor() {
+      super("timeout", "Timeout"), Object.setPrototypeOf(this, l.prototype);
+    }
+  };
+  var h = class extends l {
+    constructor(e2) {
+      super(), this.popup = e2, Object.setPrototypeOf(this, h.prototype);
+    }
+  };
+  var p = class extends u {
+    constructor(e2) {
+      super("cancelled", "Popup closed"), this.popup = e2, Object.setPrototypeOf(this, p.prototype);
+    }
+  };
+  var m = class extends u {
+    constructor(e2, t2, i2) {
+      super(e2, t2), this.mfa_token = i2, Object.setPrototypeOf(this, m.prototype);
+    }
+  };
+  var f = class extends u {
+    constructor(e2, t2) {
+      super("missing_refresh_token", `Missing Refresh Token (audience: '${g(e2, ["default"])}', scope: '${g(t2)}')`), this.audience = e2, this.scope = t2, Object.setPrototypeOf(this, f.prototype);
+    }
+  };
+  function g(e2, t2 = []) {
+    return e2 && !t2.includes(e2) ? e2 : "";
+  }
+  var w = () => window.crypto;
+  var y = () => {
+    const e2 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_~.";
+    let t2 = "";
+    return Array.from(w().getRandomValues(new Uint8Array(43))).forEach((i2) => t2 += e2[i2 % e2.length]), t2;
+  };
+  var k = (e2) => btoa(e2);
+  var v = (t2) => {
+    var { clientId: i2 } = t2, o2 = e(t2, ["clientId"]);
+    return new URLSearchParams(((e2) => Object.keys(e2).filter((t3) => void 0 !== e2[t3]).reduce((t3, i3) => Object.assign(Object.assign({}, t3), { [i3]: e2[i3] }), {}))(Object.assign({ client_id: i2 }, o2))).toString();
+  };
+  var b = (e2) => ((e3) => decodeURIComponent(atob(e3).split("").map((e4) => "%" + ("00" + e4.charCodeAt(0).toString(16)).slice(-2)).join("")))(e2.replace(/_/g, "/").replace(/-/g, "+"));
+  var _ = async (e2, t2) => {
+    const i2 = await fetch(e2, t2);
+    return { ok: i2.ok, json: await i2.json() };
+  };
+  var I = async (e2, t2, i2) => {
+    const o2 = new AbortController();
+    let n2;
+    return t2.signal = o2.signal, Promise.race([_(e2, t2), new Promise((e3, t3) => {
+      n2 = setTimeout(() => {
+        o2.abort(), t3(new Error("Timeout when executing 'fetch'"));
+      }, i2);
+    })]).finally(() => {
+      clearTimeout(n2);
+    });
+  };
+  var S = async (e2, t2, i2, o2, n2, a2, r2) => {
+    return s2 = { auth: { audience: t2, scope: i2 }, timeout: n2, fetchUrl: e2, fetchOptions: o2, useFormData: r2 }, c2 = a2, new Promise(function(e3, t3) {
+      const i3 = new MessageChannel();
+      i3.port1.onmessage = function(o3) {
+        o3.data.error ? t3(new Error(o3.data.error)) : e3(o3.data), i3.port1.close();
+      }, c2.postMessage(s2, [i3.port2]);
+    });
+    var s2, c2;
+  };
+  var O = async (e2, t2, i2, o2, n2, a2, r2 = 1e4) => n2 ? S(e2, t2, i2, o2, r2, n2, a2) : I(e2, o2, r2);
+  async function T(t2, i2) {
+    var { baseUrl: o2, timeout: n2, audience: a2, scope: r2, auth0Client: c2, useFormData: d2 } = t2, l2 = e(t2, ["baseUrl", "timeout", "audience", "scope", "auth0Client", "useFormData"]);
+    const h2 = d2 ? v(l2) : JSON.stringify(l2);
+    return await async function(t3, i3, o3, n3, a3, r3, s2) {
+      let c3, d3 = null;
+      for (let e2 = 0; e2 < 3; e2++)
+        try {
+          c3 = await O(t3, o3, n3, a3, r3, s2, i3), d3 = null;
+          break;
+        } catch (e3) {
+          d3 = e3;
+        }
+      if (d3)
+        throw d3;
+      const l3 = c3.json, { error: h3, error_description: p2 } = l3, g2 = e(l3, ["error", "error_description"]), { ok: w2 } = c3;
+      if (!w2) {
+        const e2 = p2 || `HTTP error. Unable to fetch ${t3}`;
+        if ("mfa_required" === h3)
+          throw new m(h3, e2, g2.mfa_token);
+        if ("missing_refresh_token" === h3)
+          throw new f(o3, n3);
+        throw new u(h3 || "request_error", e2);
+      }
+      return g2;
+    }(`${o2}/oauth/token`, n2, a2 || "default", r2, { method: "POST", body: h2, headers: { "Content-Type": d2 ? "application/x-www-form-urlencoded" : "application/json", "Auth0-Client": btoa(JSON.stringify(c2 || s)) } }, i2, d2);
+  }
+  var j = (...e2) => {
+    return (t2 = e2.filter(Boolean).join(" ").trim().split(/\s+/), Array.from(new Set(t2))).join(" ");
+    var t2;
+  };
+  var z = class {
+    constructor(e2, t2 = "@@auth0spajs@@", i2) {
+      this.prefix = t2, this.suffix = i2, this.clientId = e2.clientId, this.scope = e2.scope, this.audience = e2.audience;
+    }
+    toKey() {
+      return [this.prefix, this.clientId, this.audience, this.scope, this.suffix].filter(Boolean).join("::");
+    }
+    static fromKey(e2) {
+      const [t2, i2, o2, n2] = e2.split("::");
+      return new z({ clientId: i2, scope: n2, audience: o2 }, t2);
+    }
+    static fromCacheEntry(e2) {
+      const { scope: t2, audience: i2, client_id: o2 } = e2;
+      return new z({ scope: t2, audience: i2, clientId: o2 });
+    }
+  };
+  var C = class {
+    set(e2, t2) {
+      localStorage.setItem(e2, JSON.stringify(t2));
+    }
+    get(e2) {
+      const t2 = window.localStorage.getItem(e2);
+      if (t2)
+        try {
+          return JSON.parse(t2);
+        } catch (e3) {
+          return;
+        }
+    }
+    remove(e2) {
+      localStorage.removeItem(e2);
+    }
+    allKeys() {
+      return Object.keys(window.localStorage).filter((e2) => e2.startsWith("@@auth0spajs@@"));
+    }
+  };
+  var P = class {
+    constructor() {
+      this.enclosedCache = function() {
+        let e2 = {};
+        return { set(t2, i2) {
+          e2[t2] = i2;
+        }, get(t2) {
+          const i2 = e2[t2];
+          if (i2)
+            return i2;
+        }, remove(t2) {
+          delete e2[t2];
+        }, allKeys: () => Object.keys(e2) };
+      }();
+    }
+  };
+  var x = class {
+    constructor(e2, t2, i2) {
+      this.cache = e2, this.keyManifest = t2, this.nowProvider = i2 || c;
+    }
+    async setIdToken(e2, t2, i2) {
+      var o2;
+      const n2 = this.getIdTokenCacheKey(e2);
+      await this.cache.set(n2, { id_token: t2, decodedToken: i2 }), await (null === (o2 = this.keyManifest) || void 0 === o2 ? void 0 : o2.add(n2));
+    }
+    async getIdToken(e2) {
+      const t2 = await this.cache.get(this.getIdTokenCacheKey(e2.clientId));
+      if (!t2 && e2.scope && e2.audience) {
+        const t3 = await this.get(e2);
+        if (!t3)
+          return;
+        if (!t3.id_token || !t3.decodedToken)
+          return;
+        return { id_token: t3.id_token, decodedToken: t3.decodedToken };
+      }
+      if (t2)
+        return { id_token: t2.id_token, decodedToken: t2.decodedToken };
+    }
+    async get(e2, t2 = 0) {
+      var i2;
+      let o2 = await this.cache.get(e2.toKey());
+      if (!o2) {
+        const t3 = await this.getCacheKeys();
+        if (!t3)
+          return;
+        const i3 = this.matchExistingCacheKey(e2, t3);
+        i3 && (o2 = await this.cache.get(i3));
+      }
+      if (!o2)
+        return;
+      const n2 = await this.nowProvider(), a2 = Math.floor(n2 / 1e3);
+      return o2.expiresAt - t2 < a2 ? o2.body.refresh_token ? (o2.body = { refresh_token: o2.body.refresh_token }, await this.cache.set(e2.toKey(), o2), o2.body) : (await this.cache.remove(e2.toKey()), void await (null === (i2 = this.keyManifest) || void 0 === i2 ? void 0 : i2.remove(e2.toKey()))) : o2.body;
+    }
+    async set(e2) {
+      var t2;
+      const i2 = new z({ clientId: e2.client_id, scope: e2.scope, audience: e2.audience }), o2 = await this.wrapCacheEntry(e2);
+      await this.cache.set(i2.toKey(), o2), await (null === (t2 = this.keyManifest) || void 0 === t2 ? void 0 : t2.add(i2.toKey()));
+    }
+    async clear(e2) {
+      var t2;
+      const i2 = await this.getCacheKeys();
+      i2 && (await i2.filter((t3) => !e2 || t3.includes(e2)).reduce(async (e3, t3) => {
+        await e3, await this.cache.remove(t3);
+      }, Promise.resolve()), await (null === (t2 = this.keyManifest) || void 0 === t2 ? void 0 : t2.clear()));
+    }
+    async wrapCacheEntry(e2) {
+      const t2 = await this.nowProvider();
+      return { body: e2, expiresAt: Math.floor(t2 / 1e3) + e2.expires_in };
+    }
+    async getCacheKeys() {
+      var e2;
+      return this.keyManifest ? null === (e2 = await this.keyManifest.get()) || void 0 === e2 ? void 0 : e2.keys : this.cache.allKeys ? this.cache.allKeys() : void 0;
+    }
+    getIdTokenCacheKey(e2) {
+      return new z({ clientId: e2 }, "@@auth0spajs@@", "@@user@@").toKey();
+    }
+    matchExistingCacheKey(e2, t2) {
+      return t2.filter((t3) => {
+        var i2;
+        const o2 = z.fromKey(t3), n2 = new Set(o2.scope && o2.scope.split(" ")), a2 = (null === (i2 = e2.scope) || void 0 === i2 ? void 0 : i2.split(" ")) || [], r2 = o2.scope && a2.reduce((e3, t4) => e3 && n2.has(t4), true);
+        return "@@auth0spajs@@" === o2.prefix && o2.clientId === e2.clientId && o2.audience === e2.audience && r2;
+      })[0];
+    }
+  };
+  var Z = class {
+    constructor(e2, t2, i2) {
+      this.storage = e2, this.clientId = t2, this.cookieDomain = i2, this.storageKey = `a0.spajs.txs.${this.clientId}`;
+    }
+    create(e2) {
+      this.storage.save(this.storageKey, e2, { daysUntilExpire: 1, cookieDomain: this.cookieDomain });
+    }
+    get() {
+      return this.storage.get(this.storageKey);
+    }
+    remove() {
+      this.storage.remove(this.storageKey, { cookieDomain: this.cookieDomain });
+    }
+  };
+  var K = (e2) => "number" == typeof e2;
+  var W = ["iss", "aud", "exp", "nbf", "iat", "jti", "azp", "nonce", "auth_time", "at_hash", "c_hash", "acr", "amr", "sub_jwk", "cnf", "sip_from_tag", "sip_date", "sip_callid", "sip_cseq_num", "sip_via_branch", "orig", "dest", "mky", "events", "toe", "txn", "rph", "sid", "vot", "vtm"];
+  var E = (e2) => {
+    if (!e2.id_token)
+      throw new Error("ID token is required but missing");
+    const t2 = ((e3) => {
+      const t3 = e3.split("."), [i3, o3, n3] = t3;
+      if (3 !== t3.length || !i3 || !o3 || !n3)
+        throw new Error("ID token could not be decoded");
+      const a2 = JSON.parse(b(o3)), r2 = { __raw: e3 }, s2 = {};
+      return Object.keys(a2).forEach((e4) => {
+        r2[e4] = a2[e4], W.includes(e4) || (s2[e4] = a2[e4]);
+      }), { encoded: { header: i3, payload: o3, signature: n3 }, header: JSON.parse(b(i3)), claims: r2, user: s2 };
+    })(e2.id_token);
+    if (!t2.claims.iss)
+      throw new Error("Issuer (iss) claim must be a string present in the ID token");
+    if (t2.claims.iss !== e2.iss)
+      throw new Error(`Issuer (iss) claim mismatch in the ID token; expected "${e2.iss}", found "${t2.claims.iss}"`);
+    if (!t2.user.sub)
+      throw new Error("Subject (sub) claim must be a string present in the ID token");
+    if ("RS256" !== t2.header.alg)
+      throw new Error(`Signature algorithm of "${t2.header.alg}" is not supported. Expected the ID token to be signed with "RS256".`);
+    if (!t2.claims.aud || "string" != typeof t2.claims.aud && !Array.isArray(t2.claims.aud))
+      throw new Error("Audience (aud) claim must be a string or array of strings present in the ID token");
+    if (Array.isArray(t2.claims.aud)) {
+      if (!t2.claims.aud.includes(e2.aud))
+        throw new Error(`Audience (aud) claim mismatch in the ID token; expected "${e2.aud}" but was not one of "${t2.claims.aud.join(", ")}"`);
+      if (t2.claims.aud.length > 1) {
+        if (!t2.claims.azp)
+          throw new Error("Authorized Party (azp) claim must be a string present in the ID token when Audience (aud) claim has multiple values");
+        if (t2.claims.azp !== e2.aud)
+          throw new Error(`Authorized Party (azp) claim mismatch in the ID token; expected "${e2.aud}", found "${t2.claims.azp}"`);
+      }
+    } else if (t2.claims.aud !== e2.aud)
+      throw new Error(`Audience (aud) claim mismatch in the ID token; expected "${e2.aud}" but found "${t2.claims.aud}"`);
+    if (e2.nonce) {
+      if (!t2.claims.nonce)
+        throw new Error("Nonce (nonce) claim must be a string present in the ID token");
+      if (t2.claims.nonce !== e2.nonce)
+        throw new Error(`Nonce (nonce) claim mismatch in the ID token; expected "${e2.nonce}", found "${t2.claims.nonce}"`);
+    }
+    if (e2.max_age && !K(t2.claims.auth_time))
+      throw new Error("Authentication Time (auth_time) claim must be a number present in the ID token when Max Age (max_age) is specified");
+    if (null == t2.claims.exp || !K(t2.claims.exp))
+      throw new Error("Expiration Time (exp) claim must be a number present in the ID token");
+    if (!K(t2.claims.iat))
+      throw new Error("Issued At (iat) claim must be a number present in the ID token");
+    const i2 = e2.leeway || 60, o2 = new Date(e2.now || Date.now()), n2 = /* @__PURE__ */ new Date(0);
+    if (n2.setUTCSeconds(t2.claims.exp + i2), o2 > n2)
+      throw new Error(`Expiration Time (exp) claim error in the ID token; current time (${o2}) is after expiration time (${n2})`);
+    if (null != t2.claims.nbf && K(t2.claims.nbf)) {
+      const e3 = /* @__PURE__ */ new Date(0);
+      if (e3.setUTCSeconds(t2.claims.nbf - i2), o2 < e3)
+        throw new Error(`Not Before time (nbf) claim in the ID token indicates that this token can't be used just yet. Current time (${o2}) is before ${e3}`);
+    }
+    if (null != t2.claims.auth_time && K(t2.claims.auth_time)) {
+      const n3 = /* @__PURE__ */ new Date(0);
+      if (n3.setUTCSeconds(parseInt(t2.claims.auth_time) + e2.max_age + i2), o2 > n3)
+        throw new Error(`Authentication Time (auth_time) claim in the ID token indicates that too much time has passed since the last end-user authentication. Current time (${o2}) is after last auth at ${n3}`);
+    }
+    if (e2.organization) {
+      const i3 = e2.organization.trim();
+      if (i3.startsWith("org_")) {
+        const e3 = i3;
+        if (!t2.claims.org_id)
+          throw new Error("Organization ID (org_id) claim must be a string present in the ID token");
+        if (e3 !== t2.claims.org_id)
+          throw new Error(`Organization ID (org_id) claim mismatch in the ID token; expected "${e3}", found "${t2.claims.org_id}"`);
+      } else {
+        const e3 = i3.toLowerCase();
+        if (!t2.claims.org_name)
+          throw new Error("Organization Name (org_name) claim must be a string present in the ID token");
+        if (e3 !== t2.claims.org_name)
+          throw new Error(`Organization Name (org_name) claim mismatch in the ID token; expected "${e3}", found "${t2.claims.org_name}"`);
+      }
+    }
+    return t2;
+  };
+  var R = o(function(e2, i2) {
+    var o2 = t && t.__assign || function() {
+      return o2 = Object.assign || function(e3) {
+        for (var t2, i3 = 1, o3 = arguments.length; i3 < o3; i3++)
+          for (var n3 in t2 = arguments[i3])
+            Object.prototype.hasOwnProperty.call(t2, n3) && (e3[n3] = t2[n3]);
+        return e3;
+      }, o2.apply(this, arguments);
+    };
+    function n2(e3, t2) {
+      if (!t2)
+        return "";
+      var i3 = "; " + e3;
+      return true === t2 ? i3 : i3 + "=" + t2;
+    }
+    function a2(e3, t2, i3) {
+      return encodeURIComponent(e3).replace(/%(23|24|26|2B|5E|60|7C)/g, decodeURIComponent).replace(/\(/g, "%28").replace(/\)/g, "%29") + "=" + encodeURIComponent(t2).replace(/%(23|24|26|2B|3A|3C|3E|3D|2F|3F|40|5B|5D|5E|60|7B|7D|7C)/g, decodeURIComponent) + function(e4) {
+        if ("number" == typeof e4.expires) {
+          var t3 = /* @__PURE__ */ new Date();
+          t3.setMilliseconds(t3.getMilliseconds() + 864e5 * e4.expires), e4.expires = t3;
+        }
+        return n2("Expires", e4.expires ? e4.expires.toUTCString() : "") + n2("Domain", e4.domain) + n2("Path", e4.path) + n2("Secure", e4.secure) + n2("SameSite", e4.sameSite);
+      }(i3);
+    }
+    function r2(e3) {
+      for (var t2 = {}, i3 = e3 ? e3.split("; ") : [], o3 = /(%[\dA-F]{2})+/gi, n3 = 0; n3 < i3.length; n3++) {
+        var a3 = i3[n3].split("="), r3 = a3.slice(1).join("=");
+        '"' === r3.charAt(0) && (r3 = r3.slice(1, -1));
+        try {
+          t2[a3[0].replace(o3, decodeURIComponent)] = r3.replace(o3, decodeURIComponent);
+        } catch (e4) {
+        }
+      }
+      return t2;
+    }
+    function s2() {
+      return r2(document.cookie);
+    }
+    function c2(e3, t2, i3) {
+      document.cookie = a2(e3, t2, o2({ path: "/" }, i3));
+    }
+    i2.__esModule = true, i2.encode = a2, i2.parse = r2, i2.getAll = s2, i2.get = function(e3) {
+      return s2()[e3];
+    }, i2.set = c2, i2.remove = function(e3, t2) {
+      c2(e3, "", o2(o2({}, t2), { expires: -1 }));
+    };
+  });
+  i(R), R.encode, R.parse, R.getAll;
+  var U = R.get;
+  var L = R.set;
+  var D = R.remove;
+  var X = { get(e2) {
+    const t2 = U(e2);
+    if (void 0 !== t2)
+      return JSON.parse(t2);
+  }, save(e2, t2, i2) {
+    let o2 = {};
+    "https:" === window.location.protocol && (o2 = { secure: true, sameSite: "none" }), (null == i2 ? void 0 : i2.daysUntilExpire) && (o2.expires = i2.daysUntilExpire), (null == i2 ? void 0 : i2.cookieDomain) && (o2.domain = i2.cookieDomain), L(e2, JSON.stringify(t2), o2);
+  }, remove(e2, t2) {
+    let i2 = {};
+    (null == t2 ? void 0 : t2.cookieDomain) && (i2.domain = t2.cookieDomain), D(e2, i2);
+  } };
+  var N = { get(e2) {
+    const t2 = X.get(e2);
+    return t2 || X.get(`_legacy_${e2}`);
+  }, save(e2, t2, i2) {
+    let o2 = {};
+    "https:" === window.location.protocol && (o2 = { secure: true }), (null == i2 ? void 0 : i2.daysUntilExpire) && (o2.expires = i2.daysUntilExpire), (null == i2 ? void 0 : i2.cookieDomain) && (o2.domain = i2.cookieDomain), L(`_legacy_${e2}`, JSON.stringify(t2), o2), X.save(e2, t2, i2);
+  }, remove(e2, t2) {
+    let i2 = {};
+    (null == t2 ? void 0 : t2.cookieDomain) && (i2.domain = t2.cookieDomain), D(e2, i2), X.remove(e2, t2), X.remove(`_legacy_${e2}`, t2);
+  } };
+  var J = { get(e2) {
+    if ("undefined" == typeof sessionStorage)
+      return;
+    const t2 = sessionStorage.getItem(e2);
+    return null != t2 ? JSON.parse(t2) : void 0;
+  }, save(e2, t2) {
+    sessionStorage.setItem(e2, JSON.stringify(t2));
+  }, remove(e2) {
+    sessionStorage.removeItem(e2);
+  } };
+  function F(e2, t2, i2) {
+    var o2 = void 0 === t2 ? null : t2, n2 = function(e3, t3) {
+      var i3 = atob(e3);
+      if (t3) {
+        for (var o3 = new Uint8Array(i3.length), n3 = 0, a3 = i3.length; n3 < a3; ++n3)
+          o3[n3] = i3.charCodeAt(n3);
+        return String.fromCharCode.apply(null, new Uint16Array(o3.buffer));
+      }
+      return i3;
+    }(e2, void 0 !== i2 && i2), a2 = n2.indexOf("\n", 10) + 1, r2 = n2.substring(a2) + (o2 ? "//# sourceMappingURL=" + o2 : ""), s2 = new Blob([r2], { type: "application/javascript" });
+    return URL.createObjectURL(s2);
+  }
+  var H;
+  var Y;
+  var G;
+  var V;
+  var M = (H = "Lyogcm9sbHVwLXBsdWdpbi13ZWItd29ya2VyLWxvYWRlciAqLwohZnVuY3Rpb24oKXsidXNlIHN0cmljdCI7Y2xhc3MgZSBleHRlbmRzIEVycm9ye2NvbnN0cnVjdG9yKHQscil7c3VwZXIociksdGhpcy5lcnJvcj10LHRoaXMuZXJyb3JfZGVzY3JpcHRpb249cixPYmplY3Quc2V0UHJvdG90eXBlT2YodGhpcyxlLnByb3RvdHlwZSl9c3RhdGljIGZyb21QYXlsb2FkKHtlcnJvcjp0LGVycm9yX2Rlc2NyaXB0aW9uOnJ9KXtyZXR1cm4gbmV3IGUodCxyKX19Y2xhc3MgdCBleHRlbmRzIGV7Y29uc3RydWN0b3IoZSxzKXtzdXBlcigibWlzc2luZ19yZWZyZXNoX3Rva2VuIixgTWlzc2luZyBSZWZyZXNoIFRva2VuIChhdWRpZW5jZTogJyR7cihlLFsiZGVmYXVsdCJdKX0nLCBzY29wZTogJyR7cihzKX0nKWApLHRoaXMuYXVkaWVuY2U9ZSx0aGlzLnNjb3BlPXMsT2JqZWN0LnNldFByb3RvdHlwZU9mKHRoaXMsdC5wcm90b3R5cGUpfX1mdW5jdGlvbiByKGUsdD1bXSl7cmV0dXJuIGUmJiF0LmluY2x1ZGVzKGUpP2U6IiJ9ImZ1bmN0aW9uIj09dHlwZW9mIFN1cHByZXNzZWRFcnJvciYmU3VwcHJlc3NlZEVycm9yO2NvbnN0IHM9ZT0+e3ZhcntjbGllbnRJZDp0fT1lLHI9ZnVuY3Rpb24oZSx0KXt2YXIgcj17fTtmb3IodmFyIHMgaW4gZSlPYmplY3QucHJvdG90eXBlLmhhc093blByb3BlcnR5LmNhbGwoZSxzKSYmdC5pbmRleE9mKHMpPDAmJihyW3NdPWVbc10pO2lmKG51bGwhPWUmJiJmdW5jdGlvbiI9PXR5cGVvZiBPYmplY3QuZ2V0T3duUHJvcGVydHlTeW1ib2xzKXt2YXIgbz0wO2ZvcihzPU9iamVjdC5nZXRPd25Qcm9wZXJ0eVN5bWJvbHMoZSk7bzxzLmxlbmd0aDtvKyspdC5pbmRleE9mKHNbb10pPDAmJk9iamVjdC5wcm90b3R5cGUucHJvcGVydHlJc0VudW1lcmFibGUuY2FsbChlLHNbb10pJiYocltzW29dXT1lW3Nbb11dKX1yZXR1cm4gcn0oZSxbImNsaWVudElkIl0pO3JldHVybiBuZXcgVVJMU2VhcmNoUGFyYW1zKChlPT5PYmplY3Qua2V5cyhlKS5maWx0ZXIoKHQ9PnZvaWQgMCE9PWVbdF0pKS5yZWR1Y2UoKCh0LHIpPT5PYmplY3QuYXNzaWduKE9iamVjdC5hc3NpZ24oe30sdCkse1tyXTplW3JdfSkpLHt9KSkoT2JqZWN0LmFzc2lnbih7Y2xpZW50X2lkOnR9LHIpKSkudG9TdHJpbmcoKX07bGV0IG89e307Y29uc3Qgbj0oZSx0KT0+YCR7ZX18JHt0fWA7YWRkRXZlbnRMaXN0ZW5lcigibWVzc2FnZSIsKGFzeW5jKHtkYXRhOnt0aW1lb3V0OmUsYXV0aDpyLGZldGNoVXJsOmksZmV0Y2hPcHRpb25zOmMsdXNlRm9ybURhdGE6YX0scG9ydHM6W3BdfSk9PntsZXQgZjtjb25zdHthdWRpZW5jZTp1LHNjb3BlOmx9PXJ8fHt9O3RyeXtjb25zdCByPWE/KGU9Pntjb25zdCB0PW5ldyBVUkxTZWFyY2hQYXJhbXMoZSkscj17fTtyZXR1cm4gdC5mb3JFYWNoKCgoZSx0KT0+e3JbdF09ZX0pKSxyfSkoYy5ib2R5KTpKU09OLnBhcnNlKGMuYm9keSk7aWYoIXIucmVmcmVzaF90b2tlbiYmInJlZnJlc2hfdG9rZW4iPT09ci5ncmFudF90eXBlKXtjb25zdCBlPSgoZSx0KT0+b1tuKGUsdCldKSh1LGwpO2lmKCFlKXRocm93IG5ldyB0KHUsbCk7Yy5ib2R5PWE/cyhPYmplY3QuYXNzaWduKE9iamVjdC5hc3NpZ24oe30scikse3JlZnJlc2hfdG9rZW46ZX0pKTpKU09OLnN0cmluZ2lmeShPYmplY3QuYXNzaWduKE9iamVjdC5hc3NpZ24oe30scikse3JlZnJlc2hfdG9rZW46ZX0pKX1sZXQgaCxnOyJmdW5jdGlvbiI9PXR5cGVvZiBBYm9ydENvbnRyb2xsZXImJihoPW5ldyBBYm9ydENvbnRyb2xsZXIsYy5zaWduYWw9aC5zaWduYWwpO3RyeXtnPWF3YWl0IFByb21pc2UucmFjZShbKGQ9ZSxuZXcgUHJvbWlzZSgoZT0+c2V0VGltZW91dChlLGQpKSkpLGZldGNoKGksT2JqZWN0LmFzc2lnbih7fSxjKSldKX1jYXRjaChlKXtyZXR1cm4gdm9pZCBwLnBvc3RNZXNzYWdlKHtlcnJvcjplLm1lc3NhZ2V9KX1pZighZylyZXR1cm4gaCYmaC5hYm9ydCgpLHZvaWQgcC5wb3N0TWVzc2FnZSh7ZXJyb3I6IlRpbWVvdXQgd2hlbiBleGVjdXRpbmcgJ2ZldGNoJyJ9KTtmPWF3YWl0IGcuanNvbigpLGYucmVmcmVzaF90b2tlbj8oKChlLHQscik9PntvW24odCxyKV09ZX0pKGYucmVmcmVzaF90b2tlbix1LGwpLGRlbGV0ZSBmLnJlZnJlc2hfdG9rZW4pOigoZSx0KT0+e2RlbGV0ZSBvW24oZSx0KV19KSh1LGwpLHAucG9zdE1lc3NhZ2Uoe29rOmcub2ssanNvbjpmfSl9Y2F0Y2goZSl7cC5wb3N0TWVzc2FnZSh7b2s6ITEsanNvbjp7ZXJyb3I6ZS5lcnJvcixlcnJvcl9kZXNjcmlwdGlvbjplLm1lc3NhZ2V9fSl9dmFyIGR9KSl9KCk7Cgo=", Y = null, G = false, function(e2) {
+    return V = V || F(H, Y, G), new Worker(V, e2);
+  });
+  var A = {};
+  var B = class {
+    constructor(e2, t2) {
+      this.cache = e2, this.clientId = t2, this.manifestKey = this.createManifestKeyFrom(this.clientId);
+    }
+    async add(e2) {
+      var t2;
+      const i2 = new Set((null === (t2 = await this.cache.get(this.manifestKey)) || void 0 === t2 ? void 0 : t2.keys) || []);
+      i2.add(e2), await this.cache.set(this.manifestKey, { keys: [...i2] });
+    }
+    async remove(e2) {
+      const t2 = await this.cache.get(this.manifestKey);
+      if (t2) {
+        const i2 = new Set(t2.keys);
+        return i2.delete(e2), i2.size > 0 ? await this.cache.set(this.manifestKey, { keys: [...i2] }) : await this.cache.remove(this.manifestKey);
+      }
+    }
+    get() {
+      return this.cache.get(this.manifestKey);
+    }
+    clear() {
+      return this.cache.remove(this.manifestKey);
+    }
+    createManifestKeyFrom(e2) {
+      return `@@auth0spajs@@::${e2}`;
+    }
+  };
+  var $ = { memory: () => new P().enclosedCache, localstorage: () => new C() };
+  var q = (e2) => $[e2];
+  var Q = (t2) => {
+    const { openUrl: i2, onRedirect: o2 } = t2, n2 = e(t2, ["openUrl", "onRedirect"]);
+    return Object.assign(Object.assign({}, n2), { openUrl: false === i2 || i2 ? i2 : o2 });
+  };
+  var ee = new a();
+  var te = class {
+    constructor(e2) {
+      let t2, i2;
+      if (this.userCache = new P().enclosedCache, this.defaultOptions = { authorizationParams: { scope: "openid profile email" }, useRefreshTokensFallback: false, useFormData: true }, this._releaseLockOnPageHide = async () => {
+        await ee.releaseLock("auth0.lock.getTokenSilently"), window.removeEventListener("pagehide", this._releaseLockOnPageHide);
+      }, this.options = Object.assign(Object.assign(Object.assign({}, this.defaultOptions), e2), { authorizationParams: Object.assign(Object.assign({}, this.defaultOptions.authorizationParams), e2.authorizationParams) }), "undefined" != typeof window && (() => {
+        if (!w())
+          throw new Error("For security reasons, `window.crypto` is required to run `auth0-spa-js`.");
+        if (void 0 === w().subtle)
+          throw new Error("\n      auth0-spa-js must run on a secure origin. See https://github.com/auth0/auth0-spa-js/blob/main/FAQ.md#why-do-i-get-auth0-spa-js-must-run-on-a-secure-origin for more information.\n    ");
+      })(), e2.cache && e2.cacheLocation && console.warn("Both `cache` and `cacheLocation` options have been specified in the Auth0Client configuration; ignoring `cacheLocation` and using `cache`."), e2.cache)
+        i2 = e2.cache;
+      else {
+        if (t2 = e2.cacheLocation || "memory", !q(t2))
+          throw new Error(`Invalid cache location "${t2}"`);
+        i2 = q(t2)();
+      }
+      this.httpTimeoutMs = e2.httpTimeoutInSeconds ? 1e3 * e2.httpTimeoutInSeconds : 1e4, this.cookieStorage = false === e2.legacySameSiteCookie ? X : N, this.orgHintCookieName = `auth0.${this.options.clientId}.organization_hint`, this.isAuthenticatedCookieName = ((e3) => `auth0.${e3}.is.authenticated`)(this.options.clientId), this.sessionCheckExpiryDays = e2.sessionCheckExpiryDays || 1;
+      const o2 = e2.useCookiesForTransactions ? this.cookieStorage : J;
+      var n2;
+      this.scope = j("openid", this.options.authorizationParams.scope, this.options.useRefreshTokens ? "offline_access" : ""), this.transactionManager = new Z(o2, this.options.clientId, this.options.cookieDomain), this.nowProvider = this.options.nowProvider || c, this.cacheManager = new x(i2, i2.allKeys ? void 0 : new B(i2, this.options.clientId), this.nowProvider), this.domainUrl = (n2 = this.options.domain, /^https?:\/\//.test(n2) ? n2 : `https://${n2}`), this.tokenIssuer = ((e3, t3) => e3 ? e3.startsWith("https://") ? e3 : `https://${e3}/` : `${t3}/`)(this.options.issuer, this.domainUrl), "undefined" != typeof window && window.Worker && this.options.useRefreshTokens && "memory" === t2 && (this.options.workerUrl ? this.worker = new Worker(this.options.workerUrl) : this.worker = new M());
+    }
+    _url(e2) {
+      const t2 = encodeURIComponent(btoa(JSON.stringify(this.options.auth0Client || s)));
+      return `${this.domainUrl}${e2}&auth0Client=${t2}`;
+    }
+    _authorizeUrl(e2) {
+      return this._url(`/authorize?${v(e2)}`);
+    }
+    async _verifyIdToken(e2, t2, i2) {
+      const o2 = await this.nowProvider();
+      return E({ iss: this.tokenIssuer, aud: this.options.clientId, id_token: e2, nonce: t2, organization: i2, leeway: this.options.leeway, max_age: (n2 = this.options.authorizationParams.max_age, "string" != typeof n2 ? n2 : parseInt(n2, 10) || void 0), now: o2 });
+      var n2;
+    }
+    _processOrgHint(e2) {
+      e2 ? this.cookieStorage.save(this.orgHintCookieName, e2, { daysUntilExpire: this.sessionCheckExpiryDays, cookieDomain: this.options.cookieDomain }) : this.cookieStorage.remove(this.orgHintCookieName, { cookieDomain: this.options.cookieDomain });
+    }
+    async _prepareAuthorizeUrl(e2, t2, i2) {
+      const o2 = k(y()), n2 = k(y()), a2 = y(), r2 = ((e3) => {
+        const t3 = new Uint8Array(e3);
+        return ((e4) => {
+          const t4 = { "+": "-", "/": "_", "=": "" };
+          return e4.replace(/[+/=]/g, (e5) => t4[e5]);
+        })(window.btoa(String.fromCharCode(...Array.from(t3))));
+      })(await (async (e3) => {
+        const t3 = w().subtle.digest({ name: "SHA-256" }, new TextEncoder().encode(e3));
+        return await t3;
+      })(a2)), s2 = ((e3, t3, i3, o3, n3, a3, r3, s3) => Object.assign(Object.assign(Object.assign({ client_id: e3.clientId }, e3.authorizationParams), i3), { scope: j(t3, i3.scope), response_type: "code", response_mode: s3 || "query", state: o3, nonce: n3, redirect_uri: r3 || e3.authorizationParams.redirect_uri, code_challenge: a3, code_challenge_method: "S256" }))(this.options, this.scope, e2, o2, n2, r2, e2.redirect_uri || this.options.authorizationParams.redirect_uri || i2, null == t2 ? void 0 : t2.response_mode), c2 = this._authorizeUrl(s2);
+      return { nonce: n2, code_verifier: a2, scope: s2.scope, audience: s2.audience || "default", redirect_uri: s2.redirect_uri, state: o2, url: c2 };
+    }
+    async loginWithPopup(e2, t2) {
+      var i2;
+      if (e2 = e2 || {}, !(t2 = t2 || {}).popup && (t2.popup = ((e3) => {
+        const t3 = window.screenX + (window.innerWidth - 400) / 2, i3 = window.screenY + (window.innerHeight - 600) / 2;
+        return window.open(e3, "auth0:authorize:popup", `left=${t3},top=${i3},width=400,height=600,resizable,scrollbars=yes,status=1`);
+      })(""), !t2.popup))
+        throw new Error("Unable to open a popup for loginWithPopup - window.open returned `null`");
+      const o2 = await this._prepareAuthorizeUrl(e2.authorizationParams || {}, { response_mode: "web_message" }, window.location.origin);
+      t2.popup.location.href = o2.url;
+      const n2 = await ((e3) => new Promise((t3, i3) => {
+        let o3;
+        const n3 = setInterval(() => {
+          e3.popup && e3.popup.closed && (clearInterval(n3), clearTimeout(a3), window.removeEventListener("message", o3, false), i3(new p(e3.popup)));
+        }, 1e3), a3 = setTimeout(() => {
+          clearInterval(n3), i3(new h(e3.popup)), window.removeEventListener("message", o3, false);
+        }, 1e3 * (e3.timeoutInSeconds || 60));
+        o3 = function(r2) {
+          if (r2.data && "authorization_response" === r2.data.type) {
+            if (clearTimeout(a3), clearInterval(n3), window.removeEventListener("message", o3, false), e3.popup.close(), r2.data.response.error)
+              return i3(u.fromPayload(r2.data.response));
+            t3(r2.data.response);
+          }
+        }, window.addEventListener("message", o3);
+      }))(Object.assign(Object.assign({}, t2), { timeoutInSeconds: t2.timeoutInSeconds || this.options.authorizeTimeoutInSeconds || 60 }));
+      if (o2.state !== n2.state)
+        throw new u("state_mismatch", "Invalid state");
+      const a2 = (null === (i2 = e2.authorizationParams) || void 0 === i2 ? void 0 : i2.organization) || this.options.authorizationParams.organization;
+      await this._requestToken({ audience: o2.audience, scope: o2.scope, code_verifier: o2.code_verifier, grant_type: "authorization_code", code: n2.code, redirect_uri: o2.redirect_uri }, { nonceIn: o2.nonce, organization: a2 });
+    }
+    async getUser() {
+      var e2;
+      const t2 = await this._getIdTokenFromCache();
+      return null === (e2 = null == t2 ? void 0 : t2.decodedToken) || void 0 === e2 ? void 0 : e2.user;
+    }
+    async getIdTokenClaims() {
+      var e2;
+      const t2 = await this._getIdTokenFromCache();
+      return null === (e2 = null == t2 ? void 0 : t2.decodedToken) || void 0 === e2 ? void 0 : e2.claims;
+    }
+    async loginWithRedirect(t2 = {}) {
+      var i2;
+      const o2 = Q(t2), { openUrl: n2, fragment: a2, appState: r2 } = o2, s2 = e(o2, ["openUrl", "fragment", "appState"]), c2 = (null === (i2 = s2.authorizationParams) || void 0 === i2 ? void 0 : i2.organization) || this.options.authorizationParams.organization, u2 = await this._prepareAuthorizeUrl(s2.authorizationParams || {}), { url: d2 } = u2, l2 = e(u2, ["url"]);
+      this.transactionManager.create(Object.assign(Object.assign(Object.assign({}, l2), { appState: r2 }), c2 && { organization: c2 }));
+      const h2 = a2 ? `${d2}#${a2}` : d2;
+      n2 ? await n2(h2) : window.location.assign(h2);
+    }
+    async handleRedirectCallback(e2 = window.location.href) {
+      const t2 = e2.split("?").slice(1);
+      if (0 === t2.length)
+        throw new Error("There are no query params available for parsing.");
+      const { state: i2, code: o2, error: n2, error_description: a2 } = ((e3) => {
+        e3.indexOf("#") > -1 && (e3 = e3.substring(0, e3.indexOf("#")));
+        const t3 = new URLSearchParams(e3);
+        return { state: t3.get("state"), code: t3.get("code") || void 0, error: t3.get("error") || void 0, error_description: t3.get("error_description") || void 0 };
+      })(t2.join("")), r2 = this.transactionManager.get();
+      if (!r2)
+        throw new u("missing_transaction", "Invalid state");
+      if (this.transactionManager.remove(), n2)
+        throw new d(n2, a2 || n2, i2, r2.appState);
+      if (!r2.code_verifier || r2.state && r2.state !== i2)
+        throw new u("state_mismatch", "Invalid state");
+      const s2 = r2.organization, c2 = r2.nonce, l2 = r2.redirect_uri;
+      return await this._requestToken(Object.assign({ audience: r2.audience, scope: r2.scope, code_verifier: r2.code_verifier, grant_type: "authorization_code", code: o2 }, l2 ? { redirect_uri: l2 } : {}), { nonceIn: c2, organization: s2 }), { appState: r2.appState };
+    }
+    async checkSession(e2) {
+      if (!this.cookieStorage.get(this.isAuthenticatedCookieName)) {
+        if (!this.cookieStorage.get("auth0.is.authenticated"))
+          return;
+        this.cookieStorage.save(this.isAuthenticatedCookieName, true, { daysUntilExpire: this.sessionCheckExpiryDays, cookieDomain: this.options.cookieDomain }), this.cookieStorage.remove("auth0.is.authenticated");
+      }
+      try {
+        await this.getTokenSilently(e2);
+      } catch (e3) {
+      }
+    }
+    async getTokenSilently(e2 = {}) {
+      var t2;
+      const i2 = Object.assign(Object.assign({ cacheMode: "on" }, e2), { authorizationParams: Object.assign(Object.assign(Object.assign({}, this.options.authorizationParams), e2.authorizationParams), { scope: j(this.scope, null === (t2 = e2.authorizationParams) || void 0 === t2 ? void 0 : t2.scope) }) }), o2 = await ((e3, t3) => {
+        let i3 = A[t3];
+        return i3 || (i3 = e3().finally(() => {
+          delete A[t3], i3 = null;
+        }), A[t3] = i3), i3;
+      })(() => this._getTokenSilently(i2), `${this.options.clientId}::${i2.authorizationParams.audience}::${i2.authorizationParams.scope}`);
+      return e2.detailedResponse ? o2 : null == o2 ? void 0 : o2.access_token;
+    }
+    async _getTokenSilently(t2) {
+      const { cacheMode: i2 } = t2, o2 = e(t2, ["cacheMode"]);
+      if ("off" !== i2) {
+        const e2 = await this._getEntryFromCache({ scope: o2.authorizationParams.scope, audience: o2.authorizationParams.audience || "default", clientId: this.options.clientId });
+        if (e2)
+          return e2;
+      }
+      if ("cache-only" !== i2) {
+        if (!await (async (e2, t3 = 3) => {
+          for (let i3 = 0; i3 < t3; i3++)
+            if (await e2())
+              return true;
+          return false;
+        })(() => ee.acquireLock("auth0.lock.getTokenSilently", 5e3), 10))
+          throw new l();
+        try {
+          if (window.addEventListener("pagehide", this._releaseLockOnPageHide), "off" !== i2) {
+            const e3 = await this._getEntryFromCache({ scope: o2.authorizationParams.scope, audience: o2.authorizationParams.audience || "default", clientId: this.options.clientId });
+            if (e3)
+              return e3;
+          }
+          const e2 = this.options.useRefreshTokens ? await this._getTokenUsingRefreshToken(o2) : await this._getTokenFromIFrame(o2), { id_token: t3, access_token: n2, oauthTokenScope: a2, expires_in: r2 } = e2;
+          return Object.assign(Object.assign({ id_token: t3, access_token: n2 }, a2 ? { scope: a2 } : null), { expires_in: r2 });
+        } finally {
+          await ee.releaseLock("auth0.lock.getTokenSilently"), window.removeEventListener("pagehide", this._releaseLockOnPageHide);
+        }
+      }
+    }
+    async getTokenWithPopup(e2 = {}, t2 = {}) {
+      var i2;
+      const o2 = Object.assign(Object.assign({}, e2), { authorizationParams: Object.assign(Object.assign(Object.assign({}, this.options.authorizationParams), e2.authorizationParams), { scope: j(this.scope, null === (i2 = e2.authorizationParams) || void 0 === i2 ? void 0 : i2.scope) }) });
+      t2 = Object.assign(Object.assign({}, r), t2), await this.loginWithPopup(o2, t2);
+      return (await this.cacheManager.get(new z({ scope: o2.authorizationParams.scope, audience: o2.authorizationParams.audience || "default", clientId: this.options.clientId }))).access_token;
+    }
+    async isAuthenticated() {
+      return !!await this.getUser();
+    }
+    _buildLogoutUrl(t2) {
+      null !== t2.clientId ? t2.clientId = t2.clientId || this.options.clientId : delete t2.clientId;
+      const i2 = t2.logoutParams || {}, { federated: o2 } = i2, n2 = e(i2, ["federated"]), a2 = o2 ? "&federated" : "";
+      return this._url(`/v2/logout?${v(Object.assign({ clientId: t2.clientId }, n2))}`) + a2;
+    }
+    async logout(t2 = {}) {
+      const i2 = Q(t2), { openUrl: o2 } = i2, n2 = e(i2, ["openUrl"]);
+      null === t2.clientId ? await this.cacheManager.clear() : await this.cacheManager.clear(t2.clientId || this.options.clientId), this.cookieStorage.remove(this.orgHintCookieName, { cookieDomain: this.options.cookieDomain }), this.cookieStorage.remove(this.isAuthenticatedCookieName, { cookieDomain: this.options.cookieDomain }), this.userCache.remove("@@user@@");
+      const a2 = this._buildLogoutUrl(n2);
+      o2 ? await o2(a2) : false !== o2 && window.location.assign(a2);
+    }
+    async _getTokenFromIFrame(e2) {
+      const t2 = Object.assign(Object.assign({}, e2.authorizationParams), { prompt: "none" }), i2 = this.cookieStorage.get(this.orgHintCookieName);
+      i2 && !t2.organization && (t2.organization = i2);
+      const { url: o2, state: n2, nonce: a2, code_verifier: r2, redirect_uri: s2, scope: c2, audience: d2 } = await this._prepareAuthorizeUrl(t2, { response_mode: "web_message" }, window.location.origin);
+      try {
+        if (window.crossOriginIsolated)
+          throw new u("login_required", "The application is running in a Cross-Origin Isolated context, silently retrieving a token without refresh token is not possible.");
+        const i3 = e2.timeoutInSeconds || this.options.authorizeTimeoutInSeconds, h2 = await ((e3, t3, i4 = 60) => new Promise((o3, n3) => {
+          const a3 = window.document.createElement("iframe");
+          a3.setAttribute("width", "0"), a3.setAttribute("height", "0"), a3.style.display = "none";
+          const r3 = () => {
+            window.document.body.contains(a3) && (window.document.body.removeChild(a3), window.removeEventListener("message", s3, false));
+          };
+          let s3;
+          const c3 = setTimeout(() => {
+            n3(new l()), r3();
+          }, 1e3 * i4);
+          s3 = function(e4) {
+            if (e4.origin != t3)
+              return;
+            if (!e4.data || "authorization_response" !== e4.data.type)
+              return;
+            const i5 = e4.source;
+            i5 && i5.close(), e4.data.response.error ? n3(u.fromPayload(e4.data.response)) : o3(e4.data.response), clearTimeout(c3), window.removeEventListener("message", s3, false), setTimeout(r3, 2e3);
+          }, window.addEventListener("message", s3, false), window.document.body.appendChild(a3), a3.setAttribute("src", e3);
+        }))(o2, this.domainUrl, i3);
+        if (n2 !== h2.state)
+          throw new u("state_mismatch", "Invalid state");
+        const p2 = await this._requestToken(Object.assign(Object.assign({}, e2.authorizationParams), { code_verifier: r2, code: h2.code, grant_type: "authorization_code", redirect_uri: s2, timeout: e2.authorizationParams.timeout || this.httpTimeoutMs }), { nonceIn: a2, organization: t2.organization });
+        return Object.assign(Object.assign({}, p2), { scope: c2, oauthTokenScope: p2.scope, audience: d2 });
+      } catch (e3) {
+        throw "login_required" === e3.error && this.logout({ openUrl: false }), e3;
+      }
+    }
+    async _getTokenUsingRefreshToken(e2) {
+      const t2 = await this.cacheManager.get(new z({ scope: e2.authorizationParams.scope, audience: e2.authorizationParams.audience || "default", clientId: this.options.clientId }));
+      if (!(t2 && t2.refresh_token || this.worker)) {
+        if (this.options.useRefreshTokensFallback)
+          return await this._getTokenFromIFrame(e2);
+        throw new f(e2.authorizationParams.audience || "default", e2.authorizationParams.scope);
+      }
+      const i2 = e2.authorizationParams.redirect_uri || this.options.authorizationParams.redirect_uri || window.location.origin, o2 = "number" == typeof e2.timeoutInSeconds ? 1e3 * e2.timeoutInSeconds : null;
+      try {
+        const n2 = await this._requestToken(Object.assign(Object.assign(Object.assign({}, e2.authorizationParams), { grant_type: "refresh_token", refresh_token: t2 && t2.refresh_token, redirect_uri: i2 }), o2 && { timeout: o2 }));
+        return Object.assign(Object.assign({}, n2), { scope: e2.authorizationParams.scope, oauthTokenScope: n2.scope, audience: e2.authorizationParams.audience || "default" });
+      } catch (t3) {
+        if ((t3.message.indexOf("Missing Refresh Token") > -1 || t3.message && t3.message.indexOf("invalid refresh token") > -1) && this.options.useRefreshTokensFallback)
+          return await this._getTokenFromIFrame(e2);
+        throw t3;
+      }
+    }
+    async _saveEntryInCache(t2) {
+      const { id_token: i2, decodedToken: o2 } = t2, n2 = e(t2, ["id_token", "decodedToken"]);
+      this.userCache.set("@@user@@", { id_token: i2, decodedToken: o2 }), await this.cacheManager.setIdToken(this.options.clientId, t2.id_token, t2.decodedToken), await this.cacheManager.set(n2);
+    }
+    async _getIdTokenFromCache() {
+      const e2 = this.options.authorizationParams.audience || "default", t2 = await this.cacheManager.getIdToken(new z({ clientId: this.options.clientId, audience: e2, scope: this.scope })), i2 = this.userCache.get("@@user@@");
+      return t2 && t2.id_token === (null == i2 ? void 0 : i2.id_token) ? i2 : (this.userCache.set("@@user@@", t2), t2);
+    }
+    async _getEntryFromCache({ scope: e2, audience: t2, clientId: i2 }) {
+      const o2 = await this.cacheManager.get(new z({ scope: e2, audience: t2, clientId: i2 }), 60);
+      if (o2 && o2.access_token) {
+        const { access_token: e3, oauthTokenScope: t3, expires_in: i3 } = o2, n2 = await this._getIdTokenFromCache();
+        return n2 && Object.assign(Object.assign({ id_token: n2.id_token, access_token: e3 }, t3 ? { scope: t3 } : null), { expires_in: i3 });
+      }
+    }
+    async _requestToken(e2, t2) {
+      const { nonceIn: i2, organization: o2 } = t2 || {}, n2 = await T(Object.assign({ baseUrl: this.domainUrl, client_id: this.options.clientId, auth0Client: this.options.auth0Client, useFormData: this.options.useFormData, timeout: this.httpTimeoutMs }, e2), this.worker), a2 = await this._verifyIdToken(n2.id_token, i2, o2);
+      return await this._saveEntryInCache(Object.assign(Object.assign(Object.assign(Object.assign({}, n2), { decodedToken: a2, scope: e2.scope, audience: e2.audience || "default" }), n2.scope ? { oauthTokenScope: n2.scope } : null), { client_id: this.options.clientId })), this.cookieStorage.save(this.isAuthenticatedCookieName, true, { daysUntilExpire: this.sessionCheckExpiryDays, cookieDomain: this.options.cookieDomain }), this._processOrgHint(o2 || a2.claims.org_id), Object.assign(Object.assign({}, n2), { decodedToken: a2 });
+    }
+    async exchangeToken(e2) {
+      return this._requestToken({ grant_type: "urn:ietf:params:oauth:grant-type:token-exchange", subject_token: e2.subject_token, subject_token_type: e2.subject_token_type, scope: j(e2.scope, this.scope), audience: this.options.authorizationParams.audience });
+    }
+  };
+  async function oe(e2) {
+    const t2 = new te(e2);
+    return await t2.checkSession(), t2;
+  }
+
+  // src/index.ts
+  var init = async () => {
+    const client = await oe({
+      clientId: "TBO0AGlXm0010MiIexjvSTgYdLcB6RCD",
+      domain: "the-catholic-herald.us.auth0.com",
+      authorizationParams: {
+        redirect_uri: "https://the-catholic-herald-5d6c2-bedae55b34495.webflow.io/",
+        audience: "https://authenticate.thecatholicherald.com"
+      }
+    });
+    const url = new URLSearchParams(window.location.search);
+    const code = url.get("code");
+    if (code) {
+      await client.handleRedirectCallback();
+      history.replaceState({}, document.title, window.location.origin + window.location.pathname);
+    }
+    window.Webflow ||= [];
+    window.Webflow.push(() => {
+      const loginElement = document.querySelector('[data-element="login"]');
+      const logoutElement = document.querySelector('[data-element="logout"]');
+      if (!loginElement || !logoutElement)
+        return;
+      loginElement.addEventListener("click", async () => {
+        await client.loginWithRedirect();
+      });
+      logoutElement.addEventListener("click", async () => {
+        await client.logout();
+      });
+    });
+  };
+  init();
+})();
+//# sourceMappingURL=index.js.map
