@@ -40,16 +40,6 @@ const init = async () => {
     const logoutElement = document.querySelector('[data-element="logout"]');
     if (!loginElement || !logoutElement) return;
 
-    if (loginElement && logoutElement) {
-      if (isLoggedIn) {
-        loginElement!.style.display = 'none';
-        logoutElement!.style.display = 'inline-block';
-      } else {
-        loginElement!.style.display = 'inline-block';
-        logoutElement!.style.display = 'none';
-      }
-    }
-
     loginElement.addEventListener('click', async () => {
       await client.loginWithRedirect();
     });
