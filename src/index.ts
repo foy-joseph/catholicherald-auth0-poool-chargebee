@@ -10,6 +10,8 @@ const init = async () => {
     },
   });
 
+  (window as any).auth0Client = client;
+
   console.log("We're in");
 
   const isLoggedIn = await client.isAuthenticated(); //check if user is logged in or not
