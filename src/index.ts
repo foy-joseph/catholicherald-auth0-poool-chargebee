@@ -149,17 +149,25 @@ const init = async (): Promise<void> => {
     // log it unconditionally so you can inspect every field
     console.log('[TS] user →', user);
 
-    // then, if you still want to render name:
-    const userEl = document.getElementById('auth-username');
-    if (user && user.name && userEl) {
-      userEl.textContent = user.name;
-      console.log('[TS] displayed user.name:', user.name);
+    // 2) derive displayName
+    let displayName: string;
+    if (user?.nickname) {
+      displayName = user.nickname;
+    } else if (user?.name) {
+      displayName = user.name;
+    } else if (user?.email) {
+      displayName = user?.email.split('@')[0];
     } else {
-      console.warn('[TS] couldn’t display name —', {
-        user,
-        attemptedProperty: 'name',
-        userElExists: Boolean(userEl),
-      });
+      displayName = 'Account';
+    }
+
+    // 3) render it
+    const userEl = document.getElementById('auth-username');
+    if (userEl) {
+      userEl.textContent = displayName;
+      console.log('[TS] displayed name:', displayName);
+    } else {
+      console.warn('[TS] auth-username element not found');
     }
   }
 };
