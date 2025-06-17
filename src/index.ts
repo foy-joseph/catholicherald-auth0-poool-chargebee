@@ -57,9 +57,6 @@ const init = async (): Promise<void> => {
   const loginBtn = document.getElementById('auth-login') as HTMLElement | null;
   const logoutBtn = document.getElementById('auth-logout') as HTMLElement | null;
 
-  console.log('[TS] loginBtn:', loginBtn);
-  console.log('[TS] logoutBtn:', logoutBtn);
-
   if (loginBtn && logoutBtn) {
     if (isLoggedIn) {
       loginBtn.style.display = 'none';
