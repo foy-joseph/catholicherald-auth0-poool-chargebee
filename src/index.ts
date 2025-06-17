@@ -99,6 +99,9 @@ const init = async (): Promise<void> => {
   /* ── subscriber claim (from Auth0 Action) ───────────────── */
   const claims = await client.getIdTokenClaims();
   const isSubscriber = claims?.['https://catholicherald.com/claims/subscriber'] === true;
+  if (claims) {
+    console.log('subscriber claim →', claims['https://catholicherald.com/claims/subscriber']);
+  }
 
   console.log('[TS] 🏷️  isSubscriber =', isSubscriber);
 
