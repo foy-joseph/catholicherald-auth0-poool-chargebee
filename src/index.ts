@@ -82,6 +82,7 @@ const init = async (): Promise<void> => {
 
   /* expose for inline scripts & debugging */
   window.auth0Client = client;
+  console.log('[Bundle] window.auth0Client set', client);
 
   /* ── handle redirect callback (if present) ───────────────── */
   const qs = new URLSearchParams(window.location.search);
