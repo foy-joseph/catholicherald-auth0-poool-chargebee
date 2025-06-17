@@ -94,6 +94,18 @@ const init = async (): Promise<void> => {
 
   /* ── login state ─────────────────────────────────────────── */
   const isLoggedIn = await client.isAuthenticated();
+  // … after isLoggedIn = await client.isAuthenticated()
+  if (isLoggedIn) {
+    // fetch the profile (may be undefined)
+    const user = await client.getUser();
+    // find your target element
+    const userEl = document.getElementById('auth-username');
+
+    // only proceed if both exist
+    if (user && user.name && userEl) {
+      userEl.textContent = user.name;
+    }
+  }
   console.log('[TS] 🔑 isLoggedIn =', isLoggedIn);
 
   /* ── subscriber claim (from Auth0 Action) ───────────────── */
