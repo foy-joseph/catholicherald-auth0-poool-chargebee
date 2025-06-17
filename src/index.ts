@@ -113,3 +113,5 @@ const init = async (): Promise<void> => {
 };
 
 init().catch((err) => console.error('[TS] ❗ init error', err));
+
+console.log('Hi');
