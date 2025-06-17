@@ -12,6 +12,8 @@ const init = async () => {
 
   console.log("We're in");
 
+  const isLoggedIn = await client.isAuthenticated(); //check if user is logged in or not
+
   const url = new URLSearchParams(window.location.search);
   const code = url.get('code');
   if (code) {
@@ -21,8 +23,6 @@ const init = async () => {
 
   const claims = await client.getIdTokenClaims();
   const isSubscriber: boolean = claims?.['https://catholicherald.com/claims/subscriber'] === true;
-
-  console.log(claims);
 
   if (isSubscriber) {
     /* Disable Poool completely */
@@ -39,6 +39,16 @@ const init = async () => {
     const loginElement = document.querySelector('[data-element="login"]');
     const logoutElement = document.querySelector('[data-element="logout"]');
     if (!loginElement || !logoutElement) return;
+
+    if (loginElement && logoutElement) {
+      if (isLoggedIn) {
+        loginElement!.style.display = 'none';
+        logoutElement!.style.display = 'inline-block';
+      } else {
+        loginElement!.style.display = 'inline-block';
+        logoutElement!.style.display = 'none';
+      }
+    }
 
     loginElement.addEventListener('click', async () => {
       await client.loginWithRedirect();
