@@ -141,6 +141,27 @@ const init = async (): Promise<void> => {
   } else {
     console.warn('[TS] ⚠️ auth buttons not found in DOM');
   }
+  // … after your login/logout toggle …
+  if (isLoggedIn) {
+    // fetch the user profile
+    const user = await client.getUser();
+
+    // log it unconditionally so you can inspect every field
+    console.log('[TS] user →', user);
+
+    // then, if you still want to render name:
+    const userEl = document.getElementById('auth-username');
+    if (user && user.name && userEl) {
+      userEl.textContent = user.name;
+      console.log('[TS] displayed user.name:', user.name);
+    } else {
+      console.warn('[TS] couldn’t display name —', {
+        user,
+        attemptedProperty: 'name',
+        userElExists: Boolean(userEl),
+      });
+    }
+  }
 };
 
 init().catch((err) => console.error('[TS] ❗ init error', err));
