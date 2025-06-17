@@ -22,8 +22,9 @@ const init = async () => {
   const claims = await client.getIdTokenClaims();
   const isSubscriber: boolean = claims?.['https://catholicherald.com/claims/subscriber'] === true;
 
+  console.log(claims);
+
   if (isSubscriber) {
-    console.log(isSubscriber);
     /* Disable Poool completely */
     (window as any).poool = () => {
       /* no-op queue */
