@@ -1,64 +1,3 @@
-/* import { Auth0Client, createAuth0Client } from '@auth0/auth0-spa-js';
-
-declare global {
-  interface Window {
-    auth0Client: Auth0Client;
-  }
-}
-
-const init = async () => {
-  const client = await createAuth0Client({
-    clientId: 'TBO0AGlXm0010MiIexjvSTgYdLcB6RCD',
-    domain: 'the-catholic-herald.us.auth0.com',
-    authorizationParams: {
-      redirect_uri: 'https://the-catholic-herald-5d6c2-bedae55b34495.webflow.io/',
-      audience: 'https://authenticate.thecatholicherald.com',
-    },
-  });
-
-  (window as unknown as { auth0Client: Auth0Client }).auth0Client = client;
-
-  console.log("We're in.");
-
-  const isLoggedIn = await client.isAuthenticated(); //check if user is logged in or not
-
-  const url = new URLSearchParams(window.location.search);
-  const code = url.get('code');
-  if (code) {
-    await client.handleRedirectCallback();
-    history.replaceState({}, document.title, window.location.origin + window.location.pathname);
-  }
-
-  const claims = await client.getIdTokenClaims();
-  const isSubscriber: boolean = claims?.['https://catholicherald.com/claims/subscriber'] === true;
-
-  if (isSubscriber) {
-    (window as any).poool = () => {
-    };
-    document.dispatchEvent(new Event('poool:disable')); // Poool SDK hook
-    // If Poool widgets already exist, remove them:
-    document.querySelectorAll('#poool-widget,[data-poool]').forEach((el) => el.remove());
-  }
-
-  window.Webflow ||= [];
-  window.Webflow.push(() => {
-    const loginElement = document.querySelector('[data-element="login"]');
-    const logoutElement = document.querySelector('[data-element="logout"]');
-    if (!loginElement || !logoutElement) return;
-
-    loginElement.addEventListener('click', async () => {
-      await client.loginWithRedirect();
-    });
-
-    logoutElement.addEventListener('click', async () => {
-      await client.logout();
-    });
-  });
-};
-
-init();
-*/
-
 import { Auth0Client, createAuth0Client } from '@auth0/auth0-spa-js';
 
 /* ─── Extend Window so we avoid `any` ───────────────────────── */
@@ -123,11 +62,9 @@ const init = async (): Promise<void> => {
 
   if (loginBtn && logoutBtn) {
     if (isLoggedIn) {
-      console.log('[TS] 👁‍🗨 hide login, show logout');
       loginBtn.style.display = 'none';
       logoutBtn.style.display = 'inline-block';
     } else {
-      console.log('[TS] 👁‍🗨 show login, hide logout');
       loginBtn.style.display = 'inline-block';
       logoutBtn.style.display = 'none';
     }
