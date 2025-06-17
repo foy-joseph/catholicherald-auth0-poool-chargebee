@@ -1,4 +1,10 @@
-import { createAuth0Client } from '@auth0/auth0-spa-js';
+import { Auth0Client, createAuth0Client } from '@auth0/auth0-spa-js';
+
+declare global {
+  interface Window {
+    auth0Client: Auth0Client;
+  }
+}
 
 const init = async () => {
   const client = await createAuth0Client({
@@ -10,9 +16,9 @@ const init = async () => {
     },
   });
 
-  (window as any).auth0Client = client;
+  window.auth0Client = client; // ✅ no-implicit-any satisfied
 
-  console.log("We're in");
+  console.log("We're in.");
 
   const isLoggedIn = await client.isAuthenticated(); //check if user is logged in or not
 
