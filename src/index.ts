@@ -9,6 +9,7 @@ declare global {
 
 async function init(): Promise<void> {
   console.log('[TS] 1) init() start');
+  console.log('testing');
 
   // 2) Create Auth0 client
   console.log('[TS] 2) Creating Auth0 client');
