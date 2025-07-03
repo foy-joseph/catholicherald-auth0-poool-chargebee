@@ -4,6 +4,7 @@ import { Auth0Client, createAuth0Client } from '@auth0/auth0-spa-js';
 declare global {
   interface Window {
     auth0Client: Auth0Client;
+    customerId: string;
   }
 }
 
@@ -52,7 +53,7 @@ async function init(): Promise<void> {
   try {
     claims = await client.getIdTokenClaims();
     console.log('[TS] 7) getIdTokenClaims →', claims);
-    window.customerId = claims.customer_id;
+    window.customerId = claims?.customer_id;
   } catch (err) {
     console.error('[TS] ❗ getIdTokenClaims error', err);
   }
