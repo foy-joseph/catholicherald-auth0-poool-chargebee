@@ -9,7 +9,6 @@ declare global {
 
 async function init(): Promise<void> {
   console.log('[TS] 1) init() start');
-  console.log('testing');
 
   // 2) Create Auth0 client
   console.log('[TS] 2) Creating Auth0 client');
@@ -53,6 +52,7 @@ async function init(): Promise<void> {
   try {
     claims = await client.getIdTokenClaims();
     console.log('[TS] 7) getIdTokenClaims →', claims);
+    window.customerId = claims.customer_id;
   } catch (err) {
     console.error('[TS] ❗ getIdTokenClaims error', err);
   }
