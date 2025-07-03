@@ -53,7 +53,6 @@ async function init(): Promise<void> {
   try {
     claims = await client.getIdTokenClaims();
     console.log('[TS] 7) getIdTokenClaims →', claims);
-    window.customerId = claims?.customer_id;
   } catch (err) {
     console.error('[TS] ❗ getIdTokenClaims error', err);
   }
