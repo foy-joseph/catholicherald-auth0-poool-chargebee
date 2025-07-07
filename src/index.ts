@@ -22,6 +22,7 @@ async function init(): Promise<void> {
     },
   });
   window.auth0Client = client;
+  document.dispatchEvent(new Event('auth0-ready'));
   console.log('[TS] 3) Auth0 client created and exposed on window');
 
   // 4) Handle redirect callback
