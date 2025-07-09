@@ -45,8 +45,10 @@ async function init(): Promise<void> {
   try {
     isLoggedIn = await client.isAuthenticated();
     console.log('[TS] 6) isAuthenticated →', isLoggedIn);
-    const customer_id = (await client.getIdTokenClaims())?.customer_id;
-    setPortal(customer_id);
+    if (isLoggedIn) {
+      const customer_id = (await client.getIdTokenClaims())?.customer_id;
+      setPortal(customer_id);
+    }
   } catch (err) {
     console.error('[TS] ❗ isAuthenticated error', err);
   }
