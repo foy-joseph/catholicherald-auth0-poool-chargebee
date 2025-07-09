@@ -116,7 +116,8 @@ async function init(): Promise<void> {
 init().catch((err) => console.error('[TS] ❗ init error', err));
 
 function setPortal(customer_id: string) {
-  document.querySelector('[data-ch-portal]')?.addEventListener('click', () => {
+  document.querySelector('[data-ch-portal]')?.addEventListener('click', (e) => {
+    e.stopPropagation();
     console.log('creating portal...');
 
     $.ajax({
