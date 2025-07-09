@@ -122,6 +122,7 @@ function setPortal(customer_id: string) {
     data: JSON.stringify({
       portal: true,
       customer_id: customer_id,
+      redirect_url: window.location.href,
     }),
     success: function (response) {
       console.log('Portal created!', response);
