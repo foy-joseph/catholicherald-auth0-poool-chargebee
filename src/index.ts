@@ -116,22 +116,25 @@ async function init(): Promise<void> {
 init().catch((err) => console.error('[TS] ❗ init error', err));
 
 function setPortal(customer_id: string) {
-  console.log('creating portal...');
-  $.ajax({
-    url: 'https://catholicherald.it-548.workers.dev', // <-- replace with your backend route
-    method: 'POST',
-    contentType: 'application/json',
-    data: JSON.stringify({
-      portal: true,
-      customer_id: customer_id,
-      redirect_url: window.location.href,
-    }),
-    success: function (response) {
-      console.log('Portal created!', response);
-      // Redirect to thank you page or show confirmation
-    },
-    error: function (err) {
-      console.error('Error creating portal', err.responseText);
-    },
+  document.querySelector('[data-ch-portal]')?.addEventListener('click', () => {
+    console.log('creating portal...');
+
+    $.ajax({
+      url: 'https://catholicherald.it-548.workers.dev', // <-- replace with your backend route
+      method: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify({
+        portal: true,
+        customer_id: customer_id,
+        redirect_url: window.location.href,
+      }),
+      success: function (response) {
+        const sessionURL = response.portalSession.portal_session.access_url;
+        window.location.href = sessionURL;
+      },
+      error: function (err) {
+        console.error('Error creating portal', err.responseText);
+      },
+    });
   });
 }
