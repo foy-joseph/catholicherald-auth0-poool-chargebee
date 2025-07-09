@@ -45,6 +45,8 @@ async function init(): Promise<void> {
   try {
     isLoggedIn = await client.isAuthenticated();
     console.log('[TS] 6) isAuthenticated →', isLoggedIn);
+    const customer_id = (await client.getIdTokenClaims())?.customer_id;
+    setPortal(customer_id);
   } catch (err) {
     console.error('[TS] ❗ isAuthenticated error', err);
   }
@@ -110,3 +112,23 @@ async function init(): Promise<void> {
 }
 
 init().catch((err) => console.error('[TS] ❗ init error', err));
+
+function setPortal(customer_id: string) {
+  console.log('creating portal...');
+  $.ajax({
+    url: 'https://catholicherald.it-548.workers.dev', // <-- replace with your backend route
+    method: 'POST',
+    contentType: 'application/json',
+    data: JSON.stringify({
+      portal: true,
+      customer_id: customer_id,
+    }),
+    success: function (response) {
+      console.log('Portal created!', response);
+      // Redirect to thank you page or show confirmation
+    },
+    error: function (err) {
+      console.error('Error creating portal', err.responseText);
+    },
+  });
+}
