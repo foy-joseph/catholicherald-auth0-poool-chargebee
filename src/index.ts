@@ -101,6 +101,7 @@ async function init(): Promise<void> {
     // });
     // }
   } else {
+    document.dispatchEvent(new Event('no-subscription'));
     console.log('[TS] 9) No subscription found, paywall remains');
   }
 
