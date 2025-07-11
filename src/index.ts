@@ -84,15 +84,15 @@ async function init(): Promise<void> {
     (window as any).poool = () => {
       // nothing
     };
-    if (window?.articleReady === true) {
-      document.dispatchEvent(new Event('poool:disable'));
-      document.querySelectorAll('#poool-widget,[data-poool]').forEach((el) => el.remove());
-    } else {
-      document.addEventListener('article-ready', function () {
-        document.dispatchEvent(new Event('poool:disable'));
-        document.querySelectorAll('#poool-widget,[data-poool]').forEach((el) => el.remove());
-      });
-    }
+    //if (window?.articleReady === true) {
+    document.dispatchEvent(new Event('poool:disable'));
+    document.querySelectorAll('#poool-widget,[data-poool]').forEach((el) => el.remove());
+    //} else {
+    // document.addEventListener('article-ready', function () {
+    //   document.dispatchEvent(new Event('poool:disable'));
+    //   document.querySelectorAll('#poool-widget,[data-poool]').forEach((el) => el.remove());
+    // });
+    // }
   } else {
     console.log('[TS] 9) No subscription found, paywall remains');
   }
