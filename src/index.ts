@@ -48,6 +48,10 @@ async function init(): Promise<void> {
     if (isLoggedIn) {
       const customer_id = (await client.getIdTokenClaims())?.customer_id;
       setPortal(customer_id);
+    } else {
+      const portalLink = document.querySelector<HTMLAnchorElement>('[data-ch-portal]');
+      if (portalLink && portalLink?.parentNode)
+        (portalLink.parentNode as HTMLDivElement).style.display = 'none';
     }
   } catch (err) {
     console.error('[TS] ❗ isAuthenticated error', err);
