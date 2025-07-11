@@ -77,8 +77,15 @@ async function init(): Promise<void> {
     isSubscriber
   );
 
+  const claimKeyCatholic = 'https://catholicherald.com/claims/item_price_ids';
+
+  const planIds: string[] = Array.isArray(claims?.[claimKeyCatholic])
+    ? claims![claimKeyCatholic]
+    : [];
+  const isCatholicSubscriber = planIds.some((id) => id.startsWith('catholic'));
+
   // 9) Branch on subscription
-  if (isSubscriber) {
+  if (isSubscriber && isCatholicSubscriber) {
     console.log('[TS] 9) Subscriber detected, disabling Poool');
     // Disable Poool SDK
     (window as any).poool = () => {
