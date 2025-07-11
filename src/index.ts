@@ -109,15 +109,31 @@ async function init(): Promise<void> {
   console.log('[TS] 10) Wiring login/logout buttons');
   const loginBtn = document.getElementById('auth-login');
   const logoutBtn = document.getElementById('auth-logout');
+  const loginBtnMobile = document.getElementById('auth-login-mobile');
+  const logoutBtnMobile = document.getElementById('auth-logout-mobile');
   console.log('[TS] 10) loginBtn →', loginBtn, '| logoutBtn →', logoutBtn);
-  if (loginBtn instanceof HTMLElement && logoutBtn instanceof HTMLElement) {
+  if (loginBtn && logoutBtn && logoutBtnMobile && loginBtnMobile) {
     if (isLoggedIn) {
       loginBtn.style.display = 'none';
       logoutBtn.style.display = 'inline-block';
+      loginBtnMobile.style.display = 'none';
+      logoutBtnMobile.style.display = 'inline-block';
     } else {
       loginBtn.style.display = 'inline-block';
       logoutBtn.style.display = 'none';
+      loginBtnMobile.style.display = 'inline-block';
+      logoutBtnMobile.style.display = 'none';
     }
+
+    loginBtnMobile.addEventListener('click', () => {
+      console.log('[TS] ▶️ login clicked');
+      client.loginWithRedirect();
+    });
+    logoutBtnMobile.addEventListener('click', () => {
+      console.log('[TS] ▶️ logout clicked');
+      client.logout();
+    });
+
     loginBtn.addEventListener('click', () => {
       console.log('[TS] ▶️ login clicked');
       client.loginWithRedirect();
