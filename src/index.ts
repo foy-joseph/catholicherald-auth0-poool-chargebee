@@ -127,11 +127,7 @@ async function init(): Promise<void> {
 
     loginBtnMobile.addEventListener('click', () => {
       console.log('[TS] ▶️ login clicked');
-      client.loginWithRedirect({
-        authorizationParams: {
-          redirect_uri: window.location.href,
-        },
-      });
+      client.loginWithRedirect();
     });
     logoutBtnMobile.addEventListener('click', () => {
       console.log('[TS] ▶️ logout clicked');
@@ -140,11 +136,7 @@ async function init(): Promise<void> {
 
     loginBtn.addEventListener('click', () => {
       console.log('[TS] ▶️ login clicked');
-      client.loginWithRedirect({
-        authorizationParams: {
-          redirect_uri: window.location.href,
-        },
-      });
+      client.loginWithRedirect();
     });
     logoutBtn.addEventListener('click', () => {
       console.log('[TS] ▶️ logout clicked');
