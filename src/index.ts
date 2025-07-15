@@ -19,7 +19,7 @@ async function init(): Promise<void> {
     domain: 'the-catholic-herald.us.auth0.com',
     authorizationParams: {
       redirect_uri: window.location.origin,
-      audience: 'https://authenticate.thecatholicherald.com',
+      // audience: 'https://authenticate.thecatholicherald.com',
     },
   });
   window.auth0Client = client;
@@ -31,7 +31,8 @@ async function init(): Promise<void> {
   if (qs.has('code') && qs.has('state')) {
     console.log('[TS] 4) Detected code/state in URL, calling handleRedirectCallback');
     try {
-      await client.handleRedirectCallback();
+      const { appState } = await client.handleRedirectCallback();
+      window.location.href = appState?.returnTo || '/';
       console.log('[TS] 5) handleRedirectCallback completed');
       history.replaceState({}, document.title, window.location.pathname);
     } catch (err) {
@@ -127,7 +128,11 @@ async function init(): Promise<void> {
 
     loginBtnMobile.addEventListener('click', () => {
       console.log('[TS] ▶️ login clicked');
-      client.loginWithRedirect();
+      client.loginWithRedirect({
+        appState: {
+          returnTo: window.location.pathname,
+        },
+      });
     });
     logoutBtnMobile.addEventListener('click', () => {
       console.log('[TS] ▶️ logout clicked');
@@ -136,11 +141,15 @@ async function init(): Promise<void> {
 
     loginBtn.addEventListener('click', () => {
       console.log('[TS] ▶️ login clicked');
-      client.loginWithRedirect();
+      client.loginWithRedirect({
+        appState: {
+          returnTo: window.location.pathname,
+        },
+      });
     });
     logoutBtn.addEventListener('click', () => {
       console.log('[TS] ▶️ logout clicked');
-      client.logout();
+      client.logout({ returnTo: window.location.origin });
     });
   } else {
     console.warn('[TS] ⚠️ auth buttons not found or not HTMLElements');
