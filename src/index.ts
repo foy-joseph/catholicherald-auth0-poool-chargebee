@@ -32,9 +32,9 @@ async function init(): Promise<void> {
     console.log('[TS] 4) Detected code/state in URL, calling handleRedirectCallback');
     try {
       const { appState } = await client.handleRedirectCallback();
+      history.replaceState({}, document.title, window.location.pathname);
       window.location.href = appState?.returnTo || '/';
       console.log('[TS] 5) handleRedirectCallback completed');
-      history.replaceState({}, document.title, window.location.pathname);
     } catch (err) {
       console.error('[TS] ❗ handleRedirectCallback error', err);
     }
