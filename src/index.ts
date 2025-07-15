@@ -22,9 +22,16 @@ async function authCallback(): Promise<void> {
 
   try {
     const result = await client.handleRedirectCallback();
-    console.log(result);
-    console.log(result.appState);
-    const returnTo = result.appState?.returnTo || '/';
+    let returnTo = '/';
+    if (!result.appState?.returnTo) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const queryReturnTo = urlParams.get('returnTo');
+      if (queryReturnTo) {
+        returnTo = decodeURIComponent(queryReturnTo);
+      }
+    } else {
+      returnTo = result.appState?.returnTo;
+    }
     window.location.replace(returnTo);
   } catch (err) {
     console.error('Auth0 callback error:', err);
@@ -48,7 +55,9 @@ async function init(): Promise<void> {
     cacheLocation: 'localstorage',
     useRefreshTokens: true,
     authorizationParams: {
-      redirect_uri: `${window.location.origin}/auth/callback`,
+      redirect_uri: `${window.location.origin}/auth/callback?returnTo=${encodeURIComponent(
+        window.location.pathname
+      )}`,
       // audience: 'https://authenticate.thecatholicherald.com',
     },
   });
@@ -186,7 +195,7 @@ async function init(): Promise<void> {
     });
     logoutBtn.addEventListener('click', () => {
       console.log('[TS] ▶️ logout clicked');
-      client.logout({ returnTo: window.location.origin });
+      client.logout({ logoutParams: { returnTo: window.location.origin } });
     });
   } else {
     console.warn('[TS] ⚠️ auth buttons not found or not HTMLElements');
