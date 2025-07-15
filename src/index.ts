@@ -17,6 +17,7 @@ async function init(): Promise<void> {
   const client = await createAuth0Client({
     clientId: 'TBO0AGlXm0010MiIexjvSTgYdLcB6RCD',
     domain: 'the-catholic-herald.us.auth0.com',
+    cacheLocation: 'localstorage',
     authorizationParams: {
       redirect_uri: window.location.origin,
       // audience: 'https://authenticate.thecatholicherald.com',
@@ -32,7 +33,7 @@ async function init(): Promise<void> {
     console.log('[TS] 4) Detected code/state in URL, calling handleRedirectCallback');
     try {
       const { appState } = await client.handleRedirectCallback();
-      history.replaceState({}, document.title, window.location.pathname);
+      // history.replaceState({}, document.title, window.location.pathname);
       window.location.href = appState?.returnTo || '/';
       console.log('[TS] 5) handleRedirectCallback completed');
     } catch (err) {
