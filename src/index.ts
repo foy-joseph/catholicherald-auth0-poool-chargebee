@@ -46,6 +46,7 @@ async function init(): Promise<void> {
     clientId: 'TBO0AGlXm0010MiIexjvSTgYdLcB6RCD',
     domain: 'the-catholic-herald.us.auth0.com',
     cacheLocation: 'localstorage',
+    useRefreshTokens: true,
     authorizationParams: {
       redirect_uri: `${window.location.origin}/auth/callback`,
       // audience: 'https://authenticate.thecatholicherald.com',
@@ -162,14 +163,14 @@ async function init(): Promise<void> {
         appState: {
           returnTo: window.location.pathname,
         },
-        authorizationParams: {
-          redirect_uri: `${window.location.origin}/auth/callback`,
-        },
+        // authorizationParams: {
+        //   redirect_uri: `${window.location.origin}/auth/callback`,
+        // },
       });
     });
     logoutBtnMobile.addEventListener('click', () => {
       console.log('[TS] ▶️ logout clicked');
-      client.logout({ returnTo: window.location.origin });
+      client.logout({ logoutParams: { returnTo: window.location.origin } });
     });
 
     loginBtn.addEventListener('click', () => {
@@ -178,9 +179,9 @@ async function init(): Promise<void> {
         appState: {
           returnTo: window.location.pathname,
         },
-        authorizationParams: {
-          redirect_uri: `${window.location.origin}/auth/callback`,
-        },
+        // authorizationParams: {
+        //   redirect_uri: `${window.location.origin}/auth/callback`,
+        // },
       });
     });
     logoutBtn.addEventListener('click', () => {
