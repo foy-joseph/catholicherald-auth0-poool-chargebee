@@ -22,8 +22,9 @@ async function authCallback(): Promise<void> {
 
   try {
     const result = await client.handleRedirectCallback();
-    const returnTo = result.appState?.returnTo || '/';
-    window.location.replace(returnTo);
+    console.log(result.appState);
+    // const returnTo = result.appState?.returnTo || '/';
+    // window.location.replace(returnTo);
   } catch (err) {
     console.error('Auth0 callback error:', err);
     window.location.replace('/');
@@ -54,20 +55,20 @@ async function init(): Promise<void> {
   console.log('[TS] 3) Auth0 client created and exposed on window');
 
   // 4) Handle redirect callback
-  const qs = new URLSearchParams(window.location.search);
-  if (qs.has('code') && qs.has('state')) {
-    console.log('[TS] 4) Detected code/state in URL, calling handleRedirectCallback');
-    try {
-      const { appState } = await client.handleRedirectCallback();
-      // history.replaceState({}, document.title, window.location.pathname);
-      window.location.href = appState?.returnTo || '/';
-      console.log('[TS] 5) handleRedirectCallback completed');
-    } catch (err) {
-      console.error('[TS] ❗ handleRedirectCallback error', err);
-    }
-  } else {
-    console.log('[TS] 4) No code/state in URL, skipping callback');
-  }
+  // const qs = new URLSearchParams(window.location.search);
+  // if (qs.has('code') && qs.has('state')) {
+  //   console.log('[TS] 4) Detected code/state in URL, calling handleRedirectCallback');
+  //   try {
+  //     const { appState } = await client.handleRedirectCallback();
+  //     // history.replaceState({}, document.title, window.location.pathname);
+  //     window.location.href = appState?.returnTo || '/';
+  //     console.log('[TS] 5) handleRedirectCallback completed');
+  //   } catch (err) {
+  //     console.error('[TS] ❗ handleRedirectCallback error', err);
+  //   }
+  // } else {
+  //   console.log('[TS] 4) No code/state in URL, skipping callback');
+  // }
 
   // 6) Check authentication state
   let isLoggedIn = false;
