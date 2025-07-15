@@ -18,7 +18,7 @@ async function init(): Promise<void> {
     clientId: 'TBO0AGlXm0010MiIexjvSTgYdLcB6RCD',
     domain: 'the-catholic-herald.us.auth0.com',
     authorizationParams: {
-      redirect_uri: 'https://the-catholic-herald-5d6c2-bedae55b34495.webflow.io/',
+      redirect_uri: window.location.origin,
       audience: 'https://authenticate.thecatholicherald.com',
     },
   });
