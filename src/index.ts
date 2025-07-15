@@ -23,8 +23,8 @@ async function authCallback(): Promise<void> {
   try {
     const result = await client.handleRedirectCallback();
     console.log(result.appState);
-    // const returnTo = result.appState?.returnTo || '/';
-    // window.location.replace(returnTo);
+    const returnTo = result.appState?.returnTo || '/';
+    window.location.replace(returnTo);
   } catch (err) {
     console.error('Auth0 callback error:', err);
     window.location.replace('/');
@@ -167,7 +167,7 @@ async function init(): Promise<void> {
     });
     logoutBtnMobile.addEventListener('click', () => {
       console.log('[TS] ▶️ logout clicked');
-      client.logout();
+      client.logout({ returnTo: window.location.origin });
     });
 
     loginBtn.addEventListener('click', () => {
