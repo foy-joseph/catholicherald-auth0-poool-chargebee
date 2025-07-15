@@ -136,61 +136,60 @@ async function init(): Promise<void> {
   }
 
   // 10) Wire login/logout buttons
-  document.addEventListener('auth0-ready', () => {
-    console.log('[TS] 10) Wiring login/logout buttons');
-    const loginBtn = document.getElementById('auth-login');
-    const logoutBtn = document.getElementById('auth-logout');
-    const loginBtnMobile = document.getElementById('auth-login-mobile');
-    const logoutBtnMobile = document.getElementById('auth-logout-mobile');
-    console.log('[TS] 10) loginBtn →', loginBtn, '| logoutBtn →', logoutBtn);
-    if (loginBtn && logoutBtn && logoutBtnMobile && loginBtnMobile) {
-      if (isLoggedIn) {
-        loginBtn.style.display = 'none';
-        logoutBtn.style.display = 'inline-block';
-        loginBtnMobile.style.display = 'none';
-        logoutBtnMobile.style.display = 'inline-block';
-      } else {
-        loginBtn.style.display = 'inline-block';
-        logoutBtn.style.display = 'none';
-        loginBtnMobile.style.display = 'inline-block';
-        logoutBtnMobile.style.display = 'none';
-      }
 
-      loginBtnMobile.addEventListener('click', () => {
-        console.log('[TS] ▶️ login clicked');
-        client.loginWithRedirect({
-          appState: {
-            returnTo: window.location.pathname,
-          },
-          authorizationParams: {
-            redirect_uri: `${window.location.origin}/auth/callback`,
-          },
-        });
-      });
-      logoutBtnMobile.addEventListener('click', () => {
-        console.log('[TS] ▶️ logout clicked');
-        client.logout({ returnTo: window.location.origin });
-      });
-
-      loginBtn.addEventListener('click', () => {
-        console.log('[TS] ▶️ login clicked');
-        client.loginWithRedirect({
-          appState: {
-            returnTo: window.location.pathname,
-          },
-          authorizationParams: {
-            redirect_uri: `${window.location.origin}/auth/callback`,
-          },
-        });
-      });
-      logoutBtn.addEventListener('click', () => {
-        console.log('[TS] ▶️ logout clicked');
-        client.logout({ returnTo: window.location.origin });
-      });
+  console.log('[TS] 10) Wiring login/logout buttons');
+  const loginBtn = document.getElementById('auth-login');
+  const logoutBtn = document.getElementById('auth-logout');
+  const loginBtnMobile = document.getElementById('auth-login-mobile');
+  const logoutBtnMobile = document.getElementById('auth-logout-mobile');
+  console.log('[TS] 10) loginBtn →', loginBtn, '| logoutBtn →', logoutBtn);
+  if (loginBtn && logoutBtn && logoutBtnMobile && loginBtnMobile) {
+    if (isLoggedIn) {
+      loginBtn.style.display = 'none';
+      logoutBtn.style.display = 'inline-block';
+      loginBtnMobile.style.display = 'none';
+      logoutBtnMobile.style.display = 'inline-block';
     } else {
-      console.warn('[TS] ⚠️ auth buttons not found or not HTMLElements');
+      loginBtn.style.display = 'inline-block';
+      logoutBtn.style.display = 'none';
+      loginBtnMobile.style.display = 'inline-block';
+      logoutBtnMobile.style.display = 'none';
     }
-  });
+
+    loginBtnMobile.addEventListener('click', () => {
+      console.log('[TS] ▶️ login clicked');
+      client.loginWithRedirect({
+        appState: {
+          returnTo: window.location.pathname,
+        },
+        authorizationParams: {
+          redirect_uri: `${window.location.origin}/auth/callback`,
+        },
+      });
+    });
+    logoutBtnMobile.addEventListener('click', () => {
+      console.log('[TS] ▶️ logout clicked');
+      client.logout({ returnTo: window.location.origin });
+    });
+
+    loginBtn.addEventListener('click', () => {
+      console.log('[TS] ▶️ login clicked');
+      client.loginWithRedirect({
+        appState: {
+          returnTo: window.location.pathname,
+        },
+        authorizationParams: {
+          redirect_uri: `${window.location.origin}/auth/callback`,
+        },
+      });
+    });
+    logoutBtn.addEventListener('click', () => {
+      console.log('[TS] ▶️ logout clicked');
+      client.logout({ returnTo: window.location.origin });
+    });
+  } else {
+    console.warn('[TS] ⚠️ auth buttons not found or not HTMLElements');
+  }
 
   console.log('[TS] 11) init() complete');
 }
