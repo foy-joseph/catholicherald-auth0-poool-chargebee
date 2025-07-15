@@ -9,7 +9,33 @@ declare global {
   }
 }
 
+async function authCallback(): Promise<void> {
+  const client = await createAuth0Client({
+    domain: 'the-catholic-herald.us.auth0.com',
+    clientId: 'TBO0AGlXm0010MiIexjvSTgYdLcB6RCD',
+    cacheLocation: 'localstorage',
+    useRefreshTokens: true,
+    authorizationParams: {
+      redirect_uri: window.location.origin + '/auth/callback',
+    },
+  });
+
+  try {
+    const result = await client.handleRedirectCallback();
+    const returnTo = result.appState?.returnTo || '/';
+    window.location.replace(returnTo);
+  } catch (err) {
+    console.error('Auth0 callback error:', err);
+    window.location.replace('/');
+  }
+}
+
 async function init(): Promise<void> {
+  if (window.location.pathname === '/auth/callback') {
+    console.log('[TS] Skipping init() on /auth/callback');
+    return await authCallback();
+  }
+
   console.log('[TS] 1) init() start');
 
   // 2) Create Auth0 client
@@ -19,7 +45,7 @@ async function init(): Promise<void> {
     domain: 'the-catholic-herald.us.auth0.com',
     cacheLocation: 'localstorage',
     authorizationParams: {
-      redirect_uri: window.location.origin,
+      redirect_uri: `${window.location.origin}/auth/callback`,
       // audience: 'https://authenticate.thecatholicherald.com',
     },
   });
@@ -133,6 +159,9 @@ async function init(): Promise<void> {
         appState: {
           returnTo: window.location.pathname,
         },
+        authorizationParams: {
+          redirect_uri: `${window.location.origin}/auth/callback`,
+        },
       });
     });
     logoutBtnMobile.addEventListener('click', () => {
@@ -145,6 +174,9 @@ async function init(): Promise<void> {
       client.loginWithRedirect({
         appState: {
           returnTo: window.location.pathname,
+        },
+        authorizationParams: {
+          redirect_uri: `${window.location.origin}/auth/callback`,
         },
       });
     });
