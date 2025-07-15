@@ -24,8 +24,8 @@ async function authCallback(): Promise<void> {
     const result = await client.handleRedirectCallback();
     console.log(result);
     console.log(result.appState);
-    // const returnTo = result.appState?.returnTo || '/';
-    // window.location.replace(returnTo);
+    const returnTo = result.appState?.returnTo || '/';
+    window.location.replace(returnTo);
   } catch (err) {
     console.error('Auth0 callback error:', err);
     window.location.replace('/');
