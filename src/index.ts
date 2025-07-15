@@ -1,4 +1,4 @@
-import { Auth0Client, createAuth0Client } from '@auth0/auth0-spa-js';
+import { type Auth0Client, createAuth0Client } from '@auth0/auth0-spa-js';
 
 // Extend Window interface for our Auth0 client
 declare global {
@@ -22,6 +22,7 @@ async function authCallback(): Promise<void> {
 
   try {
     const result = await client.handleRedirectCallback();
+    console.log(result);
     console.log(result.appState);
     const returnTo = result.appState?.returnTo || '/';
     window.location.replace(returnTo);
