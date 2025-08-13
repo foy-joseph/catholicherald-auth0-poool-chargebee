@@ -117,12 +117,41 @@ async function init(): Promise<void> {
     isSubscriber
   );
 
+  const validSubscriptionTypes = [
+    'catholic-herald-digital-only-GBP-Monthly',
+    'catholic-herald-digital-only',
+    'catholic-herald-digital-only-USD-Monthly',
+    'catholic-herald-digital-only-USD-Yearly',
+    'catholic-herald-digital-only-monthly',
+    'catholic-herald-digital-only-monthly-euro',
+    'catholic-herald-digital-only-quarterly',
+    'catholic-herald-print--digital-GBP-Monthly',
+    'catholic-herald-print-&-digital',
+    'catholic-herald-print-Monthly-digital-USD',
+    'catholic-herald-Annual-print-digital-USD',
+    'catholic-herald-print-&-digital-europe-annual-euro',
+    'catholic-herald-print-&-digital-europe-monthly',
+    'catholic-herald-print-&-digital-europe-monthly-euro',
+    'catholic-herald-print-&-digital-international-annual',
+    'catholic-herald-print-&-digital-international-monthly',
+    'catholic-herald-print-&-digital-monthly',
+    'catholic-herald-print-&-digital-quarterly',
+    'uk-digital-only-offer',
+    'usa-catholic-herald-print-&-digital',
+    'usa-catholic-herald-print-&-digital-monthly',
+    'usa-catholic-herald-print-&-digital-quarterly',
+    'usa-digital-only-annual',
+    'usa-digital-only-monthly',
+    'usa-digital-only-quarterly',
+    'us-digital-only-offer',
+  ]
+
   const claimKeyCatholic = 'https://catholicherald.com/claims/item_price_ids';
 
   const planIds: string[] = Array.isArray(claims?.[claimKeyCatholic])
     ? claims![claimKeyCatholic]
     : [];
-  const isCatholicSubscriber = planIds.some((id) => id.startsWith('catholic'));
+  const isCatholicSubscriber = planIds.some((id) => validSubscriptionTypes.some(type => id === type));
 
   // 9) Branch on subscription
   if (isSubscriber && isCatholicSubscriber) {
