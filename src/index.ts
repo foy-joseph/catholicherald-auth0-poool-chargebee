@@ -148,9 +148,8 @@ async function init(): Promise<void> {
 
   const claimKeyCatholic = 'https://catholicherald.com/claims/item_price_ids';
 
-  const planIds: string[] = Array.isArray(claims?.[claimKeyCatholic])
-    ? claims![claimKeyCatholic]
-    : [];
+  const planIds = Array.isArray(claims?.[claimKeyCatholic]) ? claims![claimKeyCatholic] : [];
+
   const isCatholicSubscriber = planIds.some((id) => validSubscriptionTypes.some(type => id === type));
 
   // 9) Branch on subscription
