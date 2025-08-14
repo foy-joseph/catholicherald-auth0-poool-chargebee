@@ -144,13 +144,16 @@ async function init(): Promise<void> {
     'usa-digital-only-monthly',
     'usa-digital-only-quarterly',
     'us-digital-only-offer',
-  ]
+    '3-Month-Digital-Deal-GBP',
+  ];
 
   const claimKeyCatholic = 'https://catholicherald.com/claims/item_price_ids';
 
   const planIds = Array.isArray(claims?.[claimKeyCatholic]) ? claims![claimKeyCatholic] : [];
 
-  const isCatholicSubscriber = planIds.some((id) => validSubscriptionTypes.some(type => id === type));
+  const isCatholicSubscriber = planIds.some((id) =>
+    validSubscriptionTypes.some((type) => id === type)
+  );
 
   // 9) Branch on subscription
   if (isSubscriber && isCatholicSubscriber) {
