@@ -1,8 +1,9 @@
-import { type Auth0Client, createAuth0Client } from '@auth0/auth0-spa-js';
+import { type Auth0Client, createAuth0Client, type IdToken } from '@auth0/auth0-spa-js';
 
 declare global {
   interface Window {
     auth0Client: Auth0Client;
+    chUser: IdToken | undefined;
   }
 }
 
@@ -36,16 +37,17 @@ async function authCallback() {
   }
 }
 
+function hidePortal() {
+  const portalLink = document.querySelector<HTMLAnchorElement>('[data-ch-portal]');
+  if (portalLink && portalLink?.parentNode) {
+    (portalLink.parentNode as HTMLDivElement).style.display = 'none';
+  }
+}
+
 async function init() {
   if (window.location.pathname === '/auth/callback') {
     return await authCallback();
   }
-
-  console.log(
-    `${window.location.origin}/auth/callback?returnTo=${encodeURIComponent(
-      window.location.pathname
-    )}`
-  );
 
   // Create Auth0 client
   const client = await createAuth0Client({
@@ -61,36 +63,29 @@ async function init() {
   });
 
   window.auth0Client = client;
-  document.dispatchEvent(new Event('auth0-ready'));
 
-  // Check authentication state
+  // check local storage for user
+  let claims = getUser();
+
+  // check if user is logged in via Auth0
   let isLoggedIn = false;
   try {
     isLoggedIn = await client.isAuthenticated();
     if (isLoggedIn) {
-      const accessToken = await client.getTokenSilently();
-      const idTokenClaims = await client.getIdTokenClaims();
-      const idToken = idTokenClaims?.__raw;
-      console.log({ accessToken, idToken });
-      const customer_id = idTokenClaims?.customer_id;
-      setPortal(customer_id ?? '');
-    } else {
-      const portalLink = document.querySelector<HTMLAnchorElement>('[data-ch-portal]');
-      if (portalLink && portalLink?.parentNode) {
-        (portalLink.parentNode as HTMLDivElement).style.display = 'none';
-      }
+      claims = await client.getIdTokenClaims();
     }
   } catch (err) {
     console.error('[TS] ❗ isAuthenticated error', err);
   }
 
-  // Retrieve and log all ID token claims
-  let claims;
-  try {
-    claims = await client.getIdTokenClaims();
-  } catch (err) {
-    console.error('[TS] ❗ getIdTokenClaims error', err);
+  if (claims?.customer_id) {
+    setPortal(claims.customer_id);
+  } else {
+    hidePortal();
   }
+
+  window.chUser = claims;
+  document.dispatchEvent(new Event('auth0-ready'));
 
   // Check custom subscriber claim
   const claimKey = 'https://catholicherald.com/claims/subscriber';
@@ -188,6 +183,12 @@ function setUpLoginButtons(client: Auth0Client, isLoggedIn: boolean) {
   });
 }
 
+function getUser(): IdToken | undefined {
+  const token = localStorage.getItem('ch_id_token');
+  if (!token) return undefined;
+  return JSON.parse(atob(token.split('.')[1]));
+}
+
 async function signInSetup(client: Auth0Client) {
   const signInBtn = document.getElementById('ch-sign-in-button');
   const emailInput = document.getElementById('email');
@@ -214,9 +215,8 @@ async function signInSetup(client: Auth0Client) {
 
     const data = await res.json();
     // data will contain access_token, id_token, refresh_token (if configured)
-    if (data.access_token && data.id_token) {
-      const parsedJwt = JSON.parse(atob(data.id_token.split('.')[1]));
-      console.log(data);
+    if (data.id_token) {
+      localStorage.setItem('ch_id_token', data.id_token);
     }
   });
 
