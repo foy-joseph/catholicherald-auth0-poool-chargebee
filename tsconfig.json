@@ -6,6 +6,6 @@
     "paths": {
       "$utils/*": ["src/utils/*"]
     },
-    "types": ["@finsweet/ts-utils", "@stripe/stripe-js"]
+    "types": ["@finsweet/ts-utils", "@stripe/stripe-js", "jquery"]
   }
 }
