@@ -6,6 +6,10 @@ declare global {
   }
 }
 
+function showTokens(accessToken: string, idToken: string) {
+  console.log({ accessToken, idToken });
+}
+
 async function authCallback() {
   const client = await createAuth0Client({
     domain: 'the-catholic-herald.us.auth0.com',
@@ -62,8 +66,12 @@ async function init() {
   try {
     isLoggedIn = await client.isAuthenticated();
     if (isLoggedIn) {
-      const customer_id = (await client.getIdTokenClaims())?.customer_id;
-      setPortal(customer_id);
+      const accessToken = await client.getTokenSilently();
+      const idTokenClaims = await client.getIdTokenClaims();
+      const idToken = idTokenClaims?.__raw;
+      showTokens(accessToken, idToken ?? '');
+      const customer_id = idTokenClaims?.customer_id;
+      setPortal(customer_id ?? '');
     } else {
       const portalLink = document.querySelector<HTMLAnchorElement>('[data-ch-portal]');
       if (portalLink && portalLink?.parentNode) {
@@ -133,8 +141,15 @@ async function init() {
     document.dispatchEvent(new Event('no-subscription'));
   }
 
-  // Wire login/logout buttons
+  setUpLoginButtons(client, isLoggedIn);
 
+  signInSetup(client);
+}
+
+init().catch((err) => console.error('[TS] ❗ init error', err));
+
+function setUpLoginButtons(client: Auth0Client, isLoggedIn: boolean) {
+  // Wire login/logout buttons
   const loginBtn = document.getElementById('auth-login');
   const logoutBtn = document.getElementById('auth-logout');
   const loginBtnMobile = document.getElementById('auth-login-mobile');
@@ -153,14 +168,10 @@ async function init() {
     }
 
     loginBtnMobile.addEventListener('click', () => {
-      console.log('[TS] ▶️ login clicked');
       client.loginWithRedirect({
         appState: {
           returnTo: window.location.pathname,
         },
-        // authorizationParams: {
-        //   redirect_uri: `${window.location.origin}/auth/callback`,
-        // },
       });
     });
     logoutBtnMobile.addEventListener('click', () => {
@@ -180,11 +191,7 @@ async function init() {
   } else {
     console.warn('[TS] ⚠️ auth buttons not found or not HTMLElements');
   }
-
-  signInSetup(client);
 }
-
-init().catch((err) => console.error('[TS] ❗ init error', err));
 
 async function signInSetup(client: Auth0Client) {
   const signInBtn = document.getElementById('ch-sign-in-button');
@@ -199,12 +206,6 @@ async function signInSetup(client: Auth0Client) {
     await client.handleRedirectCallback();
     window.history.replaceState({}, document.title, '/');
   }
-
-  // const isAuthenticated = await client.isAuthenticated();
-  // if (isAuthenticated) {
-  //   await client.getTokenSilently();
-  //   (await client.getIdTokenClaims()).__raw;
-  // }
 
   const WORKER_URL = 'https://ch-login.it-548.workers.dev/';
 
@@ -223,7 +224,8 @@ async function signInSetup(client: Auth0Client) {
     // data will contain access_token, id_token, refresh_token (if configured)
     if (data.access_token) {
       localStorage.setItem('access_token', data.access_token);
-      alert('Login successful!');
+      localStorage.setItem('id_token', data.id_token);
+      showTokens(data.access_token, data.id_token);
     }
   });
 
