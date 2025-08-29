@@ -143,7 +143,7 @@ async function init() {
 
   setUpLoginButtons(client, isLoggedIn);
 
-  signInSetup(client);
+  await signInSetup(client);
 }
 
 init().catch((err) => console.error('[TS] ❗ init error', err));
@@ -154,43 +154,46 @@ function setUpLoginButtons(client: Auth0Client, isLoggedIn: boolean) {
   const logoutBtn = document.getElementById('auth-logout');
   const loginBtnMobile = document.getElementById('auth-login-mobile');
   const logoutBtnMobile = document.getElementById('auth-logout-mobile');
-  if (loginBtn && logoutBtn && logoutBtnMobile && loginBtnMobile) {
-    if (isLoggedIn) {
-      loginBtn.style.display = 'none';
-      logoutBtn.style.display = 'inline-block';
-      loginBtnMobile.style.display = 'none';
-      logoutBtnMobile.style.display = 'inline-block';
-    } else {
-      loginBtn.style.display = 'inline-block';
-      logoutBtn.style.display = 'none';
-      loginBtnMobile.style.display = 'inline-block';
-      logoutBtnMobile.style.display = 'none';
-    }
 
-    loginBtnMobile.addEventListener('click', () => {
-      client.loginWithRedirect({
-        appState: {
-          returnTo: window.location.pathname,
-        },
-      });
-    });
-    logoutBtnMobile.addEventListener('click', () => {
-      client.logout({ logoutParams: { returnTo: window.location.origin } });
-    });
-
-    loginBtn.addEventListener('click', () => {
-      client.loginWithRedirect({
-        appState: {
-          returnTo: window.location.pathname,
-        },
-      });
-    });
-    logoutBtn.addEventListener('click', () => {
-      client.logout({ logoutParams: { returnTo: window.location.origin } });
-    });
-  } else {
-    console.warn('[TS] ⚠️ auth buttons not found or not HTMLElements');
+  if (!loginBtn || !logoutBtn || !logoutBtnMobile || !loginBtnMobile) {
+    return;
   }
+
+  if (isLoggedIn) {
+    loginBtn.style.display = 'none';
+    logoutBtn.style.display = 'inline-block';
+    loginBtnMobile.style.display = 'none';
+    logoutBtnMobile.style.display = 'inline-block';
+  } else {
+    loginBtn.style.display = 'inline-block';
+    logoutBtn.style.display = 'none';
+    loginBtnMobile.style.display = 'inline-block';
+    logoutBtnMobile.style.display = 'none';
+  }
+
+  loginBtnMobile.addEventListener('click', () => {
+    client.loginWithRedirect({
+      appState: {
+        returnTo: window.location.pathname,
+      },
+    });
+  });
+
+  logoutBtnMobile.addEventListener('click', () => {
+    client.logout({ logoutParams: { returnTo: window.location.origin } });
+  });
+
+  loginBtn.addEventListener('click', () => {
+    client.loginWithRedirect({
+      appState: {
+        returnTo: window.location.pathname,
+      },
+    });
+  });
+
+  logoutBtn.addEventListener('click', () => {
+    client.logout({ logoutParams: { returnTo: window.location.origin } });
+  });
 }
 
 async function signInSetup(client: Auth0Client) {
@@ -201,6 +204,7 @@ async function signInSetup(client: Auth0Client) {
 
   // stop if we're not on the login page
   if (!signInBtn || !emailInput || !passwordInput || !googleBtn) return;
+  console.log('buttons found');
 
   if (window.location.search.includes('code=') && window.location.search.includes('state=')) {
     await client.handleRedirectCallback();
@@ -240,6 +244,7 @@ async function signInSetup(client: Auth0Client) {
       },
     });
   });
+  console.log('buttons wired');
 }
 
 function setPortal(customer_id: string) {
