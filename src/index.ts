@@ -178,11 +178,12 @@ function setUpLoginButtons(client: Auth0Client, isLoggedIn: boolean) {
   }
 
   loginBtnMobile.addEventListener('click', () => {
-    client.loginWithRedirect({
-      appState: {
-        returnTo: window.location.pathname,
-      },
-    });
+    window.location.href = '/sign-in?returnTo=' + encodeURIComponent(window.location.pathname);
+    // client.loginWithRedirect({
+    //   appState: {
+    //     returnTo: window.location.pathname,
+    //   },
+    // });
   });
 
   logoutBtnMobile.addEventListener('click', () => {
@@ -190,11 +191,12 @@ function setUpLoginButtons(client: Auth0Client, isLoggedIn: boolean) {
   });
 
   loginBtn.addEventListener('click', () => {
-    client.loginWithRedirect({
-      appState: {
-        returnTo: window.location.pathname,
-      },
-    });
+    window.location.href = '/sign-in?returnTo=' + encodeURIComponent(window.location.pathname);
+    // client.loginWithRedirect({
+    //   appState: {
+    //     returnTo: window.location.pathname,
+    //   },
+    // });
   });
 
   logoutBtn.addEventListener('click', () => {
@@ -210,14 +212,10 @@ async function signInSetup(client: Auth0Client) {
 
   // stop if we're not on the login page
   if (!signInBtn || !emailInput || !passwordInput || !googleBtn) return;
-  console.log('buttons found');
-
-  if (window.location.search.includes('code=') && window.location.search.includes('state=')) {
-    await client.handleRedirectCallback();
-    window.history.replaceState({}, document.title, '/');
-  }
 
   const WORKER_URL = 'https://ch-login.it-548.workers.dev/';
+  const returnLocation = new URLSearchParams(window.location.search).get('returnTo');
+  const returnTo = returnLocation ?? window.location.pathname;
 
   signInBtn.addEventListener('click', async (e) => {
     e.preventDefault();
@@ -242,15 +240,14 @@ async function signInSetup(client: Auth0Client) {
   googleBtn.addEventListener('click', async () => {
     await client.loginWithRedirect({
       appState: {
-        returnTo: window.location.pathname,
+        returnTo: returnTo,
       },
       authorizationParams: {
         connection: 'google-oauth2',
-        redirect_uri: window.location.origin,
+        redirect_uri: window.location.origin + '/auth/callback',
       },
     });
   });
-  console.log('buttons wired');
 }
 
 function setPortal(customer_id: string) {
