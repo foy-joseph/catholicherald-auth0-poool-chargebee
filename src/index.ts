@@ -38,14 +38,10 @@ async function authCallback() {
 
 async function init() {
   if (window.location.pathname === '/auth/callback') {
-    console.log('[TS] Skipping init() on /auth/callback');
     return await authCallback();
   }
 
-  console.log('[TS] 1) init() start');
-
-  // 2) Create Auth0 client
-  console.log('[TS] 2) Creating Auth0 client');
+  // Create Auth0 client
   const client = await createAuth0Client({
     clientId: 'TBO0AGlXm0010MiIexjvSTgYdLcB6RCD',
     domain: 'the-catholic-herald.us.auth0.com',
@@ -55,48 +51,40 @@ async function init() {
       redirect_uri: `${window.location.origin}/auth/callback?returnTo=${encodeURIComponent(
         window.location.pathname
       )}`,
-      // audience: 'https://authenticate.thecatholicherald.com',
     },
   });
+
   window.auth0Client = client;
   document.dispatchEvent(new Event('auth0-ready'));
-  console.log('[TS] 3) Auth0 client created and exposed on window');
 
-  // 6) Check authentication state
+  // Check authentication state
   let isLoggedIn = false;
   try {
     isLoggedIn = await client.isAuthenticated();
-    console.log('[TS] 6) isAuthenticated →', isLoggedIn);
     if (isLoggedIn) {
       const customer_id = (await client.getIdTokenClaims())?.customer_id;
       setPortal(customer_id);
     } else {
       const portalLink = document.querySelector<HTMLAnchorElement>('[data-ch-portal]');
-      if (portalLink && portalLink?.parentNode)
+      if (portalLink && portalLink?.parentNode) {
         (portalLink.parentNode as HTMLDivElement).style.display = 'none';
+      }
     }
   } catch (err) {
     console.error('[TS] ❗ isAuthenticated error', err);
   }
 
-  // 7) Retrieve and log all ID token claims
-  let claims: Record<string, any> | undefined;
+  // Retrieve and log all ID token claims
+  let claims;
   try {
     claims = await client.getIdTokenClaims();
-    console.log('[TS] 7) getIdTokenClaims →', claims);
   } catch (err) {
     console.error('[TS] ❗ getIdTokenClaims error', err);
   }
 
-  // 8) Check custom subscriber claim
+  // Check custom subscriber claim
   const claimKey = 'https://catholicherald.com/claims/subscriber';
   const isSubscriber = claims?.[claimKey] === true;
-  console.log(
-    `[TS] 8) Claim [${claimKey}] →`,
-    claims?.[claimKey],
-    '→ isSubscriber =',
-    isSubscriber
-  );
 
   const validSubscriptionTypes = [
     'catholic-herald-digital-only-GBP-Monthly',
@@ -130,32 +118,27 @@ async function init() {
 
   const claimKeyCatholic = 'https://catholicherald.com/claims/item_price_ids';
 
-  const planIds = Array.isArray(claims?.[claimKeyCatholic]) ? claims![claimKeyCatholic] : [];
+  const planIds = Array.isArray(claims?.[claimKeyCatholic]) ? claims[claimKeyCatholic] : [];
 
   const isCatholicSubscriber = planIds.some((id) =>
     validSubscriptionTypes.some((type) => id === type)
   );
 
-  // 9) Branch on subscription
+  // Branch on subscription
   if (isSubscriber && isCatholicSubscriber) {
-    console.log('[TS] 9) Subscriber detected, disabling Poool');
-
     // Disable Poool SDK
     document.dispatchEvent(new Event('poool:disable'));
     document.querySelectorAll('#poool-widget,[data-poool]').forEach((el) => el.remove());
   } else {
     document.dispatchEvent(new Event('no-subscription'));
-    console.log('[TS] 9) No subscription found, paywall remains');
   }
 
-  // 10) Wire login/logout buttons
+  // Wire login/logout buttons
 
-  console.log('[TS] 10) Wiring login/logout buttons');
   const loginBtn = document.getElementById('auth-login');
   const logoutBtn = document.getElementById('auth-logout');
   const loginBtnMobile = document.getElementById('auth-login-mobile');
   const logoutBtnMobile = document.getElementById('auth-logout-mobile');
-  console.log('[TS] 10) loginBtn →', loginBtn, '| logoutBtn →', logoutBtn);
   if (loginBtn && logoutBtn && logoutBtnMobile && loginBtnMobile) {
     if (isLoggedIn) {
       loginBtn.style.display = 'none';
@@ -181,23 +164,17 @@ async function init() {
       });
     });
     logoutBtnMobile.addEventListener('click', () => {
-      console.log('[TS] ▶️ logout clicked');
       client.logout({ logoutParams: { returnTo: window.location.origin } });
     });
 
     loginBtn.addEventListener('click', () => {
-      console.log('[TS] ▶️ login clicked');
       client.loginWithRedirect({
         appState: {
           returnTo: window.location.pathname,
         },
-        // authorizationParams: {
-        //   redirect_uri: `${window.location.origin}/auth/callback`,
-        // },
       });
     });
     logoutBtn.addEventListener('click', () => {
-      console.log('[TS] ▶️ logout clicked');
       client.logout({ logoutParams: { returnTo: window.location.origin } });
     });
   } else {
@@ -205,8 +182,6 @@ async function init() {
   }
 
   signInSetup(client);
-
-  console.log('[TS] 11) init() complete');
 }
 
 init().catch((err) => console.error('[TS] ❗ init error', err));
