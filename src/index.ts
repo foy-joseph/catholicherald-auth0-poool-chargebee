@@ -204,10 +204,66 @@ async function init(): Promise<void> {
     console.warn('[TS] ⚠️ auth buttons not found or not HTMLElements');
   }
 
+  signInSetup(client);
+
   console.log('[TS] 11) init() complete');
 }
 
 init().catch((err) => console.error('[TS] ❗ init error', err));
+
+async function signInSetup(client: Auth0Client) {
+  const signInBtn = document.getElementById('ch-sign-in-button');
+  const emailInput = document.getElementById('email');
+  const passwordInput = document.getElementById('password');
+  const googleBtn = document.getElementById('ch-sign-in-with-google');
+
+  // stop if we're not on the login page
+  if (!signInBtn || !emailInput || !passwordInput || !googleBtn) return;
+
+  if (window.location.search.includes('code=') && window.location.search.includes('state=')) {
+    await client.handleRedirectCallback();
+    window.history.replaceState({}, document.title, '/');
+  }
+
+  // const isAuthenticated = await client.isAuthenticated();
+  // if (isAuthenticated) {
+  //   await client.getTokenSilently();
+  //   (await client.getIdTokenClaims()).__raw;
+  // }
+
+  const WORKER_URL = 'https://ch-login.it-548.workers.dev/';
+
+  signInBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    const email = (emailInput as HTMLInputElement)?.value;
+    const password = (passwordInput as HTMLInputElement)?.value;
+
+    const res = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await res.json();
+    // data will contain access_token, id_token, refresh_token (if configured)
+    if (data.access_token) {
+      localStorage.setItem('access_token', data.access_token);
+      alert('Login successful!');
+    }
+  });
+
+  googleBtn.addEventListener('click', async () => {
+    await client.loginWithRedirect({
+      appState: {
+        returnTo: window.location.pathname,
+      },
+      authorizationParams: {
+        connection: 'google-oauth2',
+        redirect_uri: window.location.origin,
+      },
+    });
+  });
+}
 
 function setPortal(customer_id: string) {
   document.querySelector('[data-ch-portal]')?.addEventListener('click', (e) => {
