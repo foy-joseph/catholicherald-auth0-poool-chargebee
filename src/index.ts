@@ -179,28 +179,16 @@ function setUpLoginButtons(client: Auth0Client, isLoggedIn: boolean) {
 
   loginBtnMobile.addEventListener('click', () => {
     window.location.href = '/sign-in?returnTo=' + encodeURIComponent(window.location.pathname);
-    // client.loginWithRedirect({
-    //   appState: {
-    //     returnTo: window.location.pathname,
-    //   },
-    // });
+  });
+  loginBtn.addEventListener('click', () => {
+    window.location.href = '/sign-in?returnTo=' + encodeURIComponent(window.location.pathname);
   });
 
   logoutBtnMobile.addEventListener('click', () => {
-    client.logout({ logoutParams: { returnTo: window.location.origin } });
+    client.logout({ logoutParams: { returnTo: window.location.pathname } });
   });
-
-  loginBtn.addEventListener('click', () => {
-    window.location.href = '/sign-in?returnTo=' + encodeURIComponent(window.location.pathname);
-    // client.loginWithRedirect({
-    //   appState: {
-    //     returnTo: window.location.pathname,
-    //   },
-    // });
-  });
-
   logoutBtn.addEventListener('click', () => {
-    client.logout({ logoutParams: { returnTo: window.location.origin } });
+    client.logout({ logoutParams: { returnTo: window.location.pathname } });
   });
 }
 
