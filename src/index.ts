@@ -6,7 +6,7 @@ declare global {
   }
 }
 
-async function authCallback(): Promise<void> {
+async function authCallback() {
   const client = await createAuth0Client({
     domain: 'the-catholic-herald.us.auth0.com',
     clientId: 'TBO0AGlXm0010MiIexjvSTgYdLcB6RCD',
@@ -36,7 +36,7 @@ async function authCallback(): Promise<void> {
   }
 }
 
-async function init(): Promise<void> {
+async function init() {
   if (window.location.pathname === '/auth/callback') {
     console.log('[TS] Skipping init() on /auth/callback');
     return await authCallback();
