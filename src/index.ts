@@ -6,10 +6,6 @@ declare global {
   }
 }
 
-function showTokens(accessToken: string, idToken: string) {
-  console.log({ accessToken, idToken });
-}
-
 async function authCallback() {
   const client = await createAuth0Client({
     domain: 'the-catholic-herald.us.auth0.com',
@@ -75,7 +71,7 @@ async function init() {
       const accessToken = await client.getTokenSilently();
       const idTokenClaims = await client.getIdTokenClaims();
       const idToken = idTokenClaims?.__raw;
-      showTokens(accessToken, idToken ?? '');
+      console.log({ accessToken, idToken });
       const customer_id = idTokenClaims?.customer_id;
       setPortal(customer_id ?? '');
     } else {
@@ -218,10 +214,9 @@ async function signInSetup(client: Auth0Client) {
 
     const data = await res.json();
     // data will contain access_token, id_token, refresh_token (if configured)
-    if (data.access_token) {
-      localStorage.setItem('access_token', data.access_token);
-      localStorage.setItem('id_token', data.id_token);
-      showTokens(data.access_token, data.id_token);
+    if (data.access_token && data.id_token) {
+      const parsedJwt = JSON.parse(atob(data.id_token.split('.')[1]));
+      console.log(data);
     }
   });
 
