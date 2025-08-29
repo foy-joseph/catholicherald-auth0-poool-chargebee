@@ -45,6 +45,12 @@ async function init() {
     return await authCallback();
   }
 
+  console.log(
+    `${window.location.origin}/auth/callback?returnTo=${encodeURIComponent(
+      window.location.pathname
+    )}`
+  );
+
   // Create Auth0 client
   const client = await createAuth0Client({
     clientId: 'TBO0AGlXm0010MiIexjvSTgYdLcB6RCD',
