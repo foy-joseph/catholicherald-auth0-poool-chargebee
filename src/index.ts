@@ -197,7 +197,7 @@ async function signInSetup(client: Auth0Client) {
   // stop if we're not on the login page
   if (!signInBtn || !emailInput || !passwordInput || !googleBtn) return;
 
-  const WORKER_URL = 'https://ch-login.it-548.workers.dev/';
+  const WORKER_URL = 'https://ch-login.it-548.workers.dev/login';
   const returnLocation = new URLSearchParams(window.location.search).get('returnTo');
   const returnTo = returnLocation ?? window.location.pathname;
 
