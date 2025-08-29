@@ -1,11 +1,8 @@
 import { type Auth0Client, createAuth0Client } from '@auth0/auth0-spa-js';
 
-// Extend Window interface for our Auth0 client
 declare global {
   interface Window {
     auth0Client: Auth0Client;
-    customerId: string;
-    articleReady: boolean;
   }
 }
 
@@ -64,22 +61,6 @@ async function init(): Promise<void> {
   window.auth0Client = client;
   document.dispatchEvent(new Event('auth0-ready'));
   console.log('[TS] 3) Auth0 client created and exposed on window');
-
-  // 4) Handle redirect callback
-  // const qs = new URLSearchParams(window.location.search);
-  // if (qs.has('code') && qs.has('state')) {
-  //   console.log('[TS] 4) Detected code/state in URL, calling handleRedirectCallback');
-  //   try {
-  //     const { appState } = await client.handleRedirectCallback();
-  //     // history.replaceState({}, document.title, window.location.pathname);
-  //     window.location.href = appState?.returnTo || '/';
-  //     console.log('[TS] 5) handleRedirectCallback completed');
-  //   } catch (err) {
-  //     console.error('[TS] ❗ handleRedirectCallback error', err);
-  //   }
-  // } else {
-  //   console.log('[TS] 4) No code/state in URL, skipping callback');
-  // }
 
   // 6) Check authentication state
   let isLoggedIn = false;
@@ -158,19 +139,10 @@ async function init(): Promise<void> {
   // 9) Branch on subscription
   if (isSubscriber && isCatholicSubscriber) {
     console.log('[TS] 9) Subscriber detected, disabling Poool');
+
     // Disable Poool SDK
-    (window as any).poool = () => {
-      // nothing
-    };
-    //if (window?.articleReady === true) {
     document.dispatchEvent(new Event('poool:disable'));
     document.querySelectorAll('#poool-widget,[data-poool]').forEach((el) => el.remove());
-    //} else {
-    // document.addEventListener('article-ready', function () {
-    //   document.dispatchEvent(new Event('poool:disable'));
-    //   document.querySelectorAll('#poool-widget,[data-poool]').forEach((el) => el.remove());
-    // });
-    // }
   } else {
     document.dispatchEvent(new Event('no-subscription'));
     console.log('[TS] 9) No subscription found, paywall remains');
