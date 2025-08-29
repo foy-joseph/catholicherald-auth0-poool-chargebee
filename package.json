@@ -41,6 +41,7 @@
     "@finsweet/tsconfig": "^1.3.1",
     "@playwright/test": "^1.32.1",
     "@stripe/stripe-js": "^1.54.0",
+    "@types/jquery": "^3.5.33",
     "@typescript-eslint/eslint-plugin": "^5.57.0",
     "@typescript-eslint/parser": "^5.57.0",
     "cross-env": "^7.0.3",
