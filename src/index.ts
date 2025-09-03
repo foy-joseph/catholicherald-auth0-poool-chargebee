@@ -251,7 +251,8 @@ async function signInSetup(client: Auth0Client) {
     // data will contain access_token, id_token, refresh_token (if configured)
     if (data.id_token) {
       localStorage.setItem('ch_id_token', data.id_token);
-      window.location.href = returnTo;
+      console.log(data);
+      // window.location.href = returnTo;
     } else {
       console.log('no id_token found');
     }
