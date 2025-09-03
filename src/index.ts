@@ -179,9 +179,11 @@ function setUpLoginButtons(client: Auth0Client, isLoggedIn: boolean) {
   });
 
   logoutBtnMobile.addEventListener('click', () => {
+    localStorage.removeItem('ch_id_token');
     client.logout({ logoutParams: { returnTo: window.location.pathname } });
   });
   logoutBtn.addEventListener('click', () => {
+    localStorage.removeItem('ch_id_token');
     client.logout({ logoutParams: { returnTo: window.location.pathname } });
   });
 }
