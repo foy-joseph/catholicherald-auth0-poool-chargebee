@@ -206,7 +206,7 @@ async function getUser() {
 
 // assumes there is already an http cookie set
 async function refreshToken() {
-  const WORKER_URL = 'https://ch-login.it-548.workers.dev/refresh';
+  const WORKER_URL = 'https://login.catholicherald.com/refresh';
   const res = await fetch(WORKER_URL, {
     method: 'POST',
     credentials: 'include',
@@ -231,7 +231,7 @@ async function signInSetup(client: Auth0Client) {
 
   console.log('all inputs found');
 
-  const WORKER_URL = 'https://ch-login.it-548.workers.dev/login';
+  const WORKER_URL = 'https://login.catholicherald.com/login';
   const returnLocation = new URLSearchParams(window.location.search).get('returnTo');
   const returnTo = returnLocation ?? window.location.pathname;
 
