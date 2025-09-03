@@ -227,12 +227,15 @@ async function signInSetup(client: Auth0Client) {
   // stop if we're not on the login page
   if (!signInBtn || !emailInput || !passwordInput || !googleBtn) return;
 
+  console.log('all inputs found');
+
   const WORKER_URL = 'https://ch-login.it-548.workers.dev/login';
   const returnLocation = new URLSearchParams(window.location.search).get('returnTo');
   const returnTo = returnLocation ?? window.location.pathname;
 
   signInBtn.addEventListener('click', async (e) => {
     e.preventDefault();
+    console.log('sign in button clicked');
     const email = (emailInput as HTMLInputElement)?.value;
     const password = (passwordInput as HTMLInputElement)?.value;
 
@@ -246,6 +249,9 @@ async function signInSetup(client: Auth0Client) {
     // data will contain access_token, id_token, refresh_token (if configured)
     if (data.id_token) {
       localStorage.setItem('ch_id_token', data.id_token);
+      console.log(data.id_token);
+    } else {
+      console.log('no id_token found');
     }
   });
 
