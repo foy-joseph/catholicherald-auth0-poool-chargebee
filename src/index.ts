@@ -212,7 +212,7 @@ async function refreshToken() {
     credentials: 'include',
   });
   if (!res.ok) {
-    console.log(res);
+    console.log(await res.json());
     throw new Error('Refresh failed');
   }
   const { access_token, id_token, expires_in } = await res.json();
