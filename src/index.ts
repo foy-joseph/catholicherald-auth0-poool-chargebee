@@ -64,15 +64,18 @@ async function init() {
 
   window.auth0Client = client;
 
-  // check local storage for user
-  let claims = getUser();
-
+  let claims;
   // check if user is logged in via Auth0
   let isLoggedIn = false;
   try {
     isLoggedIn = await client.isAuthenticated();
     if (isLoggedIn) {
+      // check auth0 for user
       claims = await client.getIdTokenClaims();
+    } else {
+      // check local storage for user
+      claims = await getUser();
+      isLoggedIn = !!claims;
     }
   } catch (err) {
     console.error('[TS] ❗ isAuthenticated error', err);
@@ -183,10 +186,36 @@ function setUpLoginButtons(client: Auth0Client, isLoggedIn: boolean) {
   });
 }
 
-function getUser(): IdToken | undefined {
+// gets the user from the local storage token, or gets a new token if the old one is expired
+async function getUser() {
   const token = localStorage.getItem('ch_id_token');
   if (!token) return undefined;
-  return JSON.parse(atob(token.split('.')[1]));
+  let user = JSON.parse(atob(token.split('.')[1]));
+
+  const timeNow = Math.floor(Date.now() / 1000); // current time in seconds
+  if (timeNow >= user.exp) {
+    const newToken = await refreshToken();
+    user = JSON.parse(atob(newToken.split('.')[1]));
+    if (!user) return undefined;
+    console.log('Token refreshed');
+  }
+  return user;
+}
+
+// assumes there is already an http cookie set
+async function refreshToken() {
+  const WORKER_URL = 'https://ch-login.it-548.workers.dev/refresh';
+  const res = await fetch(WORKER_URL, {
+    method: 'POST',
+    credentials: 'include',
+  });
+  if (!res.ok) {
+    console.log(res);
+    throw new Error('Refresh failed');
+  }
+  const { access_token, id_token, expires_in } = await res.json();
+  localStorage.setItem('ch_id_token', id_token);
+  return id_token;
 }
 
 async function signInSetup(client: Auth0Client) {
