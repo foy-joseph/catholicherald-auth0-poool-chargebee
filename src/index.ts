@@ -192,11 +192,12 @@ function setUpLoginButtons(client: Auth0Client, isLoggedIn: boolean) {
 async function getUser() {
   const token = localStorage.getItem('ch_id_token');
   if (!token) return undefined;
-  let user = JSON.parse(atob(token.split('.')[1]));
+  const tokenData = JSON.parse(token);
+  let user = JSON.parse(atob(tokenData.id_token.split('.')[1]));
 
   const timeNow = Math.floor(Date.now() / 1000); // current time in seconds
   if (timeNow >= user.exp) {
-    const newToken = await refreshToken();
+    const newToken = await refreshToken(tokenData.refresh_token);
     user = JSON.parse(atob(newToken.split('.')[1]));
     if (!user) return undefined;
     console.log('Token refreshed');
@@ -204,20 +205,22 @@ async function getUser() {
   return user;
 }
 
-// assumes there is already an http cookie set
-async function refreshToken() {
-  const WORKER_URL = 'https://login.catholicherald.com/refresh';
+async function refreshToken(refresh_token: string) {
+  const WORKER_URL = 'https://ch-login.it-548.workers.dev/refresh';
   const res = await fetch(WORKER_URL, {
     method: 'POST',
-    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ refresh_token }),
   });
   if (!res.ok) {
     console.log(await res.json());
     throw new Error('Refresh failed');
   }
-  const { access_token, id_token, expires_in } = await res.json();
-  localStorage.setItem('ch_id_token', id_token);
-  return id_token;
+  const data = await res.json();
+  localStorage.setItem('ch_id_token', JSON.stringify(data));
+  return data.id_token;
 }
 
 async function signInSetup(client: Auth0Client) {
@@ -231,7 +234,7 @@ async function signInSetup(client: Auth0Client) {
 
   console.log('all inputs found');
 
-  const WORKER_URL = 'https://login.catholicherald.com/login';
+  const WORKER_URL = 'https://ch-login.it-548.workers.dev/login';
   const returnLocation = new URLSearchParams(window.location.search).get('returnTo');
   const returnTo = returnLocation ?? window.location.pathname;
 
@@ -250,11 +253,11 @@ async function signInSetup(client: Auth0Client) {
     const data = await res.json();
     // data will contain access_token, id_token, refresh_token (if configured)
     if (data.id_token) {
-      localStorage.setItem('ch_id_token', data.id_token);
+      localStorage.setItem('ch_id_token', JSON.stringify(data));
       console.log(data);
       // window.location.href = returnTo;
     } else {
-      console.log('no id_token found');
+      console.log('no id_token found', data);
     }
   });
 
