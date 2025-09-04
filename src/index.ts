@@ -324,11 +324,11 @@ async function signInSetup(client: Auth0Client) {
   });
 
   resetPasswordBtn.addEventListener('click', async () => {
-    emailInput.style.display = 'block';
-    passwordInput.style.display = 'block';
-    forgotPasswordBtn.style.display = 'block';
-    signInBtn.style.display = 'block';
-    googleBtnWrapper.style.display = 'block';
+    emailInput.style.display = 'none';
+    passwordInput.style.display = 'none';
+    forgotPasswordBtn.style.display = 'none';
+    signInBtn.style.display = 'none';
+    googleBtnWrapper.style.display = 'none';
     loadingSpinner.style.display = 'flex';
 
     const email = (emailInput as HTMLInputElement)?.value;
