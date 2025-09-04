@@ -240,6 +240,8 @@ async function signInSetup(client: Auth0Client) {
   const alternativeLoginMethod = document.getElementById('ch-alternative-login-method');
   const resetPasswordBtn = document.getElementById('ch-reset-password-button');
   const resetPasswordBackLink = document.getElementById('ch-login-back-link');
+  const loadingSpinner = document.getElementById('ch-loading-spinner');
+  const passwordResetConfirmation = document.getElementById('ch-password-reset-confirmation');
   // stop if we're not on the login page
   if (
     !signInBtn ||
@@ -249,7 +251,9 @@ async function signInSetup(client: Auth0Client) {
     !forgotPasswordBtn ||
     !alternativeLoginMethod ||
     !resetPasswordBtn ||
-    !resetPasswordBackLink
+    !resetPasswordBackLink ||
+    !loadingSpinner ||
+    !passwordResetConfirmation
   )
     return;
 
@@ -265,6 +269,15 @@ async function signInSetup(client: Auth0Client) {
     const email = (emailInput as HTMLInputElement)?.value;
     const password = (passwordInput as HTMLInputElement)?.value;
 
+    loadingSpinner.style.display = 'flex';
+
+    emailInput.style.display = 'none';
+    passwordInput.style.display = 'none';
+    forgotPasswordBtn.style.display = 'none';
+    signInBtn.style.display = 'none';
+    googleBtn.style.display = 'none';
+    alternativeLoginMethod.style.display = 'none';
+
     const res = await fetch(WORKER_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -278,7 +291,14 @@ async function signInSetup(client: Auth0Client) {
       window.location.href = returnTo;
     } else {
       console.log('no id_token found', data);
+      emailInput.style.display = 'block';
+      passwordInput.style.display = 'block';
+      forgotPasswordBtn.style.display = 'block';
+      signInBtn.style.display = 'block';
+      googleBtn.style.display = 'block';
+      alternativeLoginMethod.style.display = 'flex';
     }
+    loadingSpinner.style.display = 'none';
   });
 
   forgotPasswordBtn.addEventListener('click', async () => {
@@ -296,14 +316,24 @@ async function signInSetup(client: Auth0Client) {
     forgotPasswordBtn.style.display = 'block';
     signInBtn.style.display = 'block';
     googleBtn.style.display = 'block';
-    alternativeLoginMethod.style.display = 'block';
+    alternativeLoginMethod.style.display = 'flex';
     resetPasswordBtn.style.display = 'none';
     resetPasswordBackLink.style.display = 'none';
   });
 
   resetPasswordBtn.addEventListener('click', async () => {
+    emailInput.style.display = 'block';
+    passwordInput.style.display = 'block';
+    forgotPasswordBtn.style.display = 'block';
+    signInBtn.style.display = 'block';
+    googleBtn.style.display = 'block';
+    loadingSpinner.style.display = 'flex';
+
     const email = (emailInput as HTMLInputElement)?.value;
-    await forgotPassword(email);
+    const message = await forgotPassword(email);
+    passwordResetConfirmation.textContent = message;
+    passwordResetConfirmation.style.display = 'block';
+    loadingSpinner.style.display = 'none';
   });
 
   googleBtn.addEventListener('click', async () => {
@@ -352,6 +382,9 @@ async function forgotPassword(email: string) {
     body: JSON.stringify({ email }),
   });
 
-  const data = await res.json();
-  console.log(data); // "We've just sent you an email to reset your password."
+  if (res.status === 200) {
+    const data = await res.json();
+    return data;
+  }
+  return null;
 }
