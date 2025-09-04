@@ -219,7 +219,15 @@ async function refreshToken(refresh_token: string) {
     throw new Error('Refresh failed');
   }
   const data = await res.json();
-  localStorage.setItem('ch_id_token', JSON.stringify(data));
+  // replace the old token with the new one
+  // reuses the same refresh token unless we get a new one
+  localStorage.setItem(
+    'ch_id_token',
+    JSON.stringify({
+      refresh_token,
+      ...data,
+    })
+  );
   return data.id_token;
 }
 
