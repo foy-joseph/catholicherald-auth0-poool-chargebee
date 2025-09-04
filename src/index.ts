@@ -286,7 +286,7 @@ async function signInSetup(client: Auth0Client) {
     forgotPasswordBtn.style.display = 'none';
     signInBtn.style.display = 'none';
     googleBtn.style.display = 'none';
-    alternativeLoginMethod.style.display = 'block';
+    alternativeLoginMethod.style.display = 'none';
     resetPasswordBtn.style.display = 'block';
     resetPasswordBackLink.style.display = 'block';
   });
@@ -296,7 +296,7 @@ async function signInSetup(client: Auth0Client) {
     forgotPasswordBtn.style.display = 'block';
     signInBtn.style.display = 'block';
     googleBtn.style.display = 'block';
-    alternativeLoginMethod.style.display = 'none';
+    alternativeLoginMethod.style.display = 'block';
     resetPasswordBtn.style.display = 'none';
     resetPasswordBackLink.style.display = 'none';
   });
