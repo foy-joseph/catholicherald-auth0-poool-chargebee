@@ -236,6 +236,7 @@ async function signInSetup(client: Auth0Client) {
   const emailInput = document.getElementById('email');
   const passwordInput = document.getElementById('password');
   const googleBtn = document.getElementById('ch-sign-in-with-google');
+  const googleBtnWrapper = document.querySelector<HTMLDivElement>('.continue-with-google');
   const forgotPasswordBtn = document.getElementById('ch-forgot-password');
   const alternativeLoginMethod = document.getElementById('ch-alternative-login-method');
   const resetPasswordBtn = document.getElementById('ch-reset-password-button');
@@ -248,6 +249,7 @@ async function signInSetup(client: Auth0Client) {
     !emailInput ||
     !passwordInput ||
     !googleBtn ||
+    !googleBtnWrapper ||
     !forgotPasswordBtn ||
     !alternativeLoginMethod ||
     !resetPasswordBtn ||
@@ -275,7 +277,7 @@ async function signInSetup(client: Auth0Client) {
     passwordInput.style.display = 'none';
     forgotPasswordBtn.style.display = 'none';
     signInBtn.style.display = 'none';
-    googleBtn.style.display = 'none';
+    googleBtnWrapper.style.display = 'none';
     alternativeLoginMethod.style.display = 'none';
 
     const res = await fetch(WORKER_URL, {
@@ -295,7 +297,7 @@ async function signInSetup(client: Auth0Client) {
       passwordInput.style.display = 'block';
       forgotPasswordBtn.style.display = 'block';
       signInBtn.style.display = 'block';
-      googleBtn.style.display = 'block';
+      googleBtnWrapper.style.display = 'block';
       alternativeLoginMethod.style.display = 'flex';
     }
     loadingSpinner.style.display = 'none';
@@ -305,7 +307,7 @@ async function signInSetup(client: Auth0Client) {
     passwordInput.style.display = 'none';
     forgotPasswordBtn.style.display = 'none';
     signInBtn.style.display = 'none';
-    googleBtn.style.display = 'none';
+    googleBtnWrapper.style.display = 'none';
     alternativeLoginMethod.style.display = 'none';
     resetPasswordBtn.style.display = 'block';
     resetPasswordBackLink.style.display = 'block';
@@ -315,7 +317,7 @@ async function signInSetup(client: Auth0Client) {
     passwordInput.style.display = 'block';
     forgotPasswordBtn.style.display = 'block';
     signInBtn.style.display = 'block';
-    googleBtn.style.display = 'block';
+    googleBtnWrapper.style.display = 'block';
     alternativeLoginMethod.style.display = 'flex';
     resetPasswordBtn.style.display = 'none';
     resetPasswordBackLink.style.display = 'none';
@@ -326,7 +328,7 @@ async function signInSetup(client: Auth0Client) {
     passwordInput.style.display = 'block';
     forgotPasswordBtn.style.display = 'block';
     signInBtn.style.display = 'block';
-    googleBtn.style.display = 'block';
+    googleBtnWrapper.style.display = 'block';
     loadingSpinner.style.display = 'flex';
 
     const email = (emailInput as HTMLInputElement)?.value;
