@@ -236,9 +236,22 @@ async function signInSetup(client: Auth0Client) {
   const emailInput = document.getElementById('email');
   const passwordInput = document.getElementById('password');
   const googleBtn = document.getElementById('ch-sign-in-with-google');
-
+  const forgotPasswordBtn = document.getElementById('ch-forgot-password');
+  const alternativeLoginMethod = document.getElementById('ch-alternative-login-method');
+  const resetPasswordBtn = document.getElementById('ch-reset-password-button');
+  const resetPasswordBackLink = document.getElementById('ch-login-back-link');
   // stop if we're not on the login page
-  if (!signInBtn || !emailInput || !passwordInput || !googleBtn) return;
+  if (
+    !signInBtn ||
+    !emailInput ||
+    !passwordInput ||
+    !googleBtn ||
+    !forgotPasswordBtn ||
+    !alternativeLoginMethod ||
+    !resetPasswordBtn ||
+    !resetPasswordBackLink
+  )
+    return;
 
   console.log('all inputs found');
 
@@ -262,11 +275,35 @@ async function signInSetup(client: Auth0Client) {
     // data will contain access_token, id_token, refresh_token (if configured)
     if (data.id_token) {
       localStorage.setItem('ch_id_token', JSON.stringify(data));
-      console.log(data);
-      // window.location.href = returnTo;
+      window.location.href = returnTo;
     } else {
       console.log('no id_token found', data);
     }
+  });
+
+  forgotPasswordBtn.addEventListener('click', async () => {
+    passwordInput.style.display = 'none';
+    forgotPasswordBtn.style.display = 'none';
+    signInBtn.style.display = 'none';
+    googleBtn.style.display = 'none';
+    alternativeLoginMethod.style.display = 'block';
+    resetPasswordBtn.style.display = 'block';
+    resetPasswordBackLink.style.display = 'block';
+  });
+
+  resetPasswordBackLink.addEventListener('click', async () => {
+    passwordInput.style.display = 'block';
+    forgotPasswordBtn.style.display = 'block';
+    signInBtn.style.display = 'block';
+    googleBtn.style.display = 'block';
+    alternativeLoginMethod.style.display = 'none';
+    resetPasswordBtn.style.display = 'none';
+    resetPasswordBackLink.style.display = 'none';
+  });
+
+  resetPasswordBtn.addEventListener('click', async () => {
+    const email = (emailInput as HTMLInputElement)?.value;
+    await forgotPassword(email);
   });
 
   googleBtn.addEventListener('click', async () => {
@@ -305,4 +342,15 @@ function setPortal(customer_id: string) {
       },
     });
   });
+}
+
+async function forgotPassword(email: string) {
+  const res = await fetch('https://the-catholic-herald.us.auth0.com/forgot-password', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
+  });
+
+  const data = await res.json();
+  console.log(data); // "We've just sent you an email to reset your password."
 }
