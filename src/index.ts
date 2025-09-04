@@ -345,7 +345,8 @@ function setPortal(customer_id: string) {
 }
 
 async function forgotPassword(email: string) {
-  const res = await fetch('https://the-catholic-herald.us.auth0.com/forgot-password', {
+  const WORKER_URL = 'https://ch-login.it-548.workers.dev/forgot-password';
+  const res = await fetch(WORKER_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email }),
