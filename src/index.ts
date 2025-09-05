@@ -302,7 +302,8 @@ async function signInSetup(client: Auth0Client) {
       localStorage.setItem('ch_id_token', JSON.stringify(data));
       window.location.href = returnTo;
     } else {
-      errorFeedback.textContent = data.error.error_description;
+      console.log(data.error);
+      errorFeedback.textContent = JSON.parse(data.error).error_description;
       errorFeedback.style.display = 'block';
       emailInput.style.display = 'block';
       passwordInput.style.display = 'block';
