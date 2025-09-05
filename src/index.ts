@@ -64,6 +64,8 @@ async function init() {
 
   window.auth0Client = client;
 
+  let mode: 'auth0' | 'api' | '' = '';
+
   let claims;
   // check if user is logged in via Auth0
   let isLoggedIn = false;
@@ -72,10 +74,14 @@ async function init() {
     if (isLoggedIn) {
       // check auth0 for user
       claims = await client.getIdTokenClaims();
+      mode = 'auth0';
     } else {
       // check local storage for user
       claims = await getUser();
       isLoggedIn = !!claims;
+      if (isLoggedIn === true) {
+        mode = 'api';
+      }
     }
   } catch (err) {
     console.error('[TS] ❗ isAuthenticated error', err);
@@ -141,14 +147,14 @@ async function init() {
     document.dispatchEvent(new Event('no-subscription'));
   }
 
-  setUpLoginButtons(client, isLoggedIn);
+  setUpLoginButtons(client, isLoggedIn, mode);
 
   await signInSetup(client);
 }
 
 init().catch((err) => console.error('[TS] ❗ init error', err));
 
-function setUpLoginButtons(client: Auth0Client, isLoggedIn: boolean) {
+function setUpLoginButtons(client: Auth0Client, isLoggedIn: boolean, mode: 'auth0' | 'api' | '') {
   // Wire login/logout buttons
   const loginBtn = document.getElementById('auth-login');
   const logoutBtn = document.getElementById('auth-logout');
@@ -179,12 +185,24 @@ function setUpLoginButtons(client: Auth0Client, isLoggedIn: boolean) {
   });
 
   logoutBtnMobile.addEventListener('click', () => {
-    localStorage.removeItem('ch_id_token');
-    client.logout({ logoutParams: { returnTo: window.location.pathname } });
+    if (mode === 'auth0') {
+      client.logout({ logoutParams: { returnTo: window.location.pathname } });
+    } else if (mode === 'api') {
+      localStorage.removeItem('ch_id_token');
+      window.location.reload();
+    } else {
+      localStorage.removeItem('ch_id_token');
+    }
   });
   logoutBtn.addEventListener('click', () => {
-    localStorage.removeItem('ch_id_token');
-    client.logout({ logoutParams: { returnTo: window.location.pathname } });
+    if (mode === 'auth0') {
+      client.logout({ logoutParams: { returnTo: window.location.pathname } });
+    } else if (mode === 'api') {
+      localStorage.removeItem('ch_id_token');
+      window.location.reload();
+    } else {
+      localStorage.removeItem('ch_id_token');
+    }
   });
 }
 
