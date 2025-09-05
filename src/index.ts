@@ -403,9 +403,8 @@ async function forgotPassword(email: string) {
     body: JSON.stringify({ email }),
   });
 
-  if (res.status === 200) {
-    const data = await res.json();
-    return data;
-  }
+  const data = await res.json();
+  return data;
+
   return null;
 }
