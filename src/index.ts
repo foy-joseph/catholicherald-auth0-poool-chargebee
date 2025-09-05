@@ -301,8 +301,12 @@ async function signInSetup(client: Auth0Client) {
       signInBtn.style.display = 'block';
       googleBtnWrapper.style.display = 'block';
       alternativeLoginMethod.style.display = 'flex';
+      loadingSpinner.style.display = 'none';
+
+      passwordResetConfirmation.textContent =
+        'There was an issue logging in. Please contact support.';
+      passwordResetConfirmation.style.display = 'block';
     }
-    loadingSpinner.style.display = 'none';
   });
 
   forgotPasswordBtn.addEventListener('click', async () => {
