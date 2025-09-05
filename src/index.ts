@@ -345,6 +345,7 @@ async function signInSetup(client: Auth0Client) {
     errorFeedback.style.display = 'none';
     const email = (emailInput as HTMLInputElement)?.value;
     const message = await forgotPassword(email);
+    console.log('message', message);
     if (message.error) {
       errorFeedback.textContent = message.error;
       errorFeedback.style.display = 'block';
