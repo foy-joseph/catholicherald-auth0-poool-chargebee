@@ -185,28 +185,16 @@ function setUpLoginButtons(client: Auth0Client, isLoggedIn: boolean, mode: 'auth
   });
 
   logoutBtnMobile.addEventListener('click', () => {
-    if (mode === 'auth0') {
-      client.logout({
-        logoutParams: { returnTo: window.location.origin + window.location.pathname },
-      });
-    } else if (mode === 'api') {
-      localStorage.removeItem('ch_id_token');
-      window.location.reload();
-    } else {
-      localStorage.removeItem('ch_id_token');
-    }
+    localStorage.removeItem('ch_id_token');
+    client.logout({
+      logoutParams: { returnTo: window.location.origin + window.location.pathname },
+    });
   });
   logoutBtn.addEventListener('click', () => {
-    if (mode === 'auth0') {
-      client.logout({
-        logoutParams: { returnTo: window.location.origin + window.location.pathname },
-      });
-    } else if (mode === 'api') {
-      localStorage.removeItem('ch_id_token');
-      window.location.reload();
-    } else {
-      localStorage.removeItem('ch_id_token');
-    }
+    localStorage.removeItem('ch_id_token');
+    client.logout({
+      logoutParams: { returnTo: window.location.origin + window.location.pathname },
+    });
   });
 }
 
