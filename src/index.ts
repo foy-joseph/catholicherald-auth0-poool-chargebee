@@ -200,7 +200,6 @@ async function getUser() {
     const newToken = await refreshToken(tokenData.refresh_token);
     user = JSON.parse(atob(newToken.split('.')[1]));
     if (!user) return undefined;
-    console.log('Token refreshed');
   }
   return user;
 }
@@ -215,7 +214,6 @@ async function refreshToken(refresh_token: string) {
     body: JSON.stringify({ refresh_token }),
   });
   if (!res.ok) {
-    console.log(await res.json());
     throw new Error('Refresh failed');
   }
   const data = await res.json();
@@ -263,15 +261,12 @@ async function signInSetup(client: Auth0Client) {
   )
     return;
 
-  console.log('all inputs found');
-
   const WORKER_URL = 'https://ch-login.it-548.workers.dev/login';
   const returnLocation = new URLSearchParams(window.location.search).get('returnTo');
   const returnTo = returnLocation ?? window.location.pathname;
 
   signInBtn.addEventListener('click', async (e) => {
     e.preventDefault();
-    console.log('sign in button clicked');
     const email = (emailInput as HTMLInputElement)?.value;
     const password = (passwordInput as HTMLInputElement)?.value;
 
@@ -375,7 +370,6 @@ async function signInSetup(client: Auth0Client) {
 function setPortal(customer_id: string) {
   document.querySelector('[data-ch-portal]')?.addEventListener('click', (e) => {
     e.stopPropagation();
-    console.log('creating portal...');
 
     $.ajax({
       url: 'https://catholicherald.it-548.workers.dev', // <-- replace with your backend route
