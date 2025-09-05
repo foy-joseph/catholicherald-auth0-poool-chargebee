@@ -243,6 +243,7 @@ async function signInSetup(client: Auth0Client) {
   const resetPasswordBackLink = document.getElementById('ch-login-back-link');
   const loadingSpinner = document.getElementById('ch-loading-spinner');
   const passwordResetConfirmation = document.getElementById('ch-password-reset-confirmation');
+  const signInHeading = document.getElementById('ch-sign-in-heading');
   // stop if we're not on the login page
   if (
     !signInBtn ||
@@ -255,7 +256,8 @@ async function signInSetup(client: Auth0Client) {
     !resetPasswordBtn ||
     !resetPasswordBackLink ||
     !loadingSpinner ||
-    !passwordResetConfirmation
+    !passwordResetConfirmation ||
+    !signInHeading
   )
     return;
 
@@ -311,6 +313,7 @@ async function signInSetup(client: Auth0Client) {
     alternativeLoginMethod.style.display = 'none';
     resetPasswordBtn.style.display = 'block';
     resetPasswordBackLink.style.display = 'block';
+    signInHeading.textContent = 'Reset Password';
   });
 
   resetPasswordBackLink.addEventListener('click', async () => {
@@ -321,6 +324,7 @@ async function signInSetup(client: Auth0Client) {
     alternativeLoginMethod.style.display = 'flex';
     resetPasswordBtn.style.display = 'none';
     resetPasswordBackLink.style.display = 'none';
+    signInHeading.textContent = 'Sign In';
   });
 
   resetPasswordBtn.addEventListener('click', async () => {
@@ -329,6 +333,8 @@ async function signInSetup(client: Auth0Client) {
     forgotPasswordBtn.style.display = 'none';
     signInBtn.style.display = 'none';
     googleBtnWrapper.style.display = 'none';
+    resetPasswordBtn.style.display = 'none';
+    resetPasswordBackLink.style.display = 'none';
     loadingSpinner.style.display = 'flex';
 
     const email = (emailInput as HTMLInputElement)?.value;
