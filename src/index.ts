@@ -350,6 +350,8 @@ async function signInSetup(client: Auth0Client) {
       errorFeedback.textContent = message.error;
       errorFeedback.style.display = 'block';
       loadingSpinner.style.display = 'none';
+      emailInput.style.display = 'block';
+      resetPasswordBackLink.style.display = 'block';
       return;
     }
     passwordResetConfirmation.textContent = message;
