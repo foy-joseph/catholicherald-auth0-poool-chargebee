@@ -14,9 +14,6 @@ importers:
       '@finsweet/ts-utils':
         specifier: ^0.39.1
         version: 0.39.2
-      base64url:
-        specifier: ^3.0.1
-        version: 3.0.1
     devDependencies:
       '@changesets/changelog-git':
         specifier: ^0.1.14
@@ -462,10 +459,6 @@ packages:
 
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
-
-  base64url@3.0.1:
-    resolution: {integrity: sha512-ir1UPr3dkwexU7FdV8qBBbNDRUhMmIekYMFZfi+C/sLNnRESKPl23nB9b2pltqfOQNnGzsDdId90AEtG5tCx4A==}
-    engines: {node: '>=6.0.0'}
 
   better-path-resolve@1.0.0:
     resolution: {integrity: sha512-pbnl5XzGBdrFU/wT4jqmJVPn2B6UHPBOhzMQkY/SPUPB6QtUXtmBHBIwCbXJol93mOpGMnQyP/+BB19q04xj7g==}
@@ -1505,8 +1498,6 @@ snapshots:
   array-union@2.1.0: {}
 
   balanced-match@1.0.2: {}
-
-  base64url@3.0.1: {}
 
   better-path-resolve@1.0.0:
     dependencies:

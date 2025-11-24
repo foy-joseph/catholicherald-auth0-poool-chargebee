@@ -1,5 +1,4 @@
 import { type Auth0Client, createAuth0Client, type IdToken } from '@auth0/auth0-spa-js';
-import base64url from 'base64url';
 
 declare global {
   interface Window {
@@ -199,17 +198,34 @@ function setUpLoginButtons(client: Auth0Client, isLoggedIn: boolean, mode: 'auth
   });
 }
 
+// Helper function to decode URL-safe base64 (base64url) used in JWT tokens
+function base64UrlDecode(str: string): string {
+  if (!str) {
+    throw new Error('Cannot decode empty string');
+  }
+  // Replace URL-safe characters with standard base64 characters
+  let base64 = str.replace(/-/g, '+').replace(/_/g, '/');
+  // Add padding if needed (base64 strings must be multiples of 4)
+  const padLength = (4 - (base64.length % 4)) % 4;
+  base64 += '='.repeat(padLength);
+  try {
+    return atob(base64);
+  } catch (err) {
+    throw new Error(`Failed to decode base64: ${err instanceof Error ? err.message : String(err)}`);
+  }
+}
+
 // gets the user from the local storage token, or gets a new token if the old one is expired
 async function getUser() {
   const token = localStorage.getItem('ch_id_token');
   if (!token) return undefined;
   const tokenData = JSON.parse(token);
-  let user = JSON.parse(base64url.decode(tokenData.id_token.split('.')[1]));
+  let user = JSON.parse(base64UrlDecode(tokenData.id_token.split('.')[1]));
 
   const timeNow = Math.floor(Date.now() / 1000); // current time in seconds
   if (timeNow >= user.exp) {
     const newToken = await refreshToken(tokenData.refresh_token);
-    user = JSON.parse(base64url.decode(newToken.split('.')[1]));
+    user = JSON.parse(base64UrlDecode(newToken.split('.')[1]));
     if (!user) return undefined;
   }
   return user;
