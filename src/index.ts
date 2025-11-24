@@ -1,4 +1,5 @@
 import { type Auth0Client, createAuth0Client, type IdToken } from '@auth0/auth0-spa-js';
+import base64url from 'base64url';
 
 declare global {
   interface Window {
@@ -203,12 +204,12 @@ async function getUser() {
   const token = localStorage.getItem('ch_id_token');
   if (!token) return undefined;
   const tokenData = JSON.parse(token);
-  let user = JSON.parse(atob(tokenData.id_token.split('.')[1]));
+  let user = JSON.parse(base64url.decode(tokenData.id_token.split('.')[1]));
 
   const timeNow = Math.floor(Date.now() / 1000); // current time in seconds
   if (timeNow >= user.exp) {
     const newToken = await refreshToken(tokenData.refresh_token);
-    user = JSON.parse(atob(newToken.split('.')[1]));
+    user = JSON.parse(base64url.decode(newToken.split('.')[1]));
     if (!user) return undefined;
   }
   return user;

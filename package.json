@@ -55,6 +55,7 @@
   },
   "dependencies": {
     "@auth0/auth0-spa-js": "^2.0.4",
-    "@finsweet/ts-utils": "^0.39.1"
+    "@finsweet/ts-utils": "^0.39.1",
+    "base64url": "^3.0.1"
   }
 }
