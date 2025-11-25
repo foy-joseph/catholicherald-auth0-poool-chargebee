@@ -128,6 +128,8 @@ async function init() {
     'usa-digital-only-quarterly',
     'us-digital-only-offer',
     '3-Month-Digital-Deal-GBP',
+    '3-Month-Digital-Deal-USD',
+    'Catholic-Herald-Digital-3-Month-Offer-USD',
   ];
 
   const claimKeyCatholic = 'https://catholicherald.com/claims/item_price_ids';
