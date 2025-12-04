@@ -130,6 +130,7 @@ async function init() {
     '3-Month-Digital-Deal-GBP',
     '3-Month-Digital-Deal-USD',
     'Catholic-Herald-Digital-3-Month-Offer-USD',
+    'Catholic-Herald-Digital-3-Month-Offer-GBP',
   ];
 
   const claimKeyCatholic = 'https://catholicherald.com/claims/item_price_ids';
