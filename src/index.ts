@@ -44,10 +44,10 @@ function hidePortal() {
   }
 }
 
-async function checkPaywall() {
+function setupPaywallCheck() {
   let fired = 0;
 
-  return async function () {
+  const checkPaywall = async function () {
     if (++fired === 2) {
       const response = await fetch('https://catholic-herald-paywall.it-548.workers.dev', {
         method: 'POST',
@@ -58,13 +58,6 @@ async function checkPaywall() {
       });
 
       const data = await response.json();
-
-      // data = {
-      //   showPaywall: boolean,      // true = block content
-      //   hasPaidAccess: boolean,    // true = paid subscriber
-      //   freeArticlesRemaining: number,
-      //   freeArticlesTimestamp: string | null
-      // }
 
       if (data.showPaywall) {
         console.log('Show paywall', data);
@@ -84,6 +77,8 @@ async function init() {
   if (window.location.pathname === '/auth/callback') {
     return await authCallback();
   }
+
+  setupPaywallCheck();
 
   // Create Auth0 client
   const client = await createAuth0Client({
