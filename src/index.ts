@@ -75,12 +75,16 @@ async function init() {
       // check auth0 for user
       claims = await client.getIdTokenClaims();
       mode = 'auth0';
+      document.dispatchEvent(new Event('is-logged-in'));
     } else {
       // check local storage for user
       claims = await getUser();
       isLoggedIn = !!claims;
       if (isLoggedIn === true) {
         mode = 'api';
+        document.dispatchEvent(new Event('is-logged-in'));
+      } else {
+        document.dispatchEvent(new Event('not-logged-in'));
       }
     }
   } catch (err) {
