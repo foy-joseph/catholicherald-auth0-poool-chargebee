@@ -47,7 +47,10 @@ function hidePortal() {
 }
 
 async function setupPaywallCheck() {
-  if (!window.chUser) return { notLoggedIn: true };
+  if (!window.chUser) {
+    UIHandler({ loggedIn: false, showPaywall: true });
+    return;
+  }
   const response = await fetch('https://catholic-herald-paywall.it-548.workers.dev', {
     method: 'POST',
     headers: {
