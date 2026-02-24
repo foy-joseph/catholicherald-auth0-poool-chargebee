@@ -1,5 +1,7 @@
 import { type Auth0Client, createAuth0Client, type IdToken } from '@auth0/auth0-spa-js';
 
+import { UIHandler } from './ui-handler';
+
 declare global {
   interface Window {
     auth0Client: Auth0Client;
@@ -48,7 +50,11 @@ function setupPaywallCheck() {
   let fired = 0;
 
   const checkPaywall = async function () {
+    // fired is important as it waits until webflow local scripts have finished AND auth0 is ready.
+    // this can happen either from being logged in or not (which adds one to the counter) AND auth0 which would add another.
+    // once we hit 2, we know that both have finished and we can check the paywall.
     if (++fired === 2) {
+      if (!window.chUser) return { notLoggedIn: true };
       const response = await fetch('https://catholic-herald-paywall.it-548.workers.dev', {
         method: 'POST',
         headers: {
@@ -60,10 +66,18 @@ function setupPaywallCheck() {
       const data = await response.json();
 
       if (data.showPaywall) {
-        console.log('Show paywall', data);
+        console.log('Show paywall');
+        UIHandler({
+          loggedIn: false,
+          ...data,
+        });
         // Show paywall UI
       } else {
-        console.log('Show article content', data);
+        console.log('Show article content');
+        UIHandler({
+          loggedIn: true,
+          ...data,
+        });
       }
     }
   };
@@ -131,59 +145,63 @@ async function init() {
   window.chUser = claims;
   document.dispatchEvent(new Event('auth0-ready'));
 
+  /**
+   * Old Poool approach:
+   */
+
   // Check custom subscriber claim
-  const claimKey = 'https://catholicherald.com/claims/subscriber';
-  const isSubscriber = claims?.[claimKey] === true;
+  // const claimKey = 'https://catholicherald.com/claims/subscriber';
+  // const isSubscriber = claims?.[claimKey] === true;
 
-  const validSubscriptionTypes = [
-    'catholic-herald-digital-only-GBP-Monthly',
-    'catholic-herald-digital-only',
-    'catholic-herald-digital-only-USD-Monthly',
-    'catholic-herald-digital-only-USD-Yearly',
-    'catholic-herald-digital-only-monthly',
-    'catholic-herald-digital-only-monthly-euro',
-    'catholic-herald-digital-only-quarterly',
-    'catholic-herald-print--digital-GBP-Monthly',
-    'catholic-herald-print-&-digital',
-    'catholic-herald-print-Monthly-digital-USD',
-    'catholic-herald-Annual-print-digital-USD',
-    'catholic-herald-print-&-digital-europe-annual-euro',
-    'catholic-herald-print-&-digital-europe-monthly',
-    'catholic-herald-print-&-digital-europe-monthly-euro',
-    'catholic-herald-print-&-digital-international-annual',
-    'catholic-herald-print-&-digital-international-monthly',
-    'catholic-herald-print-&-digital-monthly',
-    'catholic-herald-print-&-digital-quarterly',
-    'uk-digital-only-offer',
-    'usa-catholic-herald-print-&-digital',
-    'usa-catholic-herald-print-&-digital-monthly',
-    'usa-catholic-herald-print-&-digital-quarterly',
-    'usa-digital-only-annual',
-    'usa-digital-only-monthly',
-    'usa-digital-only-quarterly',
-    'us-digital-only-offer',
-    '3-Month-Digital-Deal-GBP',
-    '3-Month-Digital-Deal-USD',
-    'Catholic-Herald-Digital-3-Month-Offer-USD',
-    'Catholic-Herald-Digital-3-Month-Offer-GBP',
-  ];
+  // const validSubscriptionTypes = [
+  //   'catholic-herald-digital-only-GBP-Monthly',
+  //   'catholic-herald-digital-only',
+  //   'catholic-herald-digital-only-USD-Monthly',
+  //   'catholic-herald-digital-only-USD-Yearly',
+  //   'catholic-herald-digital-only-monthly',
+  //   'catholic-herald-digital-only-monthly-euro',
+  //   'catholic-herald-digital-only-quarterly',
+  //   'catholic-herald-print--digital-GBP-Monthly',
+  //   'catholic-herald-print-&-digital',
+  //   'catholic-herald-print-Monthly-digital-USD',
+  //   'catholic-herald-Annual-print-digital-USD',
+  //   'catholic-herald-print-&-digital-europe-annual-euro',
+  //   'catholic-herald-print-&-digital-europe-monthly',
+  //   'catholic-herald-print-&-digital-europe-monthly-euro',
+  //   'catholic-herald-print-&-digital-international-annual',
+  //   'catholic-herald-print-&-digital-international-monthly',
+  //   'catholic-herald-print-&-digital-monthly',
+  //   'catholic-herald-print-&-digital-quarterly',
+  //   'uk-digital-only-offer',
+  //   'usa-catholic-herald-print-&-digital',
+  //   'usa-catholic-herald-print-&-digital-monthly',
+  //   'usa-catholic-herald-print-&-digital-quarterly',
+  //   'usa-digital-only-annual',
+  //   'usa-digital-only-monthly',
+  //   'usa-digital-only-quarterly',
+  //   'us-digital-only-offer',
+  //   '3-Month-Digital-Deal-GBP',
+  //   '3-Month-Digital-Deal-USD',
+  //   'Catholic-Herald-Digital-3-Month-Offer-USD',
+  //   'Catholic-Herald-Digital-3-Month-Offer-GBP',
+  // ];
 
-  const claimKeyCatholic = 'https://catholicherald.com/claims/item_price_ids';
+  // const claimKeyCatholic = 'https://catholicherald.com/claims/item_price_ids';
 
-  const planIds = Array.isArray(claims?.[claimKeyCatholic]) ? claims[claimKeyCatholic] : [];
+  // const planIds = Array.isArray(claims?.[claimKeyCatholic]) ? claims[claimKeyCatholic] : [];
 
-  const isCatholicSubscriber = planIds.some((id) =>
-    validSubscriptionTypes.some((type) => id === type)
-  );
+  // const isCatholicSubscriber = planIds.some((id) =>
+  //   validSubscriptionTypes.some((type) => id === type)
+  // );
 
-  // Branch on subscription
-  if (isSubscriber && isCatholicSubscriber) {
-    // Disable Poool SDK
-    document.dispatchEvent(new Event('poool:disable'));
-    document.querySelectorAll('#poool-widget,[data-poool]').forEach((el) => el.remove());
-  } else {
-    document.dispatchEvent(new Event('no-subscription'));
-  }
+  // // Branch on subscription
+  // if (isSubscriber && isCatholicSubscriber) {
+  //   // Disable Poool SDK
+  //   document.dispatchEvent(new Event('poool:disable'));
+  //   document.querySelectorAll('#poool-widget,[data-poool]').forEach((el) => el.remove());
+  // } else {
+  //   document.dispatchEvent(new Event('no-subscription'));
+  // }
 
   setUpLoginButtons(client, isLoggedIn, mode);
 
