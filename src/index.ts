@@ -315,12 +315,31 @@ async function signInSetup(client: Auth0Client) {
   const passwordResetConfirmation = document.getElementById('ch-password-reset-confirmation');
   const signInHeading = document.getElementById('ch-sign-in-heading');
   const errorFeedback = document.getElementById('ch-login-error-feedback');
+
+  const WORKER_URL = 'https://ch-login.it-548.workers.dev/login';
+  const returnLocation = new URLSearchParams(window.location.search).get('returnTo');
+  const returnTo = returnLocation ?? window.location.pathname;
+
+  // do this first as we sometimes show the google button on other pages.
+  if (googleBtn) {
+    googleBtn.addEventListener('click', async () => {
+      await client.loginWithRedirect({
+        appState: {
+          returnTo: returnTo,
+        },
+        authorizationParams: {
+          connection: 'google-oauth2',
+          redirect_uri: window.location.origin + '/auth/callback',
+        },
+      });
+    });
+  }
+
   // stop if we're not on the login page
   if (
     !signInBtn ||
     !emailInput ||
     !passwordInput ||
-    !googleBtn ||
     !googleBtnWrapper ||
     !forgotPasswordBtn ||
     !alternativeLoginMethod ||
@@ -332,10 +351,6 @@ async function signInSetup(client: Auth0Client) {
     !errorFeedback
   )
     return;
-
-  const WORKER_URL = 'https://ch-login.it-548.workers.dev/login';
-  const returnLocation = new URLSearchParams(window.location.search).get('returnTo');
-  const returnTo = returnLocation ?? window.location.pathname;
 
   signInBtn.addEventListener('click', async (e) => {
     e.preventDefault();
@@ -428,18 +443,6 @@ async function signInSetup(client: Auth0Client) {
     passwordResetConfirmation.textContent = message;
     passwordResetConfirmation.style.display = 'block';
     loadingSpinner.style.display = 'none';
-  });
-
-  googleBtn.addEventListener('click', async () => {
-    await client.loginWithRedirect({
-      appState: {
-        returnTo: returnTo,
-      },
-      authorizationParams: {
-        connection: 'google-oauth2',
-        redirect_uri: window.location.origin + '/auth/callback',
-      },
-    });
   });
 }
 
