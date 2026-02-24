@@ -46,53 +46,38 @@ function hidePortal() {
   }
 }
 
-function setupPaywallCheck() {
-  let fired = 0;
+async function setupPaywallCheck() {
+  if (!window.chUser) return { notLoggedIn: true };
+  const response = await fetch('https://catholic-herald-paywall.it-548.workers.dev', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email: window.chUser?.email }),
+  });
 
-  const checkPaywall = async function () {
-    // fired is important as it waits until webflow local scripts have finished AND auth0 is ready.
-    // this can happen either from being logged in or not (which adds one to the counter) AND auth0 which would add another.
-    // once we hit 2, we know that both have finished and we can check the paywall.
-    if (++fired === 2) {
-      if (!window.chUser) return { notLoggedIn: true };
-      const response = await fetch('https://catholic-herald-paywall.it-548.workers.dev', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email: window.chUser?.email }),
-      });
+  const data = await response.json();
 
-      const data = await response.json();
-
-      if (data.showPaywall) {
-        console.log('Show paywall');
-        UIHandler({
-          loggedIn: false,
-          ...data,
-        });
-        // Show paywall UI
-      } else {
-        console.log('Show article content');
-        UIHandler({
-          loggedIn: true,
-          ...data,
-        });
-      }
-    }
-  };
-
-  document.addEventListener('is-logged-in', checkPaywall, { once: true });
-  document.addEventListener('not-logged-in', checkPaywall, { once: true });
-  document.addEventListener('article-ready', checkPaywall, { once: true });
+  if (data.showPaywall) {
+    console.log('Show paywall');
+    UIHandler({
+      loggedIn: false,
+      ...data,
+    });
+    // Show paywall UI
+  } else {
+    console.log('Show article content');
+    UIHandler({
+      loggedIn: true,
+      ...data,
+    });
+  }
 }
 
 async function init() {
   if (window.location.pathname === '/auth/callback') {
     return await authCallback();
   }
-
-  setupPaywallCheck();
 
   // Create Auth0 client
   const client = await createAuth0Client({
@@ -131,6 +116,7 @@ async function init() {
       } else {
         document.dispatchEvent(new Event('not-logged-in'));
       }
+      setupPaywallCheck();
     }
   } catch (err) {
     console.error('[TS] ❗ isAuthenticated error', err);
