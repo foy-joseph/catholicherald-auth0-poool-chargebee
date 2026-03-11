@@ -199,13 +199,13 @@ async function init() {
 
   setUpLoginButtons(client, isLoggedIn, mode);
 
-  const createAccountBtn = document.querySelector<HTMLAnchorElement>('[data-create-ch-account-btn]');
-  if (createAccountBtn) {
-    const currentHref = createAccountBtn.href;
-    const separator = currentHref.includes('?') ? '&' : '?';
-    createAccountBtn.href =
-      currentHref + separator + 'redirect=' + encodeURIComponent(window.location.href);
-  }
+  document
+    .querySelectorAll<HTMLAnchorElement>('[data-create-ch-account-btn]')
+    .forEach((btn) => {
+      const currentHref = btn.href;
+      const separator = currentHref.includes('?') ? '&' : '?';
+      btn.href = currentHref + separator + 'redirect=' + encodeURIComponent(window.location.href);
+    });
 
   await signInSetup(client);
 }
