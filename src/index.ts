@@ -451,7 +451,7 @@ function setPortal(customer_id: string) {
     e.stopPropagation();
 
     $.ajax({
-      url: 'https://catholicherald.it-548.workers.dev', // <-- replace with your backend route
+      url: 'https://catholic-herald-cloudflare-v2.it-548.workers.dev',
       method: 'POST',
       contentType: 'application/json',
       data: JSON.stringify({
