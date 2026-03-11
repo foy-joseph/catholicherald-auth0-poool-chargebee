@@ -124,7 +124,6 @@ async function init() {
       } else {
         document.dispatchEvent(new Event('not-logged-in'));
       }
-      setupPaywallCheck();
     }
   } catch (err) {
     console.error('[TS] ❗ isAuthenticated error', err);
@@ -137,6 +136,7 @@ async function init() {
   }
 
   window.chUser = claims;
+  setupPaywallCheck();
   document.dispatchEvent(new Event('auth0-ready'));
 
   /**
