@@ -75,6 +75,11 @@ async function setupPaywallCheck() {
       ...data,
     });
   }
+
+  const counterEl = document.querySelector('.remaining-articles-count');
+  if (counterEl && data.freeArticlesRemaining !== undefined) {
+    counterEl.textContent = String(data.freeArticlesRemaining);
+  }
 }
 
 async function init() {
@@ -193,6 +198,14 @@ async function init() {
   // }
 
   setUpLoginButtons(client, isLoggedIn, mode);
+
+  const createAccountBtn = document.querySelector<HTMLAnchorElement>('[data-create-ch-account-btn]');
+  if (createAccountBtn) {
+    const currentHref = createAccountBtn.href;
+    const separator = currentHref.includes('?') ? '&' : '?';
+    createAccountBtn.href =
+      currentHref + separator + 'redirect=' + encodeURIComponent(window.location.href);
+  }
 
   await signInSetup(client);
 }
