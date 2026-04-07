@@ -27,27 +27,27 @@ export function UIHandler(props: {
     }
 
     if (props.showPaywall === true) {
-      const counterHeading = document.querySelector<HTMLHeadingElement>(
+      const counterHeadings = document.querySelectorAll<HTMLHeadingElement>(
         '.free-articles-remaining-heading'
       );
 
-      const counterSubHeading = document.querySelector<HTMLHeadingElement>(
+      const counterSubHeadings = document.querySelectorAll<HTMLHeadingElement>(
         '.paywall-description-fixed'
       );
 
-      const counterButton = document.querySelector<HTMLButtonElement>(
+      const counterButtons = document.querySelectorAll<HTMLButtonElement>(
         '[data-create-ch-account-btn]'
       );
 
-      if (counterHeading) {
+      counterHeadings.forEach((counterHeading) => {
         counterHeading.textContent = "You've reached your free article limit";
-      }
-      if (counterSubHeading) {
+      });
+      counterSubHeadings.forEach((counterSubHeading) => {
         counterSubHeading.textContent = 'Subscribe to continue reading and enjoy unlimited access.';
-      }
-      if (counterButton) {
+      });
+      counterButtons.forEach((counterButton) => {
         counterButton.textContent = 'Subscribe';
-      }
+      });
     }
 
     floatingPaywallCounterEl.style.transform = 'translateY(0)';
