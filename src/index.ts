@@ -80,6 +80,17 @@ async function setupPaywallCheck() {
   if (counterEl && data.freeArticlesRemaining !== undefined) {
     counterEl.textContent = String(data.freeArticlesRemaining);
   }
+
+  const closeCounterElem = document.querySelector<HTMLButtonElement>('.close-counter-popup');
+  if (closeCounterElem) {
+    closeCounterElem.addEventListener('click', () => {
+      const counterEl = document.querySelector<HTMLDivElement>('.floating-paywall-counter');
+      if (counterEl) {
+        counterEl.style.transform = 'translateY(100%)';
+        counterEl.style.opacity = '0';
+      }
+    });
+  }
 }
 
 async function init() {
@@ -199,13 +210,11 @@ async function init() {
 
   setUpLoginButtons(client, isLoggedIn, mode);
 
-  document
-    .querySelectorAll<HTMLAnchorElement>('[data-create-ch-account-btn]')
-    .forEach((btn) => {
-      const currentHref = btn.href;
-      const separator = currentHref.includes('?') ? '&' : '?';
-      btn.href = currentHref + separator + 'redirect=' + encodeURIComponent(window.location.href);
-    });
+  document.querySelectorAll<HTMLAnchorElement>('[data-create-ch-account-btn]').forEach((btn) => {
+    const currentHref = btn.href;
+    const separator = currentHref.includes('?') ? '&' : '?';
+    btn.href = currentHref + separator + 'redirect=' + encodeURIComponent(window.location.href);
+  });
 
   await signInSetup(client);
 }
