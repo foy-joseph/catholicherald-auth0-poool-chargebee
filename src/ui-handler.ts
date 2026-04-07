@@ -1,9 +1,9 @@
 export function UIHandler(props: {
   loggedIn: boolean;
   showPaywall: boolean;
-  freeArticlesRemaining: number;
-  freeArticlesTimestamp: string;
-  hasPaidAccess: boolean;
+  freeArticlesRemaining?: number;
+  freeArticlesTimestamp?: string;
+  hasPaidAccess?: boolean;
 }) {
   console.log('UIHandler', props);
 

@@ -61,20 +61,11 @@ async function setupPaywallCheck() {
 
   const data = await response.json();
 
-  if (data.showPaywall) {
-    console.log('Show paywall');
-    UIHandler({
-      loggedIn: false,
-      ...data,
-    });
-    // Show paywall UI
-  } else {
-    console.log('Show article content');
-    UIHandler({
-      loggedIn: true,
-      ...data,
-    });
-  }
+  // call UIHandler with the data we have on the user knowing they are logged in
+  UIHandler({
+    loggedIn: true,
+    ...data,
+  });
 
   const counterEl = document.querySelector('.remaining-articles-count');
   if (counterEl && data.freeArticlesRemaining !== undefined) {
