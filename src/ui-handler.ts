@@ -51,6 +51,7 @@ export function UIHandler(props: {
     }
 
     floatingPaywallCounterEl.style.transform = 'translateY(0)';
+    floatingPaywallCounterEl.style.opacity = '1';
   }
 }
 
