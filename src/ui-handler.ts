@@ -27,6 +27,7 @@ export function UIHandler(props: {
     }
 
     if (props.showPaywall === true) {
+      truncateRichText();
       const counterHeadings = document.querySelectorAll<HTMLHeadingElement>(
         '.free-articles-remaining-heading'
       );
