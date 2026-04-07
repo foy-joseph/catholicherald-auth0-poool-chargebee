@@ -49,10 +49,10 @@ export function UIHandler(props: {
       counterButtons.forEach((counterButton) => {
         counterButton.textContent = 'Subscribe';
       });
+    } else {
+      floatingPaywallCounterEl.style.transform = 'translateY(0)';
+      floatingPaywallCounterEl.style.opacity = '1';
     }
-
-    floatingPaywallCounterEl.style.transform = 'translateY(0)';
-    floatingPaywallCounterEl.style.opacity = '1';
   }
 }
 
