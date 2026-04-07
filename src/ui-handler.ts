@@ -8,7 +8,7 @@ export function UIHandler(props: {
   console.log('UIHandler', props);
 
   // if not logged in, show subscription CTA
-  if (props.loggedIn !== true) {
+  if (props.loggedIn !== true || props.showPaywall === true) {
     const paywallEl = document.querySelector<HTMLDivElement>('[data-paywall-container]');
     if (paywallEl) {
       paywallEl.style.pointerEvents = 'auto';
