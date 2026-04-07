@@ -7,17 +7,6 @@ export function UIHandler(props: {
 }) {
   console.log('UIHandler', props);
 
-  // if not logged in, show subscription CTA
-  if (props.loggedIn !== true || props.showPaywall === true) {
-    const paywallEl = document.querySelector<HTMLDivElement>('[data-paywall-container]');
-    if (paywallEl) {
-      paywallEl.style.pointerEvents = 'auto';
-      paywallEl.style.opacity = '1';
-      paywallEl.style.height = 'auto';
-      truncateRichText();
-    }
-  }
-
   if (props.loggedIn === true) {
     const floatingPaywallCounterEl = document.querySelector<HTMLDivElement>(
       '.floating-paywall-counter'
@@ -52,6 +41,17 @@ export function UIHandler(props: {
     } else {
       floatingPaywallCounterEl.style.transform = 'translateY(0)';
       floatingPaywallCounterEl.style.opacity = '1';
+    }
+  }
+
+  // if not logged in, show subscription CTA
+  if (props.loggedIn !== true || props.showPaywall === true) {
+    const paywallEl = document.querySelector<HTMLDivElement>('[data-paywall-container]');
+    if (paywallEl) {
+      paywallEl.style.pointerEvents = 'auto';
+      paywallEl.style.opacity = '1';
+      paywallEl.style.height = 'auto';
+      truncateRichText();
     }
   }
 }
