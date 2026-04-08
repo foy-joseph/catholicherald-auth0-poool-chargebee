@@ -54,6 +54,10 @@ export function UIHandler(props: {
       truncateRichText();
     }
   }
+
+  if (props.hasPaidAccess !== true) {
+    document.dispatchEvent(new Event('no-subscription'));
+  }
 }
 
 function truncateRichText() {
