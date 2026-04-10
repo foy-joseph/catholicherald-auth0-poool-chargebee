@@ -6,6 +6,7 @@ declare global {
   interface Window {
     auth0Client: Auth0Client;
     chUser: IdToken | undefined;
+    articleReady: boolean | undefined;
   }
 }
 
@@ -46,30 +47,35 @@ function hidePortal() {
   }
 }
 
-async function setupPaywallCheck() {
-  if (!window.chUser) {
-    UIHandler({ loggedIn: false, showPaywall: true });
-    return;
-  }
+async function callPaywallEndpoint(action: 'check' | 'consume') {
   const response = await fetch('https://catholic-herald-paywall.it-548.workers.dev', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ email: window.chUser?.email }),
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: window.chUser?.email, action }),
   });
 
   const data = await response.json();
 
-  // call UIHandler with the data we have on the user knowing they are logged in
-  UIHandler({
-    loggedIn: true,
-    ...data,
-  });
+  UIHandler({ loggedIn: true, ...data });
 
   const counterEl = document.querySelector('.remaining-articles-count');
   if (counterEl && data.freeArticlesRemaining !== undefined) {
     counterEl.textContent = String(data.freeArticlesRemaining);
+  }
+}
+
+async function consumeIfNew() {
+  const storageKey = `paywall_counted_${window.location.pathname}`;
+  if (!sessionStorage.getItem(storageKey)) {
+    await callPaywallEndpoint('consume');
+    sessionStorage.setItem(storageKey, '1');
+  }
+}
+
+async function setupPaywallCheck() {
+  if (!window.chUser) {
+    UIHandler({ loggedIn: false, showPaywall: true });
+    return;
   }
 
   const closeCounterElem = document.querySelector<HTMLButtonElement>('.close-counter-popup');
@@ -82,6 +88,20 @@ async function setupPaywallCheck() {
       }
     });
   }
+
+  // If article-ready already fired, consume immediately
+  if (window.articleReady) {
+    await consumeIfNew();
+    return;
+  }
+
+  // Listen for article-ready event (only fires on article pages)
+  document.addEventListener('article-ready', () => {
+    consumeIfNew();
+  });
+
+  // Immediately do a status check (no decrement) for UI state
+  await callPaywallEndpoint('check');
 }
 
 async function init() {
