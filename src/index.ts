@@ -16,6 +16,89 @@ function pushEvent(event: string, params?: Record<string, unknown>) {
   window.dataLayer.push({ event, ...params });
 }
 
+// --- Attribution tracking ---
+
+const UTM_PARAMS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'] as const;
+const ATTRIBUTION_KEY = 'ch_attribution';
+
+function getGA4ClientId(): string | undefined {
+  const match = document.cookie.match(/_ga=GA\d+\.\d+\.(\d+\.\d+)/);
+  return match?.[1];
+}
+
+function captureAttribution() {
+  const params = new URLSearchParams(window.location.search);
+  const hasUtm = UTM_PARAMS.some((key) => params.has(key));
+
+  // Only overwrite stored attribution if this pageview has UTM params
+  // (otherwise keep the original referring source)
+  if (hasUtm) {
+    const attribution: Record<string, string> = {};
+    UTM_PARAMS.forEach((key) => {
+      const val = params.get(key);
+      if (val) attribution[key] = val;
+    });
+    attribution.landing_page = window.location.pathname;
+    attribution.timestamp = new Date().toISOString();
+    const ga4ClientId = getGA4ClientId();
+    if (ga4ClientId) attribution.ga4_client_id = ga4ClientId;
+    localStorage.setItem(ATTRIBUTION_KEY, JSON.stringify(attribution));
+  } else if (!localStorage.getItem(ATTRIBUTION_KEY)) {
+    // First visit with no UTMs — store referrer if available
+    const attribution: Record<string, string> = {
+      landing_page: window.location.pathname,
+      timestamp: new Date().toISOString(),
+    };
+    if (document.referrer) attribution.referrer = document.referrer;
+    const ga4ClientId = getGA4ClientId();
+    if (ga4ClientId) attribution.ga4_client_id = ga4ClientId;
+    localStorage.setItem(ATTRIBUTION_KEY, JSON.stringify(attribution));
+  }
+}
+
+function getStoredAttribution(): Record<string, string> {
+  try {
+    return JSON.parse(localStorage.getItem(ATTRIBUTION_KEY) || '{}');
+  } catch {
+    return {};
+  }
+}
+
+function getReturnToWithSearch(): string {
+  // Preserve the full path + query string (including UTMs) for returnTo
+  return window.location.pathname + window.location.search;
+}
+
+function installDataLayerInterceptor() {
+  // The SubscriptionFlow Code Component pushes a purchase event to dataLayer
+  // after a successful Chargebee checkout. We intercept dataLayer.push to
+  // enrich purchase events with stored attribution data (UTMs, GA4 client ID).
+  window.dataLayer = window.dataLayer || [];
+  const originalPush = Array.prototype.push;
+
+  Object.defineProperty(window.dataLayer, 'push', {
+    configurable: true,
+    writable: true,
+    value: function (...args: Record<string, unknown>[]) {
+      for (const entry of args) {
+        if (entry?.event === 'purchase') {
+          const attribution = getStoredAttribution();
+          if (attribution.utm_source) entry.utm_source = attribution.utm_source;
+          if (attribution.utm_medium) entry.utm_medium = attribution.utm_medium;
+          if (attribution.utm_campaign) entry.utm_campaign = attribution.utm_campaign;
+          if (attribution.utm_term) entry.utm_term = attribution.utm_term;
+          if (attribution.utm_content) entry.utm_content = attribution.utm_content;
+          if (attribution.landing_page) entry.original_landing_page = attribution.landing_page;
+          if (attribution.referrer) entry.original_referrer = attribution.referrer;
+          // Clear attribution after purchase
+          localStorage.removeItem(ATTRIBUTION_KEY);
+        }
+      }
+      return originalPush.apply(this, args);
+    },
+  });
+}
+
 async function authCallback() {
   const client = await createAuth0Client({
     domain: 'the-catholic-herald.us.auth0.com',
@@ -112,6 +195,13 @@ async function setupPaywallCheck() {
 }
 
 async function init() {
+  // Capture UTMs and GA4 client ID before any redirects
+  captureAttribution();
+
+  // Intercept dataLayer to enrich purchase events from the SubscriptionFlow
+  // Code Component with stored attribution data
+  installDataLayerInterceptor();
+
   if (window.location.pathname === '/auth/callback') {
     return await authCallback();
   }
@@ -124,7 +214,7 @@ async function init() {
     useRefreshTokens: true,
     authorizationParams: {
       redirect_uri: `${window.location.origin}/auth/callback?returnTo=${encodeURIComponent(
-        window.location.pathname
+        getReturnToWithSearch()
       )}`,
     },
   });
@@ -241,6 +331,7 @@ async function init() {
     });
   });
 
+
   await signInSetup(client);
 }
 
@@ -270,10 +361,10 @@ function setUpLoginButtons(client: Auth0Client, isLoggedIn: boolean, mode: 'auth
   }
 
   loginBtnMobile.addEventListener('click', () => {
-    window.location.href = '/sign-in?returnTo=' + encodeURIComponent(window.location.pathname);
+    window.location.href = '/sign-in?returnTo=' + encodeURIComponent(getReturnToWithSearch());
   });
   loginBtn.addEventListener('click', () => {
-    window.location.href = '/sign-in?returnTo=' + encodeURIComponent(window.location.pathname);
+    window.location.href = '/sign-in?returnTo=' + encodeURIComponent(getReturnToWithSearch());
   });
 
   logoutBtnMobile.addEventListener('click', () => {
