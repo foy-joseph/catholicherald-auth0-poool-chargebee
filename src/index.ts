@@ -69,6 +69,36 @@ function getReturnToWithSearch(): string {
   return window.location.pathname + window.location.search;
 }
 
+function installDataLayerInterceptor() {
+  // The SubscriptionFlow Code Component pushes a purchase event to dataLayer
+  // after a successful Chargebee checkout. We intercept dataLayer.push to
+  // enrich purchase events with stored attribution data (UTMs, GA4 client ID).
+  window.dataLayer = window.dataLayer || [];
+  const originalPush = Array.prototype.push;
+
+  Object.defineProperty(window.dataLayer, 'push', {
+    configurable: true,
+    writable: true,
+    value: function (...args: Record<string, unknown>[]) {
+      for (const entry of args) {
+        if (entry?.event === 'purchase') {
+          const attribution = getStoredAttribution();
+          if (attribution.utm_source) entry.utm_source = attribution.utm_source;
+          if (attribution.utm_medium) entry.utm_medium = attribution.utm_medium;
+          if (attribution.utm_campaign) entry.utm_campaign = attribution.utm_campaign;
+          if (attribution.utm_term) entry.utm_term = attribution.utm_term;
+          if (attribution.utm_content) entry.utm_content = attribution.utm_content;
+          if (attribution.landing_page) entry.original_landing_page = attribution.landing_page;
+          if (attribution.referrer) entry.original_referrer = attribution.referrer;
+          // Clear attribution after purchase
+          localStorage.removeItem(ATTRIBUTION_KEY);
+        }
+      }
+      return originalPush.apply(this, args);
+    },
+  });
+}
+
 async function authCallback() {
   const client = await createAuth0Client({
     domain: 'the-catholic-herald.us.auth0.com',
@@ -167,6 +197,10 @@ async function setupPaywallCheck() {
 async function init() {
   // Capture UTMs and GA4 client ID before any redirects
   captureAttribution();
+
+  // Intercept dataLayer to enrich purchase events from the SubscriptionFlow
+  // Code Component with stored attribution data
+  installDataLayerInterceptor();
 
   if (window.location.pathname === '/auth/callback') {
     return await authCallback();
@@ -297,33 +331,6 @@ async function init() {
     });
   });
 
-  // Listen for successful subscription creation (fired from checkout page code)
-  document.addEventListener('ch-subscription-created', ((e: CustomEvent) => {
-    const detail = e.detail || {};
-    const attribution = getStoredAttribution();
-    pushEvent('purchase', {
-      ecommerce: {
-        transaction_id: detail.subscription_id || detail.customer_id || 'unknown',
-        value: detail.value || 0,
-        currency: detail.currency || 'GBP',
-        items: [
-          {
-            item_name: detail.plan_id || 'subscription',
-            price: detail.value || 0,
-          },
-        ],
-      },
-      // Pass stored attribution so GTM can use it
-      utm_source: attribution.utm_source,
-      utm_medium: attribution.utm_medium,
-      utm_campaign: attribution.utm_campaign,
-      utm_term: attribution.utm_term,
-      utm_content: attribution.utm_content,
-      original_landing_page: attribution.landing_page,
-    });
-    // Clear attribution after purchase
-    localStorage.removeItem(ATTRIBUTION_KEY);
-  }) as EventListener);
 
   await signInSetup(client);
 }
