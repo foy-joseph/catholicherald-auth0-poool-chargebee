@@ -124,7 +124,7 @@ async function init() {
     useRefreshTokens: true,
     authorizationParams: {
       redirect_uri: `${window.location.origin}/auth/callback?returnTo=${encodeURIComponent(
-        window.location.pathname
+        window.location.pathname + window.location.search
       )}`,
     },
   });
@@ -270,10 +270,10 @@ function setUpLoginButtons(client: Auth0Client, isLoggedIn: boolean, mode: 'auth
   }
 
   loginBtnMobile.addEventListener('click', () => {
-    window.location.href = '/sign-in?returnTo=' + encodeURIComponent(window.location.pathname);
+    window.location.href = '/sign-in?returnTo=' + encodeURIComponent(window.location.pathname + window.location.search);
   });
   loginBtn.addEventListener('click', () => {
-    window.location.href = '/sign-in?returnTo=' + encodeURIComponent(window.location.pathname);
+    window.location.href = '/sign-in?returnTo=' + encodeURIComponent(window.location.pathname + window.location.search);
   });
 
   logoutBtnMobile.addEventListener('click', () => {
