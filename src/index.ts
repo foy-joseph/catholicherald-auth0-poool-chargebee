@@ -7,13 +7,7 @@ declare global {
     auth0Client: Auth0Client;
     chUser: IdToken | undefined;
     articleReady: boolean | undefined;
-    dataLayer: Record<string, unknown>[];
   }
-}
-
-function pushEvent(event: string, params?: Record<string, unknown>) {
-  window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push({ event, ...params });
 }
 
 async function authCallback() {
@@ -39,7 +33,6 @@ async function authCallback() {
     } else {
       returnTo = result.appState?.returnTo;
     }
-    pushEvent('auth_login', { method: 'redirect', return_to: returnTo });
     window.location.replace(returnTo);
   } catch (err) {
     console.error('Auth0 callback error:', err);
@@ -236,13 +229,6 @@ async function init() {
     const currentHref = btn.href;
     const separator = currentHref.includes('?') ? '&' : '?';
     btn.href = currentHref + separator + 'redirect=' + encodeURIComponent(window.location.href);
-    btn.addEventListener('click', () => {
-      pushEvent('paywall_cta_click', {
-        cta_text: btn.textContent?.trim(),
-        cta_destination: btn.href,
-        page_path: window.location.pathname,
-      });
-    });
   });
 
   await signInSetup(client);

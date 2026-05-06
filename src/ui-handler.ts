@@ -52,13 +52,6 @@ export function UIHandler(props: {
       paywallEl.style.opacity = '1';
       paywallEl.style.height = 'auto';
       truncateRichText();
-
-      window.dataLayer = window.dataLayer || [];
-      window.dataLayer.push({
-        event: 'paywall_impression',
-        paywall_type: props.loggedIn ? 'limit_reached' : 'not_logged_in',
-        page_path: window.location.pathname,
-      });
     }
   }
 
