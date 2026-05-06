@@ -80,6 +80,10 @@ async function consumeIfNew() {
 }
 
 async function setupPaywallCheck() {
+  if (document.body.getAttribute('is-free-article') === 'true') {
+    return;
+  }
+
   if (!window.chUser) {
     UIHandler({ loggedIn: false, showPaywall: true });
     return;
