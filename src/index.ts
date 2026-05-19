@@ -355,7 +355,7 @@ async function signInSetup(client: Auth0Client) {
 
   const WORKER_URL = 'https://ch-login.it-548.workers.dev/login';
   const returnLocation = new URLSearchParams(window.location.search).get('returnTo');
-  const returnTo = returnLocation ?? window.location.pathname;
+  const returnTo = returnLocation ?? (window.location.pathname === '/sign-in' ? '/' : window.location.pathname);
 
   // do this first as we sometimes show the google button on other pages.
   if (googleBtn) {
