@@ -7,6 +7,148 @@ declare global {
     auth0Client: Auth0Client;
     chUser: IdToken | undefined;
     articleReady: boolean | undefined;
+    chCheckout: {
+      get: () => CheckoutIntent | null;
+      clear: () => void;
+      planMap: Record<string, string>;
+      resolveSlug: (slug: string) => string | undefined;
+    };
+  }
+}
+
+// --- Deep-link checkout intent capture ---
+// Reads ?plan, ?coupon and UTMs from the URL on every page load, persists to
+// localStorage so downstream checkout code can pick them up. First-touch wins
+// for landingPage + timestamp; last-touch wins for plan, coupon, UTMs.
+
+const CHECKOUT_INTENT_KEY = 'ch_checkout_intent';
+const UTM_PARAMS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'] as const;
+const COUPON_REGEX = /^[A-Z0-9_-]{1,40}$/;
+const INTENT_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+
+const PLAN_MAP: Record<string, string> = {
+  'us-digital-monthly': 'usa-digital-only-monthly',
+  'us-digital-quarterly': 'usa-digital-only-quarterly',
+  'us-digital-annual': 'usa-digital-only-annual',
+  'uk-digital-monthly': 'catholic-herald-digital-only-monthly',
+  'uk-digital-quarterly': 'catholic-herald-digital-only-quarterly',
+  'uk-digital-annual': 'catholic-herald-digital-only',
+  'us-print-digital-monthly': 'usa-catholic-herald-print-&-digital-monthly',
+  'us-print-digital-quarterly': 'usa-catholic-herald-print-&-digital-quarterly',
+  'us-print-digital-annual': 'usa-catholic-herald-print-&-digital',
+  'uk-print-digital-monthly': 'catholic-herald-print-&-digital-monthly',
+  'uk-print-digital-quarterly': 'catholic-herald-print-&-digital-quarterly',
+  'uk-print-digital-annual': 'catholic-herald-print-&-digital',
+};
+
+interface CheckoutIntent {
+  plan?: string;
+  itemPriceId?: string;
+  coupon?: string;
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+  utm_term?: string;
+  utm_content?: string;
+  landingPage: string;
+  timestamp: string;
+  lastUpdated: string;
+}
+
+function getStoredCheckoutIntent(): CheckoutIntent | null {
+  try {
+    const raw = localStorage.getItem(CHECKOUT_INTENT_KEY);
+    if (!raw) return null;
+    const intent = JSON.parse(raw) as CheckoutIntent;
+    // Expire stale intents based on most recent param-bearing visit
+    const ageSource = intent.lastUpdated ?? intent.timestamp;
+    if (ageSource) {
+      const age = Date.now() - new Date(ageSource).getTime();
+      if (Number.isFinite(age) && age > INTENT_TTL_MS) {
+        clearCheckoutIntent();
+        return null;
+      }
+    }
+    return intent;
+  } catch {
+    return null;
+  }
+}
+
+function clearCheckoutIntent(): void {
+  try {
+    localStorage.removeItem(CHECKOUT_INTENT_KEY);
+  } catch (err) {
+    console.error('[CH Checkout Intent] Failed to clear:', err);
+  }
+}
+
+function captureCheckoutIntent(): void {
+  const params = new URLSearchParams(window.location.search);
+  const planPresent = params.has('plan');
+  const couponPresent = params.has('coupon');
+  const hasUtm = UTM_PARAMS.some((k) => params.has(k));
+
+  if (!planPresent && !couponPresent && !hasUtm) return;
+
+  const stored = getStoredCheckoutIntent();
+  const now = new Date().toISOString();
+  const intent: CheckoutIntent = stored
+    ? { ...stored, lastUpdated: now }
+    : {
+        landingPage: window.location.pathname,
+        timestamp: now,
+        lastUpdated: now,
+      };
+
+  if (planPresent) {
+    const plan = (params.get('plan') ?? '').trim();
+    if (plan) {
+      intent.plan = plan;
+      const itemPriceId = PLAN_MAP[plan];
+      if (itemPriceId) {
+        intent.itemPriceId = itemPriceId;
+      } else {
+        // Unknown slug: drop any stale resolved ID so plan and itemPriceId stay in sync
+        delete intent.itemPriceId;
+        console.warn('[CH Checkout Intent] Unknown plan slug:', plan);
+      }
+    } else {
+      // Empty plan param: explicit clear signal
+      delete intent.plan;
+      delete intent.itemPriceId;
+    }
+  }
+  if (couponPresent) {
+    const coupon = (params.get('coupon') ?? '').trim();
+    if (coupon) {
+      const normalized = coupon.toUpperCase();
+      if (COUPON_REGEX.test(normalized)) {
+        intent.coupon = normalized;
+      } else {
+        // Coupon param present but malformed: drop any stored coupon so a stale one
+        // doesn't survive while we pretend nothing happened
+        delete intent.coupon;
+        console.warn('[CH Checkout Intent] Invalid coupon format, dropping any stored coupon:', coupon);
+      }
+    } else {
+      // Empty coupon param: explicit clear signal
+      delete intent.coupon;
+    }
+  }
+  if (hasUtm) {
+    // Clear all stored UTMs first so a partial new UTM set doesn't mix with stale ones
+    UTM_PARAMS.forEach((k) => delete (intent as unknown as Record<string, string>)[k]);
+    UTM_PARAMS.forEach((k) => {
+      const v = params.get(k);
+      if (v) (intent as unknown as Record<string, string>)[k] = v;
+    });
+  }
+
+  try {
+    localStorage.setItem(CHECKOUT_INTENT_KEY, JSON.stringify(intent));
+  } catch (err) {
+    console.error('[CH Checkout Intent] Failed to store:', err);
   }
 }
 
@@ -109,6 +251,16 @@ async function setupPaywallCheck() {
 }
 
 async function init() {
+  // Capture deep-link checkout intent (plan, coupon, UTMs) before anything else
+  // so the data survives Auth0 redirects, sign-up flows, and page navigation.
+  captureCheckoutIntent();
+  window.chCheckout = {
+    get: getStoredCheckoutIntent,
+    clear: clearCheckoutIntent,
+    planMap: PLAN_MAP,
+    resolveSlug: (slug: string) => PLAN_MAP[slug],
+  };
+
   if (window.location.pathname === '/auth/callback') {
     return await authCallback();
   }
