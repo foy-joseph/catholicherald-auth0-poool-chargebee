@@ -152,6 +152,125 @@ function captureCheckoutIntent(): void {
   }
 }
 
+// --- Checkout fetch interceptor ---
+// Patches window.fetch so any POST to the v1/v2 checkout workers transparently
+// gets `coupon_id` (from the stored intent) appended to the request body.
+// On a successful subscription response, the stored intent is cleared so a
+// stale coupon can't be re-applied later. Idempotent: only installs once.
+
+const CHECKOUT_WORKER_HOSTS = [
+  'catholic-herald-cloudflare-v2.it-548.workers.dev',
+  'catholicherald.it-548.workers.dev',
+];
+
+function isCheckoutWorkerUrl(url: string): boolean {
+  try {
+    const u = new URL(url, window.location.origin);
+    return CHECKOUT_WORKER_HOSTS.includes(u.host);
+  } catch {
+    return false;
+  }
+}
+
+interface CheckoutPayload {
+  payment_token?: unknown;
+  plan_id?: unknown;
+  coupon_id?: unknown;
+  portal?: unknown;
+  [k: string]: unknown;
+}
+
+function installCheckoutInterceptor(): void {
+  if (typeof window === 'undefined' || typeof window.fetch !== 'function') return;
+  const w = window as unknown as { __chCheckoutInterceptorInstalled?: boolean };
+  if (w.__chCheckoutInterceptorInstalled) return;
+  w.__chCheckoutInterceptorInstalled = true;
+
+  const originalFetch = window.fetch.bind(window);
+
+  window.fetch = async function patchedFetch(
+    ...args: Parameters<typeof originalFetch>
+  ): Promise<Response> {
+    const [input, init] = args;
+    const url = typeof input === 'string' ? input : input instanceof Request ? input.url : '';
+    if (!url || !isCheckoutWorkerUrl(url)) {
+      return originalFetch(...args);
+    }
+    const method = (init?.method ?? (input instanceof Request ? input.method : 'GET')).toUpperCase();
+    if (method !== 'POST') {
+      return originalFetch(...args);
+    }
+
+    let bodyText: string | null = null;
+    try {
+      if (init?.body && typeof init.body === 'string') {
+        bodyText = init.body;
+      } else if (input instanceof Request) {
+        bodyText = await input.clone().text();
+      }
+    } catch {
+      return originalFetch(...args);
+    }
+    if (!bodyText) {
+      return originalFetch(...args);
+    }
+
+    let payload: CheckoutPayload | null = null;
+    try {
+      payload = JSON.parse(bodyText) as CheckoutPayload;
+    } catch {
+      return originalFetch(...args);
+    }
+    if (!payload || typeof payload !== 'object') {
+      return originalFetch(...args);
+    }
+    if (payload.portal) {
+      return originalFetch(...args);
+    }
+    const isPaidCheckout = !!payload.payment_token && !!payload.plan_id;
+    if (!isPaidCheckout) {
+      return originalFetch(...args);
+    }
+
+    const intent = getStoredCheckoutIntent();
+    let modified = false;
+    if (intent?.coupon && !payload.coupon_id) {
+      payload.coupon_id = intent.coupon;
+      modified = true;
+    }
+    if (intent?.itemPriceId && !payload.plan_id) {
+      payload.plan_id = intent.itemPriceId;
+      modified = true;
+    }
+
+    const newInit: RequestInit = modified
+      ? {
+          ...(init ?? {}),
+          method: 'POST',
+          headers: { ...(init?.headers ?? {}), 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        }
+      : (init ?? {});
+
+    const target = input instanceof Request ? input.url : input;
+    const response = await originalFetch(target, newInit);
+
+    try {
+      if (response.ok) {
+        const clone = response.clone();
+        const data = await clone.json().catch(() => null);
+        if (data && (data.createSubscription || data.tokens || data.success)) {
+          clearCheckoutIntent();
+        }
+      }
+    } catch {
+      // Best effort — don't break the response chain
+    }
+
+    return response;
+  };
+}
+
 async function authCallback() {
   const client = await createAuth0Client({
     domain: 'the-catholic-herald.us.auth0.com',
@@ -260,6 +379,9 @@ async function init() {
     planMap: PLAN_MAP,
     resolveSlug: (slug: string) => PLAN_MAP[slug],
   };
+  // Patch window.fetch so any POST to the checkout workers picks up the
+  // stored coupon (and plan, if missing) without touching Webflow form code.
+  installCheckoutInterceptor();
 
   if (window.location.pathname === '/auth/callback') {
     return await authCallback();
