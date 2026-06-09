@@ -23,6 +23,8 @@ declare global {
 
 const CHECKOUT_INTENT_KEY = 'ch_checkout_intent';
 const UTM_PARAMS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'] as const;
+const COUPON_REGEX = /^[A-Z0-9_-]{1,40}$/;
+const INTENT_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 
 const PLAN_MAP: Record<string, string> = {
   'us-digital-monthly': 'usa-digital-only-monthly',
@@ -50,20 +52,35 @@ interface CheckoutIntent {
   utm_content?: string;
   landingPage: string;
   timestamp: string;
+  lastUpdated: string;
 }
 
 function getStoredCheckoutIntent(): CheckoutIntent | null {
   try {
     const raw = localStorage.getItem(CHECKOUT_INTENT_KEY);
     if (!raw) return null;
-    return JSON.parse(raw) as CheckoutIntent;
+    const intent = JSON.parse(raw) as CheckoutIntent;
+    // Expire stale intents based on most recent param-bearing visit
+    const ageSource = intent.lastUpdated ?? intent.timestamp;
+    if (ageSource) {
+      const age = Date.now() - new Date(ageSource).getTime();
+      if (Number.isFinite(age) && age > INTENT_TTL_MS) {
+        clearCheckoutIntent();
+        return null;
+      }
+    }
+    return intent;
   } catch {
     return null;
   }
 }
 
 function clearCheckoutIntent(): void {
-  localStorage.removeItem(CHECKOUT_INTENT_KEY);
+  try {
+    localStorage.removeItem(CHECKOUT_INTENT_KEY);
+  } catch (err) {
+    console.error('[CH Checkout Intent] Failed to clear:', err);
+  }
 }
 
 function captureCheckoutIntent(): void {
@@ -75,11 +92,13 @@ function captureCheckoutIntent(): void {
   if (!plan && !coupon && !hasUtm) return;
 
   const stored = getStoredCheckoutIntent();
+  const now = new Date().toISOString();
   const intent: CheckoutIntent = stored
-    ? { ...stored }
+    ? { ...stored, lastUpdated: now }
     : {
         landingPage: window.location.pathname,
-        timestamp: new Date().toISOString(),
+        timestamp: now,
+        lastUpdated: now,
       };
 
   if (plan) {
@@ -88,14 +107,27 @@ function captureCheckoutIntent(): void {
     if (itemPriceId) {
       intent.itemPriceId = itemPriceId;
     } else {
+      // Unknown slug: drop any stale resolved ID so plan and itemPriceId stay in sync
+      delete intent.itemPriceId;
       console.warn('[CH Checkout Intent] Unknown plan slug:', plan);
     }
   }
-  if (coupon) intent.coupon = coupon.trim().toUpperCase();
-  UTM_PARAMS.forEach((k) => {
-    const v = params.get(k);
-    if (v) (intent as unknown as Record<string, string>)[k] = v;
-  });
+  if (coupon) {
+    const normalized = coupon.trim().toUpperCase();
+    if (COUPON_REGEX.test(normalized)) {
+      intent.coupon = normalized;
+    } else {
+      console.warn('[CH Checkout Intent] Invalid coupon format, ignoring:', coupon);
+    }
+  }
+  if (hasUtm) {
+    // Clear all stored UTMs first so a partial new UTM set doesn't mix with stale ones
+    UTM_PARAMS.forEach((k) => delete (intent as unknown as Record<string, string>)[k]);
+    UTM_PARAMS.forEach((k) => {
+      const v = params.get(k);
+      if (v) (intent as unknown as Record<string, string>)[k] = v;
+    });
+  }
 
   try {
     localStorage.setItem(CHECKOUT_INTENT_KEY, JSON.stringify(intent));
