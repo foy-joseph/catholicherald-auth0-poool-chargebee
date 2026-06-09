@@ -85,11 +85,11 @@ function clearCheckoutIntent(): void {
 
 function captureCheckoutIntent(): void {
   const params = new URLSearchParams(window.location.search);
-  const plan = params.get('plan');
-  const coupon = params.get('coupon');
+  const planPresent = params.has('plan');
+  const couponPresent = params.has('coupon');
   const hasUtm = UTM_PARAMS.some((k) => params.has(k));
 
-  if (!plan && !coupon && !hasUtm) return;
+  if (!planPresent && !couponPresent && !hasUtm) return;
 
   const stored = getStoredCheckoutIntent();
   const now = new Date().toISOString();
@@ -101,26 +101,39 @@ function captureCheckoutIntent(): void {
         lastUpdated: now,
       };
 
-  if (plan) {
-    intent.plan = plan;
-    const itemPriceId = PLAN_MAP[plan];
-    if (itemPriceId) {
-      intent.itemPriceId = itemPriceId;
+  if (planPresent) {
+    const plan = (params.get('plan') ?? '').trim();
+    if (plan) {
+      intent.plan = plan;
+      const itemPriceId = PLAN_MAP[plan];
+      if (itemPriceId) {
+        intent.itemPriceId = itemPriceId;
+      } else {
+        // Unknown slug: drop any stale resolved ID so plan and itemPriceId stay in sync
+        delete intent.itemPriceId;
+        console.warn('[CH Checkout Intent] Unknown plan slug:', plan);
+      }
     } else {
-      // Unknown slug: drop any stale resolved ID so plan and itemPriceId stay in sync
+      // Empty plan param: explicit clear signal
+      delete intent.plan;
       delete intent.itemPriceId;
-      console.warn('[CH Checkout Intent] Unknown plan slug:', plan);
     }
   }
-  if (coupon) {
-    const normalized = coupon.trim().toUpperCase();
-    if (COUPON_REGEX.test(normalized)) {
-      intent.coupon = normalized;
+  if (couponPresent) {
+    const coupon = (params.get('coupon') ?? '').trim();
+    if (coupon) {
+      const normalized = coupon.toUpperCase();
+      if (COUPON_REGEX.test(normalized)) {
+        intent.coupon = normalized;
+      } else {
+        // Coupon param present but malformed: drop any stored coupon so a stale one
+        // doesn't survive while we pretend nothing happened
+        delete intent.coupon;
+        console.warn('[CH Checkout Intent] Invalid coupon format, dropping any stored coupon:', coupon);
+      }
     } else {
-      // Coupon param present but malformed: drop any stored coupon so a stale one
-      // doesn't survive while we pretend nothing happened
+      // Empty coupon param: explicit clear signal
       delete intent.coupon;
-      console.warn('[CH Checkout Intent] Invalid coupon format, dropping any stored coupon:', coupon);
     }
   }
   if (hasUtm) {
