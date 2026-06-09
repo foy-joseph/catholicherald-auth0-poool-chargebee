@@ -152,6 +152,75 @@ function captureCheckoutIntent(): void {
   }
 }
 
+// --- Coupon UI suppressor (cosmetic) ---
+// When the user arrived via a deep link with ?coupon=X, the Webflow form's
+// "Apply Coupon" button calls the checkout worker which can't tell "validate"
+// from "create subscription" and 500s with "Please provide your first name".
+// The deep-link interceptor below applies the coupon at the real checkout POST
+// anyway, so the Apply button is redundant noise. Hide the input + button when
+// a coupon is staged, and show a clean confirmation notice instead.
+
+function installCouponUISuppressor(): void {
+  const intent = getStoredCheckoutIntent();
+  if (!intent?.coupon) return;
+
+  const trySuppress = (): boolean => {
+    const inputs = Array.from(document.querySelectorAll<HTMLInputElement>('input[type="text"], input:not([type])'));
+    const couponInput = inputs.find((el) => {
+      const placeholder = (el.placeholder || '').toLowerCase();
+      const ariaLabel = (el.getAttribute('aria-label') || '').toLowerCase();
+      const labelText = (el.labels?.[0]?.innerText || '').toLowerCase();
+      return /coupon|promo|discount|code/.test(placeholder + ariaLabel + labelText);
+    });
+    if (!couponInput) return false;
+
+    let row: HTMLElement | null = couponInput;
+    for (let i = 0; i < 5 && row; i++) {
+      if (row.parentElement && row.parentElement.querySelectorAll('input, button').length > row.querySelectorAll('input, button').length) {
+        break;
+      }
+      row = row.parentElement;
+    }
+    if (!row) return false;
+
+    if (row.dataset.chCouponSuppressed === 'true') return true;
+    row.dataset.chCouponSuppressed = 'true';
+
+    row.style.display = 'none';
+
+    const notice = document.createElement('div');
+    notice.setAttribute('data-ch-coupon-notice', 'true');
+    notice.style.cssText = [
+      'padding: 12px 16px',
+      'margin: 12px 0',
+      'border: 1px solid #d4af37',
+      'background: #fff8e1',
+      'border-radius: 6px',
+      'font-family: inherit',
+      'font-size: 14px',
+      'color: #5d4e00',
+    ].join(';');
+    // Build with DOM APIs — never innerHTML — so a hostile coupon string can't
+    // be injected as markup even though COUPON_REGEX would have caught it on
+    // capture. Belt-and-braces.
+    const strong = document.createElement('strong');
+    strong.textContent = `Code ${intent.coupon} applied`;
+    const rest = document.createTextNode(' · your discount will be reflected at checkout.');
+    notice.appendChild(strong);
+    notice.appendChild(rest);
+    row.parentElement?.insertBefore(notice, row);
+    return true;
+  };
+
+  if (trySuppress()) return;
+
+  const observer = new MutationObserver(() => {
+    if (trySuppress()) observer.disconnect();
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+  setTimeout(() => observer.disconnect(), 30000);
+}
+
 // --- Checkout fetch interceptor ---
 // Patches window.fetch so any POST to the v1/v2 checkout workers transparently
 // gets `coupon_id` (from the stored intent) appended to the request body.
@@ -382,6 +451,10 @@ async function init() {
   // Patch window.fetch so any POST to the checkout workers picks up the
   // stored coupon (and plan, if missing) without touching Webflow form code.
   installCheckoutInterceptor();
+  // Hide the Webflow form's coupon input + Apply button when we've already
+  // staged a coupon via deep link — Apply is bug-prone and redundant since the
+  // fetch interceptor handles application server-side.
+  installCouponUISuppressor();
 
   if (window.location.pathname === '/auth/callback') {
     return await authCallback();
