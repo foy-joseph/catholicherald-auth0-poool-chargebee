@@ -117,7 +117,10 @@ function captureCheckoutIntent(): void {
     if (COUPON_REGEX.test(normalized)) {
       intent.coupon = normalized;
     } else {
-      console.warn('[CH Checkout Intent] Invalid coupon format, ignoring:', coupon);
+      // Coupon param present but malformed: drop any stored coupon so a stale one
+      // doesn't survive while we pretend nothing happened
+      delete intent.coupon;
+      console.warn('[CH Checkout Intent] Invalid coupon format, dropping any stored coupon:', coupon);
     }
   }
   if (hasUtm) {
